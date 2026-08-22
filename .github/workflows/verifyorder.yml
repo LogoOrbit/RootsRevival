@@ -1,0 +1,32 @@
+name: Verify order pipeline
+
+on:
+  push:
+    paths:
+      - ".github/workflows/verifyorder.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the email relay directly
+        run: |
+          echo "== formsubmit ajax response =="
+          curl -sS -o body.txt -w "status:%{http_code}\n" \
+            -X POST "https://formsubmit.co/ajax/rootsrevivalpakistan@gmail.com" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            -d '{"_subject":"Roots Revival website setup check","message":"This is an automated setup check from the new website. No action needed apart from confirming the FormSubmit activation email so order emails start arriving."}'
+          cat body.txt
+          echo
+
+      - name: Place a test order on the live site
+        run: |
+          echo "== live order api response =="
+          curl -sS -o order.txt -w "status:%{http_code}\n" \
+            -X POST "https://rootsrevival-zeta.vercel.app/api/order" \
+            -H "Content-Type: application/json" \
+            -d '{"name":"Website Test Order","phone":"03000000000","email":"","address":"Website test order, please ignore","city":"Karachi","province":"Sindh","notes":"Automated test of the order pipeline","payment":"cod","coupon":"REVIVE10","lines":[{"slug":"starter","qty":1}]}'
+          cat order.txt
+          echo
