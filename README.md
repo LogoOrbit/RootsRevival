@@ -34,6 +34,29 @@ npm run build    # production build
 npm start        # serve the production build
 ```
 
+
+## Languages, theme and artwork
+
+**English and Urdu.** Every page reads in both. The language is picked from the visitor's
+browser on the first visit, and the header switch (globe icon) changes it at any time. Urdu
+switches the whole layout to right to left and uses a Nastaliq typeface. All wording lives in
+`lib/i18n/en.ts` and `lib/i18n/ur.ts`, side by side, so editing a line means editing those two
+files and nothing else.
+
+**Light and dark.** Light is the default. The moon icon in the header switches to dark and the
+choice is remembered in the browser. Both palettes are defined at the top of `app/globals.css`,
+so changing a colour there changes it everywhere.
+
+**Artwork.** The uploaded brand files live in `public/brand`. The website uses processed copies
+in `public/art`, generated from them: the logo cut out with transparency plus a cream version for
+dark backgrounds, the front label, back label and box panels, and the product photography used on
+the shop cards. Ingredient icons and benefit marks are drawn in code in
+`components/HerbIcons.tsx`, so they stay sharp at any size and follow the theme.
+
+**Offer countdown.** The launch offer counts down to the end of the current month, Pakistan time.
+It appears on the home hero, the shop, every product page, the offers page and the sticky bar.
+The logic is in `components/Countdown.tsx`.
+
 ## Where to change things
 
 Everything a shop owner normally edits lives in three files.

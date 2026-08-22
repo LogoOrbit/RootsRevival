@@ -205,7 +205,7 @@ export function Reveal({
     );
     observer.observe(node);
     // Safety net: nothing on this website should ever stay invisible.
-    const fallback = window.setTimeout(() => setVisible(true), 2500);
+    const fallback = window.setTimeout(() => setVisible(true), 900);
     return () => {
       observer.disconnect();
       window.clearTimeout(fallback);
