@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
+import { useT } from "./Providers";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { WhatsappIcon } from "./Icons";
 import type { Product } from "@/lib/products";
@@ -17,9 +18,11 @@ export function AddToCart({
   withWhatsapp?: boolean;
 }) {
   const { add } = useCart();
+  const t = useT();
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const copy = t.products[product.slug];
 
   const handleAdd = () => {
     add(product.slug, qty);
@@ -36,22 +39,22 @@ export function AddToCart({
     <div className="space-y-4">
       {withQuantity ? (
         <div className="flex items-center gap-4">
-          <span className="label mb-0">Quantity</span>
-          <div className="flex items-center rounded-full border border-cream-deep bg-white">
+          <span className="label mb-0">{t.common.quantity}</span>
+          <div className="flex items-center rounded-full border border-border bg-card">
             <button
               type="button"
-              aria-label="Decrease quantity"
+              aria-label="minus"
               onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="h-10 w-10 text-lg text-forest"
+              className="h-10 w-10 text-lg text-heading"
             >
               −
             </button>
             <span className="w-8 text-center text-sm">{qty}</span>
             <button
               type="button"
-              aria-label="Increase quantity"
+              aria-label="plus"
               onClick={() => setQty((q) => Math.min(20, q + 1))}
-              className="h-10 w-10 text-lg text-forest"
+              className="h-10 w-10 text-lg text-heading"
             >
               +
             </button>
@@ -61,17 +64,17 @@ export function AddToCart({
 
       <div className="flex flex-wrap gap-3">
         <button type="button" onClick={handleBuy} className="btn btn-gold flex-1 sm:flex-none">
-          Buy Now {formatPrice(product.price * qty)}
+          {t.common.buyNow} {formatPrice(product.price * qty)}
         </button>
         <button type="button" onClick={handleAdd} className="btn btn-outline flex-1 sm:flex-none">
-          {added ? "Added To Cart" : "Add To Cart"}
+          {added ? t.common.added : t.common.addToCart}
         </button>
       </div>
 
       {withWhatsapp ? (
         <a
           href={waLink(
-            `Assalam o Alaikum ${brand.name} team, I want to order ${qty} x ${product.shortName} (${formatPrice(
+            `Assalam o Alaikum ${brand.name} team, I want to order ${qty} x ${copy.name} (${formatPrice(
               product.price * qty
             )}). Please confirm.`
           )}
@@ -80,7 +83,7 @@ export function AddToCart({
           className="btn btn-whatsapp w-full"
         >
           <WhatsappIcon className="h-5 w-5" />
-          Order On WhatsApp
+          {t.common.orderOnWhatsapp}
         </a>
       ) : null}
     </div>
@@ -89,6 +92,7 @@ export function AddToCart({
 
 export function QuickAdd({ product }: { product: Product }) {
   const { add } = useCart();
+  const t = useT();
   const [added, setAdded] = useState(false);
   return (
     <button
@@ -100,7 +104,7 @@ export function QuickAdd({ product }: { product: Product }) {
       }}
       className="btn btn-primary w-full"
     >
-      {added ? "Added To Cart" : "Add To Cart"}
+      {added ? t.common.added : t.common.addToCart}
     </button>
   );
 }

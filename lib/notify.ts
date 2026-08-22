@@ -3,23 +3,35 @@ import { brand } from "./brand";
 /**
  * Delivery of order and message alerts.
  *
- * Email: uses Resend when RESEND_API_KEY is present, otherwise it posts to
- * FormSubmit, which needs no key at all. FormSubmit sends one activation
- * email to the shop address the first time it is used.
+ * Email, in order of preference:
+ *   1. Resend, when RESEND_API_KEY is set.
+ *   2. Any mailbox over SMTP, when SMTP_HOST, SMTP_USER and SMTP_PASS are set.
+ *      A Gmail app password works, and then the order mail comes from your own
+ *      address so a reply goes straight back to the customer.
+ *   3. Any webhook you like, when ORDER_WEBHOOK_URL is set. Useful for Zapier,
+ *      Make, Google Apps Script, Slack or Discord.
  *
- * WhatsApp: the customer is handed a ready made WhatsApp message that lands
- * in the shop inbox. If a CallMeBot key is added the server also pushes the
- * same text to the shop number on its own.
+ * With none of them set the order still reaches the shop through WhatsApp, and
+ * the website says so honestly instead of pretending the mail went out.
+ *
+ * WhatsApp:
+ *   The customer is handed a ready made WhatsApp message that lands in the
+ *   shop inbox. With a CallMeBot key the server also pushes the same text to
+ *   the shop number on its own.
  */
 
-type MailResult = { delivered: boolean; provider: string; error?: string };
+export type MailResult = { delivered: boolean; provider: string; error?: string };
+
+export function shopEmail(): string {
+  return process.env.ORDER_EMAIL_TO || brand.contact.email;
+}
 
 export async function sendMail(
   subject: string,
   text: string,
   replyTo?: string
 ): Promise<MailResult> {
-  const to = process.env.ORDER_EMAIL_TO || brand.contact.email;
+  const to = shopEmail();
   const resendKey = process.env.RESEND_API_KEY;
 
   if (resendKey) {
@@ -55,33 +67,60 @@ export async function sendMail(
     }
   }
 
-  try {
-    const response = await fetch(
-      `https://formsubmit.co/ajax/${encodeURIComponent(to)}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: subject,
-          _template: "box",
-          ...(replyTo ? { _replyto: replyTo } : {}),
-          message: text,
-        }),
-      }
-    );
-    if (response.ok) return { delivered: true, provider: "formsubmit" };
-    return {
-      delivered: false,
-      provider: "formsubmit",
-      error: `${response.status}`,
-    };
-  } catch (error) {
-    return {
-      delivered: false,
-      provider: "formsubmit",
-      error: error instanceof Error ? error.message : "unknown",
-    };
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  if (smtpHost && smtpUser && smtpPass) {
+    try {
+      const nodemailer = (await import("nodemailer")).default;
+      const port = Number(process.env.SMTP_PORT || 465);
+      const transport = nodemailer.createTransport({
+        host: smtpHost,
+        port,
+        secure: port === 465,
+        auth: { user: smtpUser, pass: smtpPass },
+      });
+      await transport.sendMail({
+        from: process.env.ORDER_EMAIL_FROM || `${brand.name} <${smtpUser}>`,
+        to,
+        subject,
+        text,
+        ...(replyTo ? { replyTo } : {}),
+      });
+      return { delivered: true, provider: "smtp" };
+    } catch (error) {
+      return {
+        delivered: false,
+        provider: "smtp",
+        error: error instanceof Error ? error.message : "unknown",
+      };
+    }
   }
+
+  const webhook = process.env.ORDER_WEBHOOK_URL;
+  if (webhook) {
+    try {
+      const response = await fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, text, replyTo, to }),
+      });
+      if (response.ok) return { delivered: true, provider: "webhook" };
+      return {
+        delivered: false,
+        provider: "webhook",
+        error: `${response.status}`,
+      };
+    } catch (error) {
+      return {
+        delivered: false,
+        provider: "webhook",
+        error: error instanceof Error ? error.message : "unknown",
+      };
+    }
+  }
+
+  return { delivered: false, provider: "none" };
 }
 
 export async function pushWhatsapp(text: string): Promise<boolean> {

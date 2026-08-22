@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { brand, formatPrice, mailLink, waLink } from "@/lib/brand";
+import { useT } from "./Providers";
 import { CheckIcon, MailIcon, WhatsappIcon } from "./Icons";
 
 type LastOrder = {
@@ -11,10 +12,13 @@ type LastOrder = {
   total: number;
   payment: string;
   whatsappUrl: string;
+  emailDelivered?: boolean;
+  whatsappPushed?: boolean;
   name: string;
 };
 
 export default function ThankYou() {
+  const t = useT();
   const params = useSearchParams();
   const orderFromUrl = params.get("order") || "";
   const [order, setOrder] = useState<LastOrder | null>(null);
@@ -30,111 +34,76 @@ export default function ThankYou() {
 
   const orderId = order?.orderId || orderFromUrl;
   const isBank = order?.payment === "bank";
+  const reached = Boolean(order?.emailDelivered || order?.whatsappPushed);
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="card p-10 text-center">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-forest text-cream">
+      <div className="card p-8 text-center sm:p-10">
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-band text-bandtext">
           <CheckIcon className="h-8 w-8" />
         </span>
-        <h1 className="mt-6 text-4xl">
-          Thank you{order?.name ? `, ${order.name.split(" ")[0]}` : ""}
+        <h1 className="mt-6 text-3xl sm:text-4xl">
+          {t.thankyouPage.thankYou}
+          {order?.name ? `, ${order.name.split(" ")[0]}` : ""}
         </h1>
         <div className="gold-rule mx-auto mt-6 w-24" />
         {orderId ? (
-          <p className="mt-6 text-sm uppercase tracking-[0.18em] text-muted">
-            Order number{" "}
-            <span className="font-medium text-forest">{orderId}</span>
+          <p className="mt-6 text-sm uppercase tracking-[0.16em] text-muted">
+            {t.thankyouPage.orderNumber}{" "}
+            <span className="font-medium text-heading" dir="ltr">
+              {orderId}
+            </span>
           </p>
         ) : null}
         {order ? (
-          <p className="mt-2 font-display text-3xl text-forest">
+          <p className="mt-2 font-display text-3xl text-heading">
             {formatPrice(order.total)}
           </p>
         ) : null}
         <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-muted">
-          Your order is with our team and your WhatsApp message is ready to send. Press
-          the green button below so we can confirm your order right away.
+          {reached ? t.thankyouPage.bodyDelivered : t.thankyouPage.bodyPending}
         </p>
 
-        {order?.whatsappUrl ? (
-          <a
-            href={order.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-whatsapp mt-8"
-          >
-            <WhatsappIcon className="h-5 w-5" />
-            Send Order On WhatsApp
-          </a>
-        ) : (
-          <a
-            href={waLink(
+        <a
+          href={
+            order?.whatsappUrl ||
+            waLink(
               `Assalam o Alaikum ${brand.name} team, I placed order ${orderId} on your website.`
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-whatsapp mt-8"
-          >
-            <WhatsappIcon className="h-5 w-5" />
-            Message Us About This Order
-          </a>
-        )}
+            )
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-whatsapp mt-8"
+        >
+          <WhatsappIcon className="h-5 w-5" />
+          {order?.whatsappUrl ? t.thankyouPage.sendOrder : t.thankyouPage.messageAbout}
+        </a>
       </div>
 
       {isBank ? (
-        <div className="mt-8 rounded-2xl bg-forest p-8 text-cream">
-          <p className="eyebrow text-gold-light">Payment details</p>
-          <h2 className="mt-3 text-2xl text-cream">
-            Transfer the amount and send us the receipt
-          </h2>
+        <div className="mt-8 rounded-2xl bg-band p-8 text-bandtext">
+          <p className="eyebrow text-goldlight">{t.thankyouPage.paymentEyebrow}</p>
+          <h2 className="mt-3 text-2xl text-bandtext">{t.thankyouPage.paymentTitle}</h2>
           <dl className="mt-6 space-y-3 text-sm">
-            <div className="flex justify-between gap-4 border-b border-cream/15 pb-3">
-              <dt className="text-cream-soft/70">Bank</dt>
-              <dd>{brand.bank.bankName}</dd>
-            </div>
-            <div className="flex justify-between gap-4 border-b border-cream/15 pb-3">
-              <dt className="text-cream-soft/70">Account title</dt>
-              <dd>{brand.bank.accountTitle}</dd>
-            </div>
-            <div className="flex justify-between gap-4 border-b border-cream/15 pb-3">
-              <dt className="text-cream-soft/70">Account number</dt>
-              <dd className="tracking-wider text-gold-light">
-                {brand.bank.accountNumber}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-cream-soft/70">Send receipt to</dt>
-              <dd>{brand.contact.whatsappDisplay}</dd>
-            </div>
+            <Row label={t.checkoutPage.bank} value={brand.bank.bankName} />
+            <Row label={t.checkoutPage.accountTitle} value={brand.bank.accountTitle} />
+            <Row label={t.checkoutPage.accountNumber} value={brand.bank.accountNumber} gold />
+            <Row
+              label={t.checkoutPage.sendReceiptTo}
+              value={brand.contact.whatsappDisplay}
+              last
+            />
           </dl>
-          <p className="mt-5 text-xs leading-relaxed text-cream-soft/75">
-            Once the receipt reaches our WhatsApp we confirm your payment and dispatch
-            the parcel the same day.
+          <p className="mt-5 text-xs leading-relaxed text-bandtext/75">
+            {t.thankyouPage.paymentNote}
           </p>
         </div>
       ) : null}
 
       <div className="mt-8 grid gap-5 sm:grid-cols-3">
-        {[
-          {
-            step: "1",
-            title: "We confirm",
-            note: "Our team replies on WhatsApp to confirm your address and the total.",
-          },
-          {
-            step: "2",
-            title: "We bottle it fresh",
-            note: "Your pack is filled, sealed and boxed by hand, then handed to the courier.",
-          },
-          {
-            step: "3",
-            title: "It reaches you",
-            note: `Delivery usually takes ${brand.shipping.deliveryDays} anywhere in Pakistan.`,
-          },
-        ].map((item) => (
-          <div key={item.step} className="card p-6">
-            <span className="font-display text-3xl text-gold/50">{item.step}</span>
+        {t.thankyouPage.steps.map((item, index) => (
+          <div key={item.title} className="card p-6">
+            <span className="font-display text-3xl text-gold/50">{index + 1}</span>
             <h3 className="mt-2 font-display text-lg">{item.title}</h3>
             <p className="mt-1 text-sm leading-relaxed text-muted">{item.note}</p>
           </div>
@@ -148,9 +117,32 @@ export default function ThankYou() {
         </a>
         <span className="text-gold">✦</span>
         <Link href="/shop" className="hover:text-gold">
-          Continue shopping
+          {t.common.continueShopping}
         </Link>
       </div>
+    </div>
+  );
+}
+
+function Row({
+  label,
+  value,
+  gold,
+  last,
+}: {
+  label: string;
+  value: string;
+  gold?: boolean;
+  last?: boolean;
+}) {
+  return (
+    <div
+      className={`flex justify-between gap-4 ${last ? "" : "border-b border-bandtext/15 pb-3"}`}
+    >
+      <dt className="text-bandtext/70">{label}</dt>
+      <dd className={gold ? "tracking-wider text-goldlight" : ""} dir="ltr">
+        {value}
+      </dd>
     </div>
   );
 }

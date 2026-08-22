@@ -4,24 +4,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
+import { useT } from "./Providers";
 import { PackShot } from "./ProductArt";
 import { brand, formatPrice } from "@/lib/brand";
 import { CheckIcon, WhatsappIcon } from "./Icons";
-
-const provinces = [
-  "Punjab",
-  "Sindh",
-  "Khyber Pakhtunkhwa",
-  "Balochistan",
-  "Islamabad Capital Territory",
-  "Gilgit Baltistan",
-  "Azad Jammu and Kashmir",
-];
 
 type Errors = Record<string, string>;
 
 export default function CheckoutForm() {
   const { lines, totals, coupon, applyCoupon, clear, ready } = useCart();
+  const t = useT();
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -30,7 +22,7 @@ export default function CheckoutForm() {
     email: "",
     address: "",
     city: "",
-    province: "Punjab",
+    province: "",
     notes: "",
     payment: "cod",
     website: "",
@@ -57,17 +49,24 @@ export default function CheckoutForm() {
       const response = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, coupon, lines }),
+        body: JSON.stringify({
+          ...form,
+          province: form.province || t.checkoutPage.provinces[0],
+          coupon,
+          lines,
+        }),
       });
       const data = await response.json();
 
       if (!response.ok || !data.ok) {
         waWindow?.close();
-        setErrors(data.errors || {});
-        if (!data.errors)
-          setFailed(
-            "We could not place the order just now. Please try again or send it to us on WhatsApp."
-          );
+        const fieldErrors: Errors = {};
+        Object.keys(data.errors || {}).forEach((key) => {
+          const messages = t.checkoutPage.errors as Record<string, string>;
+          fieldErrors[key] = messages[key] || data.errors[key];
+        });
+        setErrors(fieldErrors);
+        if (!data.errors) setFailed(t.checkoutPage.errors.failed);
         setSending(false);
         return;
       }
@@ -80,6 +79,8 @@ export default function CheckoutForm() {
             total: data.total,
             payment: data.payment,
             whatsappUrl: data.whatsappUrl,
+            emailDelivered: data.emailDelivered,
+            whatsappPushed: data.whatsappPushed,
             name: form.name,
           })
         );
@@ -92,84 +93,84 @@ export default function CheckoutForm() {
       router.push(`/thankyou?order=${data.orderId}`);
     } catch {
       waWindow?.close();
-      setFailed(
-        "The connection dropped. Please check your internet and try again, or send the order to us on WhatsApp."
-      );
+      setFailed(t.checkoutPage.errors.network);
       setSending(false);
     }
   }
 
   if (!ready) {
     return (
-      <p className="py-20 text-center text-sm uppercase tracking-[0.2em] text-muted">
-        Loading checkout
+      <p className="py-20 text-center text-sm uppercase tracking-[0.18em] text-muted">
+        {t.common.loading}
       </p>
     );
   }
 
   if (totals.itemCount === 0) {
     return (
-      <div className="card mx-auto max-w-xl p-12 text-center">
-        <h2 className="text-3xl">There is nothing to check out yet</h2>
+      <div className="card mx-auto max-w-xl p-10 text-center sm:p-12">
+        <h2 className="text-3xl">{t.checkoutPage.emptyTitle}</h2>
         <div className="gold-rule mx-auto mt-6 w-24" />
         <p className="mt-6 text-sm leading-relaxed text-muted">
-          Add a pack to your cart and come back here to place the order.
+          {t.checkoutPage.emptyBody}
         </p>
         <Link href="/shop" className="btn btn-gold mt-8">
-          Choose A Pack
+          {t.checkoutPage.choosePack}
         </Link>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+    <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
       <div className="space-y-8">
-        <section className="card p-7">
-          <h2 className="font-display text-2xl">Delivery details</h2>
+        <section className="card p-6 sm:p-7">
+          <h2 className="font-display text-2xl">{t.checkoutPage.deliveryDetails}</h2>
           <div className="gold-rule mt-4 w-20" />
 
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <Field
-              label="Full name"
+              label={t.checkoutPage.fullName}
               id="name"
               value={form.name}
               onChange={(v) => update("name", v)}
               error={errors.name}
-              placeholder="Your full name"
+              placeholder={t.checkoutPage.fullNamePlaceholder}
               required
             />
             <Field
-              label="WhatsApp number"
+              label={t.checkoutPage.whatsappNumber}
               id="phone"
               value={form.phone}
               onChange={(v) => update("phone", v)}
               error={errors.phone}
               placeholder="0311 3839767"
               type="tel"
+              ltr
               required
             />
             <div className="sm:col-span-2">
               <Field
-                label="Email (optional)"
+                label={t.checkoutPage.emailOptional}
                 id="email"
                 value={form.email}
                 onChange={(v) => update("email", v)}
                 error={errors.email}
                 placeholder="you@example.com"
                 type="email"
+                ltr
               />
             </div>
             <div className="sm:col-span-2">
               <label className="label" htmlFor="address">
-                Complete address
+                {t.checkoutPage.address}
               </label>
               <textarea
                 id="address"
                 className="field min-h-28"
                 value={form.address}
                 onChange={(event) => update("address", event.target.value)}
-                placeholder="House number, street, area, nearest landmark"
+                placeholder={t.checkoutPage.addressPlaceholder}
                 required
               />
               {errors.address ? (
@@ -177,25 +178,24 @@ export default function CheckoutForm() {
               ) : null}
             </div>
             <Field
-              label="City"
+              label={t.checkoutPage.city}
               id="city"
               value={form.city}
               onChange={(v) => update("city", v)}
               error={errors.city}
-              placeholder="Karachi"
               required
             />
             <div>
               <label className="label" htmlFor="province">
-                Province
+                {t.checkoutPage.province}
               </label>
               <select
                 id="province"
                 className="field"
-                value={form.province}
+                value={form.province || t.checkoutPage.provinces[0]}
                 onChange={(event) => update("province", event.target.value)}
               >
-                {provinces.map((province) => (
+                {t.checkoutPage.provinces.map((province) => (
                   <option key={province} value={province}>
                     {province}
                   </option>
@@ -204,19 +204,18 @@ export default function CheckoutForm() {
             </div>
             <div className="sm:col-span-2">
               <label className="label" htmlFor="notes">
-                Order notes (optional)
+                {t.checkoutPage.notes}
               </label>
               <textarea
                 id="notes"
                 className="field min-h-20"
                 value={form.notes}
                 onChange={(event) => update("notes", event.target.value)}
-                placeholder="Anything we should know, for example a preferred delivery time"
+                placeholder={t.checkoutPage.notesPlaceholder}
               />
             </div>
           </div>
 
-          {/* honeypot */}
           <input
             type="text"
             tabIndex={-1}
@@ -228,8 +227,8 @@ export default function CheckoutForm() {
           />
         </section>
 
-        <section className="card p-7">
-          <h2 className="font-display text-2xl">Payment method</h2>
+        <section className="card p-6 sm:p-7">
+          <h2 className="font-display text-2xl">{t.checkoutPage.paymentMethod}</h2>
           <div className="gold-rule mt-4 w-20" />
 
           <div className="mt-6 space-y-4">
@@ -237,79 +236,78 @@ export default function CheckoutForm() {
               id="cod"
               selected={form.payment === "cod"}
               onSelect={() => update("payment", "cod")}
-              title="Cash on delivery"
-              note="Pay the courier when your parcel arrives. Available all over Pakistan."
+              title={t.checkoutPage.codTitle}
+              note={t.checkoutPage.codNote}
             />
             <PaymentOption
               id="bank"
               selected={form.payment === "bank"}
               onSelect={() => update("payment", "bank")}
-              title="Online bank transfer"
-              note="Transfer the amount, then send the receipt to our WhatsApp. We dispatch the same day."
+              title={t.checkoutPage.bankTitle}
+              note={t.checkoutPage.bankNote}
             />
           </div>
 
           {form.payment === "bank" ? (
-            <div className="mt-6 rounded-2xl bg-forest p-6 text-cream">
-              <p className="eyebrow text-gold-light">Send the payment to</p>
+            <div className="mt-6 rounded-2xl bg-band p-6 text-bandtext">
+              <p className="eyebrow text-goldlight">{t.checkoutPage.sendPaymentTo}</p>
               <dl className="mt-4 space-y-3 text-sm">
-                <div className="flex justify-between gap-4">
-                  <dt className="text-cream-soft/70">Bank</dt>
-                  <dd>{brand.bank.bankName}</dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-cream-soft/70">Account title</dt>
-                  <dd>{brand.bank.accountTitle}</dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-cream-soft/70">Account number</dt>
-                  <dd className="font-medium tracking-wider text-gold-light">
-                    {brand.bank.accountNumber}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-4">
-                  <dt className="text-cream-soft/70">Send receipt to</dt>
-                  <dd>{brand.contact.whatsappDisplay}</dd>
-                </div>
+                <BankRow label={t.checkoutPage.bank} value={brand.bank.bankName} />
+                <BankRow label={t.checkoutPage.accountTitle} value={brand.bank.accountTitle} />
+                <BankRow
+                  label={t.checkoutPage.accountNumber}
+                  value={brand.bank.accountNumber}
+                  gold
+                />
+                <BankRow
+                  label={t.checkoutPage.sendReceiptTo}
+                  value={brand.contact.whatsappDisplay}
+                />
               </dl>
-              <p className="mt-4 text-xs leading-relaxed text-cream-soft/75">
-                After placing the order, transfer {formatPrice(totals.total)} and send the
-                screenshot to our WhatsApp number so we can confirm and dispatch.
+              <p className="mt-4 text-xs leading-relaxed text-bandtext/75">
+                {t.checkoutPage.bankHint1} {formatPrice(totals.total)}{" "}
+                {t.checkoutPage.bankHint2}
               </p>
             </div>
           ) : null}
         </section>
       </div>
 
-      <aside className="card h-fit p-7">
-        <h2 className="font-display text-2xl">Your order</h2>
+      <aside className="card h-fit p-6 sm:p-7">
+        <h2 className="font-display text-2xl">{t.checkoutPage.yourOrder}</h2>
         <div className="gold-rule mt-4 w-20" />
 
         <ul className="mt-6 space-y-4">
-          {totals.lines.map((line) => (
-            <li key={line.slug} className="flex items-center gap-4">
-              <PackShot bottles={line.product.bottles} className="h-16 w-16 shrink-0" />
-              <div className="flex-1">
-                <p className="font-display text-lg leading-tight">
-                  {line.product.shortName}
-                </p>
-                <p className="text-xs uppercase tracking-[0.14em] text-muted">
-                  Quantity {line.qty}
-                </p>
-              </div>
-              <p className="text-sm text-forest">{formatPrice(line.lineTotal)}</p>
-            </li>
-          ))}
+          {totals.lines.map((line) => {
+            const copy = t.products[line.product.slug];
+            return (
+              <li key={line.slug} className="flex items-center gap-4">
+                <PackShot
+                  slug={line.product.slug}
+                  className="h-16 w-16 shrink-0 rounded-lg bg-[#0d1710]"
+                  sizes="80px"
+                />
+                <div className="flex-1">
+                  <p className="font-display text-lg leading-tight">{copy.name}</p>
+                  <p className="text-xs uppercase tracking-[0.12em] text-muted">
+                    {t.checkoutPage.quantityLabel} {line.qty}
+                  </p>
+                </div>
+                <p className="text-sm text-heading">{formatPrice(line.lineTotal)}</p>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="mt-6">
           <label className="label" htmlFor="checkoutcoupon">
-            Discount code
+            {t.common.discountCode}
           </label>
           <div className="flex gap-2">
             <input
               id="checkoutcoupon"
               className="field"
+              dir="ltr"
               value={code}
               onChange={(event) => setCode(event.target.value.toUpperCase())}
               placeholder="REVIVE10"
@@ -319,59 +317,59 @@ export default function CheckoutForm() {
               onClick={() => applyCoupon(code)}
               className="btn btn-primary shrink-0 px-5"
             >
-              Apply
+              {t.common.apply}
             </button>
           </div>
           {totals.couponCode ? (
-            <p className="mt-2 text-xs text-forest">{totals.couponLabel} applied.</p>
+            <p className="mt-2 text-xs text-heading">
+              {t.coupons[totals.couponCode as keyof typeof t.coupons]}{" "}
+              {t.common.codeApplied}
+            </p>
           ) : null}
           {totals.couponInvalid ? (
-            <p className="mt-2 text-xs text-hibiscus">
-              That code is not valid for this order.
-            </p>
+            <p className="mt-2 text-xs text-hibiscus">{t.common.codeInvalid}</p>
           ) : null}
         </div>
 
-        <div className="mt-6 space-y-3 border-t border-cream-deep pt-5 text-sm">
+        <div className="mt-6 space-y-3 border-t border-border pt-5 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted">Subtotal</span>
+            <span className="text-muted">{t.common.subtotal}</span>
             <span>{formatPrice(totals.subtotal)}</span>
           </div>
           {totals.discount > 0 ? (
             <div className="flex justify-between text-hibiscus">
-              <span>Code {totals.couponCode}</span>
-              <span>{formatPrice(totals.discount)} off</span>
+              <span>{totals.couponCode}</span>
+              <span>{formatPrice(totals.discount)}</span>
             </div>
           ) : null}
           <div className="flex justify-between">
-            <span className="text-muted">Delivery</span>
+            <span className="text-muted">{t.common.delivery}</span>
             <span>
-              {totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)}
+              {totals.shipping === 0 ? t.common.free : formatPrice(totals.shipping)}
             </span>
           </div>
-          <div className="flex items-baseline justify-between border-t border-cream-deep pt-4">
-            <span className="text-sm uppercase tracking-[0.16em] text-muted">Total</span>
-            <span className="font-display text-3xl text-forest">
+          <div className="flex items-baseline justify-between border-t border-border pt-4">
+            <span className="text-sm uppercase tracking-[0.14em] text-muted">
+              {t.common.total}
+            </span>
+            <span className="font-display text-3xl text-heading">
               {formatPrice(totals.total)}
             </span>
           </div>
         </div>
 
-        {errors.cart ? (
-          <p className="mt-4 text-xs text-hibiscus">{errors.cart}</p>
-        ) : null}
+        {errors.cart ? <p className="mt-4 text-xs text-hibiscus">{errors.cart}</p> : null}
         {failed ? <p className="mt-4 text-xs text-hibiscus">{failed}</p> : null}
 
         <button type="submit" disabled={sending} className="btn btn-gold mt-6 w-full">
-          {sending ? "Placing your order" : "Place Order"}
+          {sending ? t.common.placingOrder : t.common.placeOrder}
         </button>
 
         <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted">
           <span className="mt-0.5 text-gold">
             <WhatsappIcon className="h-4 w-4" />
           </span>
-          Your order details are emailed to our team and opened in WhatsApp so we can
-          confirm with you right away.
+          {t.checkoutPage.whatsappNote}
         </p>
       </aside>
     </form>
@@ -387,6 +385,7 @@ function Field({
   placeholder,
   type = "text",
   required,
+  ltr,
 }: {
   label: string;
   id: string;
@@ -396,6 +395,7 @@ function Field({
   placeholder?: string;
   type?: string;
   required?: boolean;
+  ltr?: boolean;
 }) {
   return (
     <div>
@@ -405,6 +405,7 @@ function Field({
       <input
         id={id}
         type={type}
+        dir={ltr ? "ltr" : undefined}
         className="field"
         value={value}
         placeholder={placeholder}
@@ -412,6 +413,25 @@ function Field({
         onChange={(event) => onChange(event.target.value)}
       />
       {error ? <p className="mt-1 text-xs text-hibiscus">{error}</p> : null}
+    </div>
+  );
+}
+
+function BankRow({
+  label,
+  value,
+  gold,
+}: {
+  label: string;
+  value: string;
+  gold?: boolean;
+}) {
+  return (
+    <div className="flex justify-between gap-4">
+      <dt className="text-bandtext/70">{label}</dt>
+      <dd className={gold ? "font-medium tracking-wider text-goldlight" : ""} dir="ltr">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -433,7 +453,7 @@ function PaymentOption({
     <label
       htmlFor={id}
       className={`flex cursor-pointer gap-4 rounded-2xl border p-5 transition-colors ${
-        selected ? "border-gold bg-cream-soft" : "border-cream-deep bg-white"
+        selected ? "border-gold bg-bgsoft" : "border-border bg-card"
       }`}
     >
       <input
@@ -446,13 +466,13 @@ function PaymentOption({
       />
       <span
         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-          selected ? "border-gold bg-gold text-forest-deep" : "border-cream-deep"
+          selected ? "border-gold bg-gold text-white" : "border-border"
         }`}
       >
         {selected ? <CheckIcon className="h-3 w-3" /> : null}
       </span>
       <span>
-        <span className="block font-display text-lg text-forest">{title}</span>
+        <span className="block font-display text-lg text-heading">{title}</span>
         <span className="mt-1 block text-sm leading-relaxed text-muted">{note}</span>
       </span>
     </label>

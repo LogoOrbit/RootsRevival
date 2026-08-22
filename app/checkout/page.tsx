@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import CheckoutForm from "@/components/CheckoutForm";
-import { PageHero, Section } from "@/components/ui";
+import CheckoutPage from "@/components/pages/Checkout";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -9,17 +8,6 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function CheckoutPage() {
-  return (
-    <>
-      <PageHero
-        eyebrow="Secure checkout"
-        title="Place your order"
-        intro="Fill in your delivery details and choose how you would like to pay. We confirm every order personally on WhatsApp before dispatch."
-      />
-      <Section tone="cream">
-        <CheckoutForm />
-      </Section>
-    </>
-  );
+export default function Page() {
+  return <CheckoutPage />;
 }

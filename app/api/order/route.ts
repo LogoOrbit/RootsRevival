@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { computeTotals, type CartLine } from "@/lib/cart";
+import { en } from "@/lib/i18n/en";
 import { pushWhatsapp, sendMail } from "@/lib/notify";
 
 export const runtime = "nodejs";
@@ -79,9 +80,9 @@ export async function POST(request: Request) {
   const itemLines = totals.lines
     .map(
       (line) =>
-        `• ${line.qty} x ${line.product.shortName} (${line.product.volume}) = ${formatPrice(
-          line.lineTotal
-        )}`
+        `• ${line.qty} x ${en.products[line.product.slug].name} (${
+          en.products[line.product.slug].volume
+        }) = ${formatPrice(line.lineTotal)}`
     )
     .join("\n");
 

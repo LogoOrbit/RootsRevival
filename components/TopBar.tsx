@@ -1,22 +1,19 @@
-const messages = [
-  "Launch offer: save up to Rs 2,500 on bundle packs",
-  "Free delivery on every order above Rs 3,000",
-  "Cash on delivery available all over Pakistan",
-  "Use code REVIVE10 for 10 percent off your first order",
-  "Handmade in small batches with 16 natural herbs and oils",
-];
+"use client";
+
+import { useT } from "./Providers";
 
 export default function TopBar() {
-  const strip = [...messages, ...messages];
+  const t = useT();
+  const strip = [...t.announce, ...t.announce];
   return (
-    <div className="overflow-hidden bg-forest py-2.5 text-cream">
+    <div className="overflow-hidden bg-band py-2.5 text-bandtext">
       <div className="marquee-track">
         {strip.map((message, index) => (
           <span
             key={`${message}-${index}`}
-            className="flex items-center whitespace-nowrap px-6 text-[0.7rem] uppercase tracking-[0.22em]"
+            className="flex items-center whitespace-nowrap px-6 text-[0.7rem] uppercase tracking-[0.18em]"
           >
-            <span className="mr-6 text-gold-light">✦</span>
+            <span className="me-5 text-goldlight">✦</span>
             {message}
           </span>
         ))}

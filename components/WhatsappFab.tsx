@@ -1,7 +1,15 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { brand, waLink } from "@/lib/brand";
 import { WhatsappIcon } from "./Icons";
 
 export default function WhatsappFab() {
+  const pathname = usePathname();
+  const lifted = !["/checkout", "/thankyou", "/cart"].some((path) =>
+    pathname.startsWith(path)
+  );
+
   return (
     <a
       href={waLink(
@@ -9,11 +17,12 @@ export default function WhatsappFab() {
       )}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat on WhatsApp"
-      className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#1faa54] px-4 py-3 text-sm font-medium text-white shadow-[0_12px_30px_rgba(31,170,84,0.35)] transition-transform hover:scale-105"
+      aria-label="WhatsApp"
+      className={`fixed end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#1faa54] text-white shadow-[0_12px_30px_rgba(31,170,84,0.4)] transition-transform hover:scale-110 ${
+        lifted ? "bottom-24 sm:bottom-28" : "bottom-5"
+      }`}
     >
-      <WhatsappIcon className="h-6 w-6" />
-      <span className="hidden sm:inline">Order on WhatsApp</span>
+      <WhatsappIcon className="h-7 w-7" />
     </a>
   );
 }

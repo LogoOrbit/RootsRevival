@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { brand } from "@/lib/brand";
-import { CartProvider } from "@/components/CartProvider";
+import { SiteProvider } from "@/components/Providers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TopBar from "@/components/TopBar";
 import WhatsappFab from "@/components/WhatsappFab";
+import StickyOffer from "@/components/StickyOffer";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.site.url),
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
     "amla hibiscus hair oil",
     "natural hair oil",
     "Roots Revival",
+    "ہربل ہیئر آئل",
   ],
   openGraph: {
     title: `${brand.name} | Handmade Herbal Hair Oil`,
@@ -30,11 +32,13 @@ export const metadata: Metadata = {
     siteName: brand.name,
     locale: "en_PK",
     type: "website",
+    images: [{ url: "/art/hero.jpg", width: 1600, height: 1066, alt: brand.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${brand.name} | Handmade Herbal Hair Oil`,
     description: brand.shortIntro,
+    images: ["/art/hero.jpg"],
   },
 };
 
@@ -43,6 +47,7 @@ const organisationSchema = {
   "@type": "Organization",
   name: brand.legalName,
   url: brand.site.url,
+  logo: `${brand.site.url}/art/logo.png`,
   email: brand.contact.email,
   slogan: brand.tagline,
   sameAs: [brand.social.instagram],
@@ -61,28 +66,30 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap"
           rel="stylesheet"
         />
+        <meta name="theme-color" content="#123524" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationSchema) }}
         />
       </head>
       <body className="flex min-h-screen flex-col antialiased">
-        <CartProvider>
+        <SiteProvider>
           <TopBar />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
           <WhatsappFab />
-        </CartProvider>
+          <StickyOffer />
+        </SiteProvider>
       </body>
     </html>
   );

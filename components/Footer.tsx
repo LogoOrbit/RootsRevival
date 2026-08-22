@@ -1,43 +1,46 @@
+"use client";
+
 import Link from "next/link";
 import { brand, mailLink, waLink } from "@/lib/brand";
 import { Logo } from "./Logo";
+import { useT } from "./Providers";
 import { InstagramIcon, MailIcon, WhatsappIcon } from "./Icons";
 
-const shopLinks = [
-  { href: "/shop", label: "Shop All Packs" },
-  { href: "/offers", label: "Deals And Offers" },
-  { href: "/product/starter", label: "Single Bottle" },
-  { href: "/product/duo", label: "Duo Pack" },
-  { href: "/product/family", label: "Family Pack" },
-];
-
-const learnLinks = [
-  { href: "/about", label: "Our Story" },
-  { href: "/ingredients", label: "Ingredients" },
-  { href: "/usage", label: "How To Use" },
-  { href: "/reviews", label: "Customer Reviews" },
-  { href: "/faq", label: "FAQ" },
-];
-
-const helpLinks = [
-  { href: "/contact", label: "Contact Us" },
-  { href: "/payment", label: "Payment Methods" },
-  { href: "/policies", label: "Delivery And Returns" },
-  { href: "/privacy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms Of Service" },
-];
-
 export default function Footer() {
+  const t = useT();
+
+  const shopLinks = [
+    { href: "/shop", label: t.footer.shopAll },
+    { href: "/offers", label: t.footer.deals },
+    { href: "/product/starter", label: t.products.starter.name },
+    { href: "/product/duo", label: t.products.duo.name },
+    { href: "/product/family", label: t.products.family.name },
+  ];
+
+  const learnLinks = [
+    { href: "/about", label: t.nav.about },
+    { href: "/ingredients", label: t.nav.ingredients },
+    { href: "/usage", label: t.nav.usage },
+    { href: "/reviews", label: t.footer.customerReviews },
+    { href: "/faq", label: t.nav.faq },
+  ];
+
+  const helpLinks = [
+    { href: "/contact", label: t.footer.contactUs },
+    { href: "/payment", label: t.footer.paymentMethods },
+    { href: "/policies", label: t.footer.deliveryReturns },
+    { href: "/privacy", label: t.footer.privacy },
+    { href: "/terms", label: t.footer.terms },
+  ];
+
   return (
-    <footer className="mt-24 bg-forest text-cream-soft">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
+    <footer className="mt-20 bg-band text-bandtext/85">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <Logo tone="light" size="md" />
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-cream-soft/80">
-              {brand.name} is a handmade herbal hair oil from {brand.contact.country}.
-              Sixteen traditional herbs and nutrient rich oils, slow infused in small
-              batches, bottled fresh for every order.
+            <Logo size="md" />
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-bandtext/75">
+              {t.footer.about}
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a
@@ -45,7 +48,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/25 text-cream transition-colors hover:border-gold hover:text-gold-light"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext transition-colors hover:border-gold hover:text-goldlight"
               >
                 <InstagramIcon />
               </a>
@@ -54,26 +57,26 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/25 text-cream transition-colors hover:border-gold hover:text-gold-light"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext transition-colors hover:border-gold hover:text-goldlight"
               >
                 <WhatsappIcon />
               </a>
               <a
                 href={mailLink}
                 aria-label="Email"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/25 text-cream transition-colors hover:border-gold hover:text-gold-light"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext transition-colors hover:border-gold hover:text-goldlight"
               >
                 <MailIcon />
               </a>
             </div>
           </div>
 
-          <FooterColumn title="Shop" links={shopLinks} />
-          <FooterColumn title="Discover" links={learnLinks} />
+          <FooterColumn title={t.footer.shop} links={shopLinks} />
+          <FooterColumn title={t.footer.discover} links={learnLinks} />
 
           <div>
-            <h3 className="eyebrow text-gold-light">Reach Us</h3>
-            <ul className="mt-5 space-y-3 text-sm text-cream-soft/85">
+            <h3 className="eyebrow text-goldlight">{t.footer.reach}</h3>
+            <ul className="mt-5 space-y-3 text-sm text-bandtext/80">
               <li>
                 <a
                   className="link-underline"
@@ -88,7 +91,7 @@ export default function Footer() {
                 <a className="link-underline break-all" href={mailLink}>
                   {brand.contact.email}
                 </a>
-            </li>
+              </li>
               <li>{brand.contact.hours}</li>
               <li>
                 <a
@@ -101,7 +104,7 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-            <ul className="mt-6 space-y-2 text-sm text-cream-soft/85">
+            <ul className="mt-6 space-y-2 text-sm text-bandtext/80">
               {helpLinks.map((link) => (
                 <li key={link.href}>
                   <Link className="link-underline" href={link.href}>
@@ -113,16 +116,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-cream/15 pt-8 text-xs text-cream-soft/70 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-4 border-t border-bandtext/15 pt-8 text-xs text-bandtext/65 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {brand.legalName}. All rights reserved.
+            © {new Date().getFullYear()} {brand.legalName}. {t.footer.rights}
           </p>
           <p className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span>Cash on delivery</span>
-            <span className="text-gold-light">✦</span>
-            <span>{brand.bank.bankName} transfer</span>
-            <span className="text-gold-light">✦</span>
-            <span>Delivery all over {brand.contact.country}</span>
+            <span>{t.common.cashOnDelivery}</span>
+            <span className="text-goldlight">✦</span>
+            <span>{t.footer.bankTransfer}</span>
+            <span className="text-goldlight">✦</span>
+            <span>{t.footer.deliveryAll}</span>
           </p>
         </div>
       </div>
@@ -139,8 +142,8 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="eyebrow text-gold-light">{title}</h3>
-      <ul className="mt-5 space-y-3 text-sm text-cream-soft/85">
+      <h3 className="eyebrow text-goldlight">{title}</h3>
+      <ul className="mt-5 space-y-3 text-sm text-bandtext/80">
         {links.map((link) => (
           <li key={link.href}>
             <Link className="link-underline" href={link.href}>

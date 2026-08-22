@@ -88,31 +88,41 @@ When a customer presses **Place Order** on `/checkout`:
 
 The contact form on `/contact` works the same way through `/api/contact`.
 
-### Making the order emails arrive
+### Turning on the two automatic alerts
 
-Email works with no setup at all through FormSubmit, and better with a Resend key.
+WhatsApp already works with no setup: the customer presses one green button and the full
+order lands in the shop inbox. The two settings below make the alerts automatic, so an
+order reaches you even if the customer never presses that button. Each one is a single
+value pasted into Vercel, under Settings, then Environment Variables, then Redeploy.
 
-**Option 1, no key needed (FormSubmit).**
-The first order placed after the site goes live triggers one activation email from
-FormSubmit to `rootsrevivalpakistan@gmail.com`. Open it, press the activation link once,
-and every order after that arrives in the inbox automatically.
+**WhatsApp, about one minute, no account needed.**
 
-**Option 2, recommended (Resend).**
-1. Create a free account at resend.com using `rootsrevivalpakistan@gmail.com`.
-2. Copy the API key.
-3. In Vercel, open the project, then Settings, then Environment Variables, and add
-   `RESEND_API_KEY`.
-4. Redeploy. Orders now arrive from `onboarding@resend.dev` with no activation step.
+1. Save `+34 644 51 95 23` in the shop phone as CallMeBot.
+2. Send it this exact message on WhatsApp: `I allow callmebot to send me messages`.
+3. It replies with a personal API key.
+4. Add `CALLMEBOT_APIKEY` in Vercel with that key, then redeploy.
 
-### Optional, push the order to WhatsApp automatically
+Every order is now pushed to `+92 311 3839767` by the website itself.
 
-The customer already sends the order to your WhatsApp with one press. If you also want the
-server itself to message you, add a free CallMeBot key:
+**Email, about three minutes. Pick one of the two.**
 
-1. Save `+34 644 51 95 23` in your phone as CallMeBot and send it
-   `I allow callmebot to send me messages`.
-2. It replies with your personal API key.
-3. Add `CALLMEBOT_APIKEY` in Vercel and redeploy.
+*Resend, the simpler one.* Create a free account at resend.com using
+`rootsrevivalpakistan@gmail.com`, copy the API key, add it in Vercel as `RESEND_API_KEY`,
+then redeploy. Orders arrive from `onboarding@resend.dev`.
+
+*Your own Gmail over SMTP.* In the Google account of `rootsrevivalpakistan@gmail.com`
+turn on two step verification, create an app password, then add in Vercel:
+`SMTP_HOST` as `smtp.gmail.com`, `SMTP_PORT` as `465`, `SMTP_USER` as
+`rootsrevivalpakistan@gmail.com` and `SMTP_PASS` as the app password. Orders then arrive
+from your own address, so replying to one writes straight back to the customer.
+
+Until one of these is added, the website does not pretend the mail went out. The order
+confirmation page asks the customer to press the WhatsApp button instead, and it switches
+to the calmer wording by itself once the alerts are live.
+
+A note on why: relay services that need no key at all, such as FormSubmit, sit behind a
+bot check that rejects requests coming from a server, so they were removed rather than
+left in place looking like they work.
 
 ### Environment variables
 
@@ -120,11 +130,13 @@ All of them are optional. See `.env.example`.
 
 | Variable | Meaning |
 | --- | --- |
-| `RESEND_API_KEY` | Sends order emails through Resend instead of FormSubmit |
-| `ORDER_EMAIL_TO` | Where orders are emailed, defaults to the address in `lib/brand.ts` |
-| `ORDER_EMAIL_FROM` | Sender shown on Resend emails |
-| `CALLMEBOT_APIKEY` | Lets the server push the order to your WhatsApp on its own |
+| `CALLMEBOT_APIKEY` | Pushes every order to the shop WhatsApp automatically |
 | `CALLMEBOT_PHONE` | The number CallMeBot messages, defaults to the shop number |
+| `RESEND_API_KEY` | Sends order emails through Resend |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Sends order emails through any mailbox, a Gmail app password included |
+| `ORDER_EMAIL_TO` | Where orders are emailed, defaults to the address in `lib/brand.ts` |
+| `ORDER_EMAIL_FROM` | Sender shown on the order emails |
+| `ORDER_WEBHOOK_URL` | Posts the order to any webhook, for Zapier, Make, Slack or Discord |
 
 ## Deploying
 

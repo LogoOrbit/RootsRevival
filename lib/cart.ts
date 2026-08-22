@@ -12,7 +12,6 @@ export type CartTotals = {
   compareSubtotal: number;
   bundleSaving: number;
   couponCode: string | null;
-  couponLabel: string | null;
   couponInvalid: boolean;
   discount: number;
   shipping: number;
@@ -71,7 +70,6 @@ export function computeTotals(
     compareSubtotal,
     bundleSaving: Math.max(0, compareSubtotal - subtotal),
     couponCode: couponUsable ? couponUsable.code : null,
-    couponLabel: couponUsable ? couponUsable.label : null,
     couponInvalid: Boolean(typed) && !couponUsable,
     discount,
     shipping,

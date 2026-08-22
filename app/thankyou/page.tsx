@@ -9,16 +9,10 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function ThankYouPage() {
+export default function Page() {
   return (
-    <Section tone="cream">
-      <Suspense
-        fallback={
-          <p className="py-20 text-center text-sm uppercase tracking-[0.2em] text-muted">
-            Loading your order
-          </p>
-        }
-      >
+    <Section tone="bg">
+      <Suspense fallback={<p className="py-20 text-center text-sm uppercase tracking-[0.2em] text-muted">Loading</p>}>
         <ThankYou />
       </Suspense>
     </Section>
