@@ -132,7 +132,7 @@ export type Ingredient = { name: string; note: string };
 export const ingredients: Ingredient[] = [
   { name: "Mustard Oil", note: "A warming base oil that wakes up a tired scalp." },
   { name: "Coconut Oil", note: "Sinks into the hair shaft and guards against protein loss." },
-  { name: "Castor Oil", note: "Thick and rich, loved for fuller looking edges and lashes of length." },
+  { name: "Castor Oil", note: "Thick and rich, a favourite for fuller looking hair and stronger lengths." },
   { name: "Amla", note: "The classic vitamin C berry for strength and natural shine." },
   { name: "Hibiscus", note: "Conditions the strands and keeps the scalp calm." },
   { name: "Kalonji (Black Seed)", note: "Traditionally used to support fresh growth." },

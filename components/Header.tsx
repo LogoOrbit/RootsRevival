@@ -119,7 +119,7 @@ export default function Header() {
       </div>
 
       {open ? (
-        <div className="fixed inset-x-0 top-20 bottom-0 z-40 overflow-y-auto bg-cream px-6 pb-10 pt-4 lg:hidden">
+        <div className="absolute inset-x-0 top-full z-40 max-h-[calc(100vh-6rem)] overflow-y-auto bg-cream px-6 pb-10 pt-4 shadow-[0_20px_40px_rgba(18,53,36,0.14)] lg:hidden">
           <nav className="flex flex-col">
             {[...nav, { href: "/faq", label: "FAQ" }].map((item) => (
               <Link
