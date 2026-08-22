@@ -77,6 +77,4 @@ export const artwork = {
   herbScene: "/art/herbscene.jpg",
   dealsWide: "/art/dealswide.jpg",
   bottleHero: "/art/bottlehero.jpg",
-  bottleRender: "/art/bottle.png",
-  cartonRender: "/art/carton.png",
 };

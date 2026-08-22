@@ -154,6 +154,11 @@ export async function POST(request: Request) {
     total: totals.total,
     payment,
     whatsappUrl: waLink(customerMessage),
+    mailtoUrl: `mailto:${
+      process.env.ORDER_EMAIL_TO || brand.contact.email
+    }?subject=${encodeURIComponent(
+      `Order ${orderId} from ${name}`
+    )}&body=${encodeURIComponent(customerMessage)}`,
     emailDelivered: mail.delivered,
     whatsappPushed,
   });

@@ -79,6 +79,7 @@ export default function CheckoutForm() {
             total: data.total,
             payment: data.payment,
             whatsappUrl: data.whatsappUrl,
+            mailtoUrl: data.mailtoUrl,
             emailDelivered: data.emailDelivered,
             whatsappPushed: data.whatsappPushed,
             name: form.name,

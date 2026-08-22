@@ -656,6 +656,7 @@ export const en = {
       "Your WhatsApp message is ready with all your order details. Press the green button below and send it, that is how your order reaches our team.",
     sendOrder: "Send Order On WhatsApp",
     messageAbout: "Message Us About This Order",
+    orEmail: "Or send the same order to us by email",
     paymentEyebrow: "Payment details",
     paymentTitle: "Transfer the amount and send us the receipt",
     paymentNote:

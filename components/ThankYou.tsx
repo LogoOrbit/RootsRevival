@@ -12,6 +12,7 @@ type LastOrder = {
   total: number;
   payment: string;
   whatsappUrl: string;
+  mailtoUrl?: string;
   emailDelivered?: boolean;
   whatsappPushed?: boolean;
   name: string;
@@ -78,6 +79,17 @@ export default function ThankYou() {
           <WhatsappIcon className="h-5 w-5" />
           {order?.whatsappUrl ? t.thankyouPage.sendOrder : t.thankyouPage.messageAbout}
         </a>
+
+        {order?.mailtoUrl ? (
+          <p className="mt-5">
+            <a
+              href={order.mailtoUrl}
+              className="link-underline text-sm text-muted transition-colors hover:text-gold"
+            >
+              {t.thankyouPage.orEmail}
+            </a>
+          </p>
+        ) : null}
       </div>
 
       {isBank ? (
