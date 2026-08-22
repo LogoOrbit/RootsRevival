@@ -148,10 +148,10 @@ export default function HomePage() {
                   href={`/product/${product.slug}`}
                   className="card group flex h-full flex-col overflow-hidden text-center transition-shadow hover:shadow-[0_20px_50px_rgba(18,53,36,0.16)]"
                 >
-                  <span className="relative block h-44 bg-[#0d1710]">
+                  <span className="relative block h-60 bg-[#0d1710] sm:h-64">
                     <PackShot
                       slug={product.slug}
-                      className="h-44 w-full transition-transform duration-700 group-hover:scale-105"
+                      className="h-full w-full transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 92vw, 380px"
                     />
                     <span className="absolute end-3 top-3 rounded-full bg-hibiscus px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.12em] text-white">

@@ -1,9 +1,22 @@
 import Image from "next/image";
 
-const packShots: Record<string, { src: string; alt: string }> = {
-  starter: { src: "/art/packstarter.jpg", alt: "Roots Revival 250ml bottle with its printed box" },
-  duo: { src: "/art/packduo.jpg", alt: "Two Roots Revival packs, bottle and box" },
-  family: { src: "/art/packfamily.jpg", alt: "Roots Revival family pack, bottle with printed boxes" },
+/** Each render carries its own dark backdrop, sampled here so the tile blends into it. */
+const packShots: Record<string, { src: string; alt: string; bg: string }> = {
+  starter: {
+    src: "/art/packstarter.jpg",
+    alt: "Roots Revival 250ml herbal hair oil bottle",
+    bg: "#0a0a07",
+  },
+  duo: {
+    src: "/art/packduo.jpg",
+    alt: "Roots Revival duo pack, two 250ml bottles",
+    bg: "#0a0a07",
+  },
+  family: {
+    src: "/art/packfamily.jpg",
+    alt: "Roots Revival family pack, three 250ml bottles",
+    bg: "#0a0a07",
+  },
 };
 
 /** The photographed pack shot for a product. */
@@ -12,22 +25,28 @@ export function PackShot({
   className = "",
   priority = false,
   sizes = "(max-width: 768px) 90vw, 420px",
+  fit = "contain",
 }: {
   slug?: string;
   className?: string;
   priority?: boolean;
   sizes?: string;
+  /** The renders are whole product shots, so they are never cropped by default. */
+  fit?: "contain" | "cover";
 }) {
   const shot = packShots[slug] ?? packShots.starter;
   return (
-    <span className={`relative block overflow-hidden ${className}`}>
+    <span
+      className={`relative block overflow-hidden ${className}`}
+      style={{ backgroundColor: shot.bg }}
+    >
       <Image
         src={shot.src}
         alt={shot.alt}
         fill
         sizes={sizes}
         priority={priority}
-        className="object-cover"
+        className={fit === "cover" ? "object-cover" : "object-contain"}
       />
     </span>
   );

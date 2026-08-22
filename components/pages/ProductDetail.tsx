@@ -242,7 +242,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
               >
                 <PackShot
                   slug={other.slug}
-                  className="h-28 w-28 shrink-0 rounded-xl bg-[#0d1710] transition-transform duration-500 group-hover:scale-105"
+                  className="h-32 w-28 shrink-0 rounded-xl bg-[#0d1710] transition-transform duration-500 group-hover:scale-105"
                   sizes="140px"
                 />
                 <span>

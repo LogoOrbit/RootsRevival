@@ -91,7 +91,7 @@ export default function OffersPage() {
             const copy = t.products[product.slug];
             return (
               <div key={product.slug} className="card overflow-hidden">
-                <PackShot slug={product.slug} className="h-40 w-full bg-[#0d1710]" />
+                <PackShot slug={product.slug} className="h-60 w-full bg-[#0d1710]" />
                 <div className="p-5">
                   <h3 className="font-display text-2xl">{copy.name}</h3>
                   <dl className="mt-3 space-y-2 text-sm">

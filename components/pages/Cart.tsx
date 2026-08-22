@@ -65,7 +65,7 @@ function CartView() {
               <Link href={`/product/${line.slug}`} className="shrink-0">
                 <PackShot
                   slug={line.product.slug}
-                  className="h-28 w-full rounded-xl bg-[#0d1710] sm:w-32"
+                  className="h-32 w-full rounded-xl bg-[#0d1710] sm:w-28"
                   sizes="160px"
                 />
               </Link>

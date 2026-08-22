@@ -21,7 +21,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <Link href={`/product/${product.slug}`} className="relative block bg-[#0d1710]">
         <PackShot
           slug={product.slug}
-          className="h-64 w-full transition-transform duration-700 group-hover:scale-[1.04] sm:h-72"
+          className="h-72 w-full transition-transform duration-700 group-hover:scale-[1.03] sm:h-80"
           sizes="(max-width: 768px) 92vw, 380px"
         />
         <span className="absolute start-4 top-4 rounded-full bg-bandtext/90 px-3 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-band">
