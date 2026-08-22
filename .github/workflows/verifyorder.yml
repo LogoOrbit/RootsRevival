@@ -10,23 +10,32 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Check the email relay directly
-        run: |
-          echo "== formsubmit ajax response =="
-          curl -sS -o body.txt -w "status:%{http_code}\n" \
-            -X POST "https://formsubmit.co/ajax/rootsrevivalpakistan@gmail.com" \
-            -H "Content-Type: application/json" \
-            -H "Accept: application/json" \
-            -d '{"_subject":"Roots Revival website setup check","message":"This is an automated setup check from the new website. No action needed apart from confirming the FormSubmit activation email so order emails start arriving."}'
-          cat body.txt
-          echo
+      - name: Install a browser
+        run: npm i -D playwright@1.49.0 && npx playwright install chromium --with-deps
 
-      - name: Place a test order on the live site
+      - name: Submit the form the way a customer browser would
         run: |
-          echo "== live order api response =="
-          curl -sS -o order.txt -w "status:%{http_code}\n" \
-            -X POST "https://rootsrevival-zeta.vercel.app/api/order" \
-            -H "Content-Type: application/json" \
-            -d '{"name":"Website Test Order","phone":"03000000000","email":"","address":"Website test order, please ignore","city":"Karachi","province":"Sindh","notes":"Automated test of the order pipeline","payment":"cod","coupon":"REVIVE10","lines":[{"slug":"starter","qty":1}]}'
-          cat order.txt
-          echo
+          cat > form.html <<'HTML'
+          <form id="f" action="https://formsubmit.co/rootsrevivalpakistan@gmail.com" method="POST">
+            <input name="_subject" value="Roots Revival website setup check">
+            <input name="_captcha" value="false">
+            <input name="_template" value="box">
+            <textarea name="message">Automated setup check from the new Roots Revival website. Please confirm the activation email so order emails start arriving.</textarea>
+          </form>
+          HTML
+          cat > run.js <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch();
+            const p = await b.newPage();
+            await p.goto('file://' + process.cwd() + '/form.html');
+            await p.evaluate(() => document.getElementById('f').submit());
+            await p.waitForTimeout(15000);
+            console.log('FINAL URL:', p.url());
+            console.log('TITLE:', await p.title());
+            const text = (await p.evaluate(() => document.body.innerText)).slice(0, 1200);
+            console.log('BODY:', text);
+            await b.close();
+          })();
+          JS
+          node run.js
