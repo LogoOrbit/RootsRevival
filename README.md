@@ -65,29 +65,26 @@ Everything a shop owner normally edits lives in three files.
 | --- | --- |
 | WhatsApp number, email, Instagram link, bank details, delivery charges | `lib/brand.ts` |
 | Packs, prices, discount codes, ingredients, benefits, usage steps | `lib/products.ts` |
-| Brand story blocks, FAQ, customer reviews, expectations timeline | `lib/content.ts` |
+| Every word on the website, in English and in Urdu | `lib/i18n/en.ts` and `lib/i18n/ur.ts` |
+| Colours for light and dark | `app/globals.css` |
 
-### Adding your real logo image
+### Replacing the artwork
 
-The website draws the emblem in code so it stays sharp at any size.
-To use the original artwork instead, drop the file into `public/brand/logo.png`
-and set this value in `lib/brand.ts`:
-
-```ts
-logoImage: "/brand/logo.png",
-```
+Original files sit in `public/brand`. The versions the website loads sit in `public/art`.
+To swap a picture, drop the new file into `public/art` under the same name, or add a new
+name to the `artwork` list at the bottom of `components/ProductArt.tsx` and use it from a page.
 
 ### Adding customer reviews
 
-Open `lib/content.ts` and add entries to the `reviews` array:
+Open `components/pages/Reviews.tsx` and add entries to the `reviews` array near the top:
 
 ```ts
-export const reviews: Review[] = [
+const reviews = [
   {
     name: "Sana",
     city: "Lahore",
     stars: 5,
-    weeks: "Using for 6 weeks",
+    weeks: "6 weeks",
     words: "My hair fall reduced a lot and my scalp feels much calmer.",
   },
 ];
@@ -103,7 +100,7 @@ When a customer presses **Place Order** on `/checkout`:
 1. The order is posted to `/api/order`, where the totals are recalculated on the server
    so a customer can never change the price from their browser.
 2. An email with the full order (customer, address, items, total, payment method) is sent
-   to `rootsrevivalpakistan@gmail.com`.
+   to `rootsrevivalpakistan@gmail.com`, as soon as one of the mail settings below is added.
 3. A WhatsApp message containing the same details opens in a new tab, addressed to
    `+92 311 3839767`, so the order lands in your WhatsApp inbox as well.
 4. The customer lands on `/thankyou` with their order number, and the Meezan Bank details
