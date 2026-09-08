@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
-import { hasSaving, products, savingOf } from "@/lib/products";
+import { hasSaving, heroProduct, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { artwork, ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import ProductCard from "@/components/ProductCard";
@@ -19,7 +19,6 @@ import {
   WhatsappIcon,
 } from "@/components/Icons";
 
-const hero = products[0];
 
 export default function HomePage() {
   const t = useT();
@@ -51,7 +50,7 @@ export default function HomePage() {
                   </p>
                   <p className="mt-2 text-base leading-relaxed">{t.home.giftBody}</p>
                   <div className="mt-4 flex flex-wrap items-baseline gap-3">
-                    <span className="price price-lg">{formatPrice(hero.price)}</span>
+                    <span className="price price-lg">{formatPrice(heroProduct.price)}</span>
                     <span className="chip chip-gift">{t.common.freeGift}</span>
                   </div>
                 </div>
