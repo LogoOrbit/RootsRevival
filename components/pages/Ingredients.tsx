@@ -65,15 +65,15 @@ export default function IngredientsPage() {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
           <ArtPanel
-            src={artwork.labelBack}
+            src={artwork.boxIngredients}
             alt={t.ingredientsPage.listTitle}
-            className="h-80 w-full rounded-2xl border border-border bg-white"
+            className="h-80 w-full rounded-2xl border border-border"
             sizes="(max-width: 768px) 90vw, 480px"
           />
           <ArtPanel
-            src={artwork.boxIngredients}
-            alt={t.ingredientsPage.listTitle}
-            className="h-80 w-full rounded-2xl border border-border bg-white"
+            src={artwork.boxAbout}
+            alt={t.ingredientsPage.notInsideTitle}
+            className="h-80 w-full rounded-2xl border border-border"
             sizes="(max-width: 768px) 90vw, 480px"
           />
         </div>
@@ -92,9 +92,9 @@ export default function IngredientsPage() {
             </div>
             <div className="mt-8 overflow-hidden rounded-2xl border border-border">
               <ArtPanel
-                src={artwork.badges}
+                src={artwork.banner}
                 alt={t.assurances.join(", ")}
-                className="h-28 w-full bg-white"
+                className="h-28 w-full"
                 sizes="(max-width: 768px) 90vw, 480px"
               />
             </div>

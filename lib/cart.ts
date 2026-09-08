@@ -37,7 +37,7 @@ export function computeTotals(
   const lines = resolveLines(rawLines);
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
   const compareSubtotal = lines.reduce(
-    (sum, l) => sum + l.product.compareAt * l.qty,
+    (sum, l) => sum + (l.product.compareAt ?? l.product.price) * l.qty,
     0
   );
   const itemCount = lines.reduce((sum, l) => sum + l.qty, 0);

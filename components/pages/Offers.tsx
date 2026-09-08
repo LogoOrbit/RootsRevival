@@ -68,7 +68,7 @@ export default function OffersPage() {
           </div>
           <div className="relative h-72 w-full lg:h-full lg:min-h-[30rem]">
             <Image
-              src={artwork.dealsWide}
+              src={artwork.hero}
               alt={t.offers.headlineTitle1}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -91,13 +91,27 @@ export default function OffersPage() {
             const copy = t.products[product.slug];
             return (
               <div key={product.slug} className="card overflow-hidden">
-                <PackShot slug={product.slug} className="h-60 w-full bg-[#0d1710]" />
+                <PackShot slug={product.slug} className="h-60 w-full" />
                 <div className="p-5">
                   <h3 className="font-display text-2xl">{copy.name}</h3>
                   <dl className="mt-3 space-y-2 text-sm">
-                    <Row label={t.offers.tableHeads[2]} value={formatPrice(product.compareAt)} strike />
+                    <Row
+                      label={t.offers.tableHeads[2]}
+                      value={formatPrice(product.compareAt ?? product.price)}
+                      strike={savingOf(product) > 0}
+                    />
                     <Row label={t.offers.tableHeads[3]} value={formatPrice(product.price)} />
-                    <Row label={t.offers.tableHeads[4]} value={formatPrice(savingOf(product))} accent />
+                    <Row
+                      label={t.offers.tableHeads[4]}
+                      value={
+                        product.gift
+                          ? t.common.freeGift
+                          : savingOf(product) > 0
+                            ? formatPrice(savingOf(product))
+                            : "—"
+                      }
+                      accent
+                    />
                     <Row
                       label={t.offers.tableHeads[5]}
                       value={formatPrice(Math.round(product.price / product.bottles))}
@@ -140,14 +154,22 @@ export default function OffersPage() {
                       </Link>
                     </td>
                     <td className="px-5 py-4 text-sm text-muted">{product.bottles}</td>
-                    <td className="px-5 py-4 text-sm text-muted line-through">
-                      {formatPrice(product.compareAt)}
+                    <td
+                      className={`px-5 py-4 text-sm text-muted ${
+                        savingOf(product) > 0 ? "line-through" : ""
+                      }`}
+                    >
+                      {formatPrice(product.compareAt ?? product.price)}
                     </td>
                     <td className="px-5 py-4 font-display text-xl text-heading">
                       {formatPrice(product.price)}
                     </td>
                     <td className="px-5 py-4 text-sm text-hibiscus">
-                      {formatPrice(savingOf(product))}
+                      {product.gift
+                        ? t.common.freeGift
+                        : savingOf(product) > 0
+                          ? formatPrice(savingOf(product))
+                          : "—"}
                     </td>
                     <td className="px-5 py-4 text-sm text-muted">
                       {formatPrice(Math.round(product.price / product.bottles))}

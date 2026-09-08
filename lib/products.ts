@@ -9,15 +9,31 @@ export type Product = {
   slug: ProductSlug;
   bottles: number;
   price: number;
-  compareAt: number;
+  /**
+   * What the same number of bottles costs one at a time. Left out when the pack
+   * is priced at the single bottle rate and the value sits in the free gift.
+   */
+  compareAt?: number;
   freeDelivery: boolean;
+  /** A gift that ships with the pack. The wording lives in lib/i18n. */
+  gift?: boolean;
   bestValue?: boolean;
 };
 
+/** The single bottle price every pack is measured against. */
+export const bottlePrice = 1400;
+
 export const products: Product[] = [
-  { slug: "starter", bottles: 1, price: 1850, compareAt: 2400, freeDelivery: false },
-  { slug: "duo", bottles: 2, price: 3400, compareAt: 4800, freeDelivery: true },
-  { slug: "family", bottles: 3, price: 4700, compareAt: 7200, freeDelivery: true, bestValue: true },
+  { slug: "starter", bottles: 1, price: bottlePrice, freeDelivery: false },
+  { slug: "duo", bottles: 2, price: 2 * bottlePrice, freeDelivery: true, gift: true },
+  {
+    slug: "family",
+    bottles: 3,
+    price: 4000,
+    compareAt: 3 * bottlePrice,
+    freeDelivery: true,
+    bestValue: true,
+  },
 ];
 
 export function getProduct(slug: string): Product | undefined {
@@ -47,9 +63,14 @@ export function findCoupon(code: string): Coupon | undefined {
 }
 
 export function savingOf(product: Product): number {
-  return product.compareAt - product.price;
+  return product.compareAt ? product.compareAt - product.price : 0;
 }
 
 export function percentOff(product: Product): number {
-  return Math.round((savingOf(product) / product.compareAt) * 100);
+  return product.compareAt ? Math.round((savingOf(product) / product.compareAt) * 100) : 0;
+}
+
+/** True when the pack costs less than the same bottles bought one at a time. */
+export function hasSaving(product: Product): boolean {
+  return savingOf(product) > 0;
 }

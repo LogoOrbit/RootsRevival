@@ -20,11 +20,18 @@ export async function generateMetadata({
   const copy = en.products[product.slug];
   return {
     title: copy.name,
-    description: `${copy.summary} ${formatPrice(product.price)} instead of ${formatPrice(
-      product.compareAt
+    description: `${copy.summary} ${formatPrice(
+      product.price
     )}. Cash on delivery all over Pakistan.`,
   };
 }
+
+/** The photograph search engines show for each pack. */
+const packImage: Record<string, string> = {
+  starter: "/art/pack-single.jpg",
+  duo: "/art/pack-duo.jpg",
+  family: "/art/pack-family.jpg",
+};
 
 export default async function Page({
   params,
@@ -42,7 +49,7 @@ export default async function Page({
     name: `${brand.name} ${en.common.category}, ${copy.name}`,
     description: copy.summary,
     brand: { "@type": "Brand", name: brand.name },
-    image: `${brand.site.url}/art/pack${product.slug}.jpg`,
+    image: `${brand.site.url}${packImage[product.slug]}`,
     offers: {
       "@type": "Offer",
       price: product.price,

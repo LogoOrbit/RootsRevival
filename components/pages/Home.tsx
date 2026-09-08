@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
-import { percentOff, products } from "@/lib/products";
+import { hasSaving, percentOff, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
-import { artwork, ArtPanel, PackShot } from "@/components/ProductArt";
+import { artwork, ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import ProductCard from "@/components/ProductCard";
 import Countdown from "@/components/Countdown";
 import { HerbIcon, BenefitIcon } from "@/components/HerbIcons";
@@ -45,12 +45,10 @@ export default function HomePage() {
                 <span className="font-display text-4xl text-heading">
                   {formatPrice(hero.price)}
                 </span>
-                <span className="text-sm text-muted line-through">
-                  {formatPrice(hero.compareAt)}
-                </span>
+                <span className="text-sm text-muted">{t.common.perBottle}</span>
               </div>
               <span className="pulse-ring rounded-full bg-hibiscus px-3 py-1 text-[0.7rem] uppercase tracking-[0.12em] text-white">
-                {t.home.launchOffer} {percentOff(hero)} {t.common.percentOff}
+                {t.home.launchOffer} {t.common.freeGift}
               </span>
             </div>
 
@@ -154,9 +152,13 @@ export default function HomePage() {
                       className="h-full w-full transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 92vw, 380px"
                     />
-                    <span className="absolute end-3 top-3 rounded-full bg-hibiscus px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.12em] text-white">
-                      {percentOff(product)} {t.common.percentOff}
-                    </span>
+                    {(product.gift || hasSaving(product)) && (
+                      <span className="absolute end-3 top-3 rounded-full bg-hibiscus px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.12em] text-white">
+                        {product.gift
+                          ? t.common.freeGift
+                          : `${percentOff(product)} ${t.common.percentOff}`}
+                      </span>
+                    )}
                   </span>
                   <span className="flex flex-1 flex-col p-6">
                     <span className="eyebrow text-gold">{copy.badge}</span>
@@ -169,11 +171,16 @@ export default function HomePage() {
                     <span className="mt-4 font-display text-3xl text-heading">
                       {formatPrice(product.price)}
                     </span>
-                    <span className="mt-1 text-sm text-muted line-through">
-                      {formatPrice(product.compareAt)}
+                    <span className="mt-1 text-sm text-muted">
+                      {formatPrice(Math.round(product.price / product.bottles))}{" "}
+                      {t.common.perBottle}
                     </span>
                     <span className="mt-3 text-xs uppercase tracking-[0.12em] text-hibiscus">
-                      {t.common.save} {formatPrice(product.compareAt - product.price)}
+                      {product.gift
+                        ? t.common.freeGift
+                        : hasSaving(product)
+                          ? `${t.common.save} ${formatPrice(savingOf(product))}`
+                          : t.common.cashOnDelivery}
                     </span>
                     <span className="btn btn-outline mt-5 w-full">
                       {t.common.viewPack}
@@ -255,10 +262,10 @@ export default function HomePage() {
           <Reveal delay={120}>
             <div className="overflow-hidden rounded-[2rem] border border-bandtext/15">
               <Image
-                src={artwork.scene}
-                alt="Roots Revival packaging with herbs"
-                width={1400}
-                height={981}
+                src={artwork.boxAbout}
+                alt="The about panel on the Roots Revival box"
+                width={1600}
+                height={1067}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -310,13 +317,13 @@ export default function HomePage() {
           intro={t.home.packagingIntro}
         />
         <div className="mt-10 grid gap-6 sm:grid-cols-3">
-          {[artwork.labelFront, artwork.labelBack, artwork.boxFront].map((src, index) => (
+          {boxSides.map((src, index) => (
             <Reveal key={src} delay={index * 90}>
               <div className="card h-full overflow-hidden p-4">
                 <ArtPanel
                   src={src}
                   alt={t.home.packaging[index].title}
-                  className="h-72 w-full rounded-xl bg-white"
+                  className="h-72 w-full rounded-xl"
                   sizes="(max-width: 768px) 90vw, 320px"
                 />
                 <h3 className="mt-4 text-center font-display text-xl">
@@ -355,10 +362,10 @@ export default function HomePage() {
         </ol>
         <div className="mt-8 overflow-hidden rounded-2xl border border-border">
           <Image
-            src={artwork.usageStrip}
+            src={artwork.banner}
             alt={t.home.usageTitle}
-            width={1200}
-            height={160}
+            width={2000}
+            height={640}
             className="w-full object-cover"
           />
         </div>
@@ -430,7 +437,7 @@ export default function HomePage() {
             </a>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {[artwork.bottle, artwork.box, artwork.herbScene, artwork.badges].map(
+            {[artwork.hero, artwork.boxFront, artwork.boxIngredients, artwork.boxAbout].map(
               (src, index) => (
                 <ArtPanel
                   key={src}

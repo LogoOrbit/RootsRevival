@@ -1,21 +1,21 @@
 import Image from "next/image";
 
-/** Each render carries its own dark backdrop, sampled here so the tile blends into it. */
+/** The photographs are square, so the tiles fill rather than letterbox. */
 const packShots: Record<string, { src: string; alt: string; bg: string }> = {
   starter: {
-    src: "/art/packstarter.jpg",
-    alt: "Roots Revival 250ml herbal hair oil bottle",
-    bg: "#0a0a07",
+    src: "/art/pack-single.jpg",
+    alt: "Roots Revival single 250ml herbal hair oil bottle with its printed box",
+    bg: "#e7e2d6",
   },
   duo: {
-    src: "/art/packduo.jpg",
-    alt: "Roots Revival duo pack, two 250ml bottles",
-    bg: "#0a0a07",
+    src: "/art/pack-duo.jpg",
+    alt: "Roots Revival duo pack, two 250ml bottles with the free 60ml bottle",
+    bg: "#e7e2d6",
   },
   family: {
-    src: "/art/packfamily.jpg",
+    src: "/art/pack-family.jpg",
     alt: "Roots Revival family pack, three 250ml bottles",
-    bg: "#0a0a07",
+    bg: "#e7e2d6",
   },
 };
 
@@ -25,13 +25,13 @@ export function PackShot({
   className = "",
   priority = false,
   sizes = "(max-width: 768px) 90vw, 420px",
-  fit = "contain",
+  fit = "cover",
 }: {
   slug?: string;
   className?: string;
   priority?: boolean;
   sizes?: string;
-  /** The renders are whole product shots, so they are never cropped by default. */
+  /** Square photographs fill their tile by default; contain keeps the whole frame. */
   fit?: "contain" | "cover";
 }) {
   const shot = packShots[slug] ?? packShots.starter;
@@ -52,12 +52,12 @@ export function PackShot({
   );
 }
 
-/** A single artwork panel, used for the label and box gallery. */
+/** A single photograph panel, used for the box gallery and the wide banners. */
 export function ArtPanel({
   src,
   alt,
   className = "",
-  fit = "contain",
+  fit = "cover",
   sizes = "(max-width: 768px) 45vw, 300px",
 }: {
   src: string;
@@ -81,19 +81,19 @@ export function ArtPanel({
 
 export const artwork = {
   hero: "/art/hero.jpg",
-  scene: "/art/scene.jpg",
-  bottle: "/art/bottleclose.jpg",
-  box: "/art/boxclose.jpg",
-  labelFront: "/art/labelfront.jpg",
-  labelBack: "/art/labelback.jpg",
-  boxFront: "/art/boxfront.jpg",
-  boxIngredients: "/art/boxingredients.jpg",
-  boxBenefits: "/art/boxbenefits.jpg",
-  boxAbout: "/art/boxabout.jpg",
-  usageStrip: "/art/usagestrip.jpg",
-  badges: "/art/badges.jpg",
-  herbs: "/art/herbs.png",
-  herbScene: "/art/herbscene.jpg",
-  dealsWide: "/art/dealswide.jpg",
-  bottleHero: "/art/bottlehero.jpg",
+  /** The same shot cropped to a wide strip, for banners between sections. */
+  banner: "/art/banner.jpg",
+  boxFront: "/art/box-front.jpg",
+  boxIngredients: "/art/box-ingredients.jpg",
+  boxAbout: "/art/box-about.jpg",
 };
+
+/**
+ * The three sides of the box, shown on every product page so a shopper can read
+ * the label whichever pack they opened.
+ */
+export const boxSides = [
+  artwork.boxFront,
+  artwork.boxIngredients,
+  artwork.boxAbout,
+] as const;

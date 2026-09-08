@@ -44,7 +44,7 @@ export const brand = {
 
   shipping: {
     flatRate: 200,
-    freeAbove: 3000,
+    freeAbove: 2800,
     deliveryDays: "2 to 4 working days",
   },
 

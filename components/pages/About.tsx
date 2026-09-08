@@ -33,10 +33,10 @@ export default function AboutPage() {
           <Reveal delay={120}>
             <div className="overflow-hidden rounded-[2rem] border border-border shadow-[0_24px_60px_rgba(18,53,36,0.18)]">
               <Image
-                src={artwork.bottleHero}
+                src={artwork.hero}
                 alt={brand.name}
-                width={1100}
-                height={1650}
+                width={2000}
+                height={1333}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -61,7 +61,7 @@ export default function AboutPage() {
               <ArtPanel
                 src={artwork.boxAbout}
                 alt={t.about.carriesTitle}
-                className="h-64 w-full bg-white"
+                className="h-64 w-full"
                 sizes="(max-width: 1024px) 90vw, 420px"
               />
             </div>

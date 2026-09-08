@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { formatPrice } from "@/lib/brand";
-import { percentOff, savingOf, type Product } from "@/lib/products";
+import { hasSaving, percentOff, savingOf, type Product } from "@/lib/products";
 import { PackShot } from "./ProductArt";
 import { QuickAdd } from "./AddToCart";
 import { useT } from "./Providers";
@@ -27,9 +27,13 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="absolute start-4 top-4 rounded-full bg-bandtext/90 px-3 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-band">
           {copy.badge}
         </span>
-        <span className="absolute end-4 top-4 rounded-full bg-hibiscus px-3 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-white">
-          {percentOff(product)} {t.common.percentOff}
-        </span>
+        {(product.gift || hasSaving(product)) && (
+          <span className="absolute end-4 top-4 rounded-full bg-hibiscus px-3 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-white">
+            {product.gift
+              ? t.common.freeGift
+              : `${percentOff(product)} ${t.common.percentOff}`}
+          </span>
+        )}
       </Link>
 
       <div className="flex flex-1 flex-col p-6">
@@ -45,12 +49,22 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="font-display text-3xl text-heading">
             {formatPrice(product.price)}
           </span>
-          <span className="text-sm text-muted line-through">
-            {formatPrice(product.compareAt)}
+          {hasSaving(product) && (
+            <span className="text-sm text-muted line-through">
+              {formatPrice(product.compareAt!)}
+            </span>
+          )}
+          <span className="text-sm text-muted">
+            {formatPrice(Math.round(product.price / product.bottles))}{" "}
+            {t.common.perBottle}
           </span>
         </div>
         <p className="mt-1 text-xs uppercase tracking-[0.12em] text-gold">
-          {t.common.youSave} {formatPrice(saving)}
+          {product.gift
+            ? t.common.freeGift
+            : saving > 0
+              ? `${t.common.youSave} ${formatPrice(saving)}`
+              : t.common.cashOnDelivery}
           {product.freeDelivery ? ` ${t.common.plusFreeDelivery}` : ""}
         </p>
 

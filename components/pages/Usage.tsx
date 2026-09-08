@@ -21,10 +21,10 @@ export default function UsagePage() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
           <div className="overflow-hidden rounded-[2rem] border border-border">
             <Image
-              src={artwork.bottleHero}
+              src={artwork.hero}
               alt={t.usagePage.title}
-              width={1100}
-              height={1650}
+              width={2000}
+              height={1333}
               className="h-full w-full object-cover"
             />
           </div>
@@ -53,10 +53,10 @@ export default function UsagePage() {
 
         <div className="mt-10 overflow-hidden rounded-2xl border border-border">
           <Image
-            src={artwork.usageStrip}
+            src={artwork.banner}
             alt={t.usagePage.stepsTitle}
-            width={1200}
-            height={160}
+            width={2000}
+            height={640}
             className="w-full object-cover"
           />
         </div>

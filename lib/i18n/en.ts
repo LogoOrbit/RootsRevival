@@ -19,6 +19,8 @@ export const en = {
     save: "Save",
     youSave: "You save",
     percentOff: "percent off",
+    perBottle: "per bottle",
+    freeGift: "Free 60ml bottle",
     freeDelivery: "Free delivery",
     plusFreeDelivery: "plus free delivery",
     cashOnDelivery: "Cash on delivery",
@@ -78,8 +80,8 @@ export const en = {
   },
 
   announce: [
-    "Launch offer: save up to Rs 2,500 on bundle packs",
-    "Free delivery on every order above Rs 3,000",
+    "Launch offer: a free 60ml bottle with every duo pack",
+    "Free delivery on every order above Rs 2,800",
     "Cash on delivery available all over Pakistan",
     "Use code REVIVE10 for 10 percent off your first order",
     "Handmade in small batches with 16 natural herbs and oils",
@@ -100,14 +102,14 @@ export const en = {
     },
     duo: {
       name: "Duo Pack",
-      volume: "2 x 250ml",
+      volume: "2 x 250ml, plus a free 60ml bottle",
       badge: "Best Seller",
       summary:
-        "Two bottles for a complete treatment course, or one for you and one to gift.",
+        "Two bottles for a complete treatment course, and a free 60ml bottle to keep in your bag or to pass on.",
       highlights: [
         "Two full size 250ml bottles",
+        "A free 60ml bottle with every duo pack",
         "Free delivery all over Pakistan",
-        "The course length our customers see the best results with",
       ],
     },
     family: {
@@ -119,7 +121,7 @@ export const en = {
       highlights: [
         "Three full size 250ml bottles",
         "Free delivery all over Pakistan",
-        "Lowest price per bottle we offer",
+        "Rs 1,333 a bottle, the lowest price we offer",
       ],
     },
   },
@@ -209,7 +211,7 @@ export const en = {
       "A carefully crafted blend of traditional herbs and nutrient rich oils, slow infused at home by hand. Sixteen ingredients, zero chemicals, made to strengthen your hair from the roots.",
     launchOffer: "Launch offer",
     trust: [
-      "Free delivery above Rs 3,000",
+      "Free delivery above Rs 2,800",
       "Cash on delivery",
       "Made fresh by hand",
     ],
@@ -300,11 +302,9 @@ export const en = {
     fullListEyebrow: "Full ingredient list",
     fullListTitle: "Everything inside the bottle",
     fullListIntro: "Straight from the label, in the same order it is printed.",
-    galleryLabel: "Front label",
-    galleryBack: "Back label",
-    galleryBox: "Printed box",
+    gallerySides: ["Box front", "Ingredients and how to use", "About the oil"],
     deliveryFreeOnPack: "Delivery is free on this pack.",
-    deliveryFlat: "Delivery Rs 200, free above Rs 3,000.",
+    deliveryFlat: "Delivery Rs 200, free above Rs 2,800.",
   },
 
   offers: {
@@ -315,10 +315,10 @@ export const en = {
     shopDeals: "Shop The Deals",
     askOffers: "Ask On WhatsApp",
     headlineBadge: "Launch offer",
-    headlineTitle1: "Up to 35 percent off",
-    headlineTitle2: "the full course",
+    headlineTitle1: "A free bottle",
+    headlineTitle2: "with the duo pack",
     headlineBody:
-      "Hair repairs itself slowly, so we price the bigger packs the way a course should be priced. Take three bottles and the saving reaches Rs 2,500 against buying them one at a time.",
+      "Hair repairs itself slowly, so we price the bigger packs the way a course should be priced. Take two bottles and a 60ml bottle comes free. Take three and the price per bottle drops to Rs 1,333.",
     grabFamily: "Grab The Family Pack",
     comparePacks: "Compare All Packs",
     whileStock: "Offer runs while this batch lasts",
@@ -334,7 +334,7 @@ export const en = {
     standingEyebrow: "Always on",
     standingTitle: "Standing offers for every order",
     standing: [
-      { title: "Free delivery", line: "On every order above Rs 3,000", note: "The duo pack and the family pack already qualify, so delivery is on us." },
+      { title: "Free delivery", line: "On every order above Rs 2,800", note: "The duo pack and the family pack already qualify, so delivery is on us." },
       { title: "Cash on delivery", line: "Pay when the parcel reaches your door", note: "Available in every city of Pakistan, with no advance payment needed." },
       { title: "Wholesale rates", line: "For 6 bottles and above", note: "Salons, resellers and gift orders get a separate price. Message us on WhatsApp." },
     ],
@@ -706,7 +706,7 @@ export const en = {
     intro:
       "Clear, simple rules with no fine print games. If anything goes wrong with your parcel, one message is all it takes.",
     cards: [
-      { title: "Delivery charges", note: "A flat Rs 200 anywhere in Pakistan. Delivery is free on every order above Rs 3,000, which includes the duo pack and the family pack." },
+      { title: "Delivery charges", note: "A flat Rs 200 anywhere in Pakistan. Delivery is free on every order above Rs 2,800, which includes the duo pack and the family pack." },
       { title: "Delivery time", note: "Orders are dispatched within one working day of confirmation and usually reach you in 2 to 4 working days. Remote areas can take a little longer." },
       { title: "Tracking", note: "As soon as the courier collects your parcel we send the tracking number to your WhatsApp, so you always know where it is." },
     ],
@@ -757,7 +757,7 @@ export const en = {
     sections: [
       { title: "Who we are", body: "Roots Revival Herbal Hair Oil is a home run herbal hair oil brand based in Pakistan. Orders placed on this website are handled directly by our own family, and every message you send reaches us and nobody else." },
       { title: "Placing an order", body: "An order placed on this website is a request to buy. It becomes final once we confirm it with you on WhatsApp. If a pack is out of stock or an address is outside our courier network, we will tell you honestly and cancel the order without any charge." },
-      { title: "Prices and payment", body: "All prices are shown in Pakistani Rupees and include taxes. Delivery is Rs 200 and becomes free above Rs 3,000. Payment is either cash to the courier on delivery, or an online transfer to the Meezan Bank account named on our payment page. We never ask for a payment to any other account." },
+      { title: "Prices and payment", body: "All prices are shown in Pakistani Rupees and include taxes. Delivery is Rs 200 and becomes free above Rs 2,800. Payment is either cash to the courier on delivery, or an online transfer to the Meezan Bank account named on our payment page. We never ask for a payment to any other account." },
       { title: "Discount codes", body: "One discount code applies per order. Codes may carry a minimum order value, they cannot be exchanged for cash, and we may end an offer at any time. An order already confirmed keeps the price it was confirmed at." },
       { title: "Product use", body: "Roots Revival herbal hair oil is for external use only. Please do a patch test before your first use, keep the bottle away from children and stop using it if any irritation appears. If you are pregnant, nursing or under treatment for a scalp condition, speak to your doctor first." },
       { title: "Honest results", body: "Our oil is a natural care product, not a medicine, and it does not claim to cure any medical condition. Results depend on your hair, your health and how regularly you use it. We describe what our customers usually experience and we will never promise more than that." },

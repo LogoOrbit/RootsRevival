@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { brand, formatPrice } from "@/lib/brand";
-import { getProduct, percentOff, products, savingOf } from "@/lib/products";
+import { getProduct, hasSaving, percentOff, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { AddToCart } from "@/components/AddToCart";
-import { artwork, ArtPanel, PackShot } from "@/components/ProductArt";
+import { ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import Countdown from "@/components/Countdown";
 import { HerbIcon } from "@/components/HerbIcons";
 import { Breadcrumb, Pill, Section, SectionHeading, TickList, Reveal } from "@/components/ui";
@@ -21,11 +21,14 @@ export default function ProductDetail({ slug }: { slug: string }) {
   const copy = t.products[product.slug];
   const others = products.filter((p) => p.slug !== product.slug);
 
+  /* The pack itself, then the three sides of the box, the same on every pack. */
   const gallery = [
     { kind: "pack" as const, src: "", label: copy.name },
-    { kind: "art" as const, src: artwork.labelFront, label: t.product.galleryLabel },
-    { kind: "art" as const, src: artwork.labelBack, label: t.product.galleryBack },
-    { kind: "art" as const, src: artwork.boxFront, label: t.product.galleryBox },
+    ...boxSides.map((src, index) => ({
+      kind: "art" as const,
+      src,
+      label: t.product.gallerySides[index],
+    })),
   ];
 
   return (
@@ -53,7 +56,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                 <ArtPanel
                   src={gallery[shot].src}
                   alt={gallery[shot].label}
-                  className="h-[22rem] w-full bg-white sm:h-[30rem]"
+                  className="h-[22rem] w-full sm:h-[30rem]"
                   sizes="(max-width: 1024px) 92vw, 560px"
                 />
               )}
@@ -75,7 +78,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                     <ArtPanel
                       src={item.src}
                       alt={item.label}
-                      className="h-full w-full bg-white"
+                      className="h-full w-full"
                       sizes="120px"
                     />
                   )}
@@ -87,9 +90,12 @@ export default function ProductDetail({ slug }: { slug: string }) {
           <div>
             <div className="flex flex-wrap gap-2">
               <Pill tone="gold">{copy.badge}</Pill>
-              <Pill tone="hibiscus">
-                {t.common.save} {formatPrice(savingOf(product))}
-              </Pill>
+              {product.gift && <Pill tone="hibiscus">{t.common.freeGift}</Pill>}
+              {hasSaving(product) && (
+                <Pill tone="hibiscus">
+                  {t.common.save} {formatPrice(savingOf(product))}
+                </Pill>
+              )}
             </div>
 
             <h1 className="mt-5 text-3xl leading-tight sm:text-5xl">{copy.name}</h1>
@@ -105,11 +111,19 @@ export default function ProductDetail({ slug }: { slug: string }) {
               <span className="font-display text-4xl text-heading sm:text-5xl">
                 {formatPrice(product.price)}
               </span>
-              <span className="pb-2 text-base text-muted line-through">
-                {formatPrice(product.compareAt)}
-              </span>
-              <span className="mb-2 rounded-full bg-hibiscus px-3 py-1 text-[0.66rem] uppercase tracking-[0.12em] text-white">
-                {percentOff(product)} {t.common.percentOff}
+              {hasSaving(product) && (
+                <>
+                  <span className="pb-2 text-base text-muted line-through">
+                    {formatPrice(product.compareAt!)}
+                  </span>
+                  <span className="mb-2 rounded-full bg-hibiscus px-3 py-1 text-[0.66rem] uppercase tracking-[0.12em] text-white">
+                    {percentOff(product)} {t.common.percentOff}
+                  </span>
+                </>
+              )}
+              <span className="pb-2 text-base text-muted">
+                {formatPrice(Math.round(product.price / product.bottles))}{" "}
+                {t.common.perBottle}
               </span>
             </div>
             <p className="mt-2 text-xs uppercase tracking-[0.12em] text-muted">
@@ -252,8 +266,9 @@ export default function ProductDetail({ slug }: { slug: string }) {
                   <span className="mt-1 block text-sm text-muted">{otherCopy.volume}</span>
                   <span className="mt-2 block font-display text-2xl text-heading">
                     {formatPrice(other.price)}{" "}
-                    <span className="text-sm text-muted line-through">
-                      {formatPrice(other.compareAt)}
+                    <span className="text-sm text-muted">
+                      {formatPrice(Math.round(other.price / other.bottles))}{" "}
+                      {t.common.perBottle}
                     </span>
                   </span>
                   <span className="mt-3 inline-block text-[0.7rem] uppercase tracking-[0.14em] text-gold">
