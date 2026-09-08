@@ -51,25 +51,59 @@ export async function sendMail(
   const resendKey = process.env.RESEND_API_KEY;
 
   if (resendKey) {
-    try {
-      const response = await fetch("https://api.resend.com/emails", {
+    const from =
+      process.env.ORDER_EMAIL_FROM || "Roots Revival <onboarding@resend.dev>";
+
+    const postTo = async (recipients: string[]) =>
+      fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${resendKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from:
-            process.env.ORDER_EMAIL_FROM ||
-            "Roots Revival <onboarding@resend.dev>",
-          to,
+          from,
+          to: recipients,
           subject,
           text,
           ...(html ? { html } : {}),
           ...(replyTo ? { reply_to: replyTo } : {}),
         }),
       });
+
+    try {
+      const response = await postTo(to);
       if (response.ok) return { delivered: true, provider: "resend" };
+
+      /*
+       * On the shared onboarding@resend.dev sender, Resend only delivers to the
+       * address the account was opened with and rejects the whole send if any
+       * other address is listed. Rather than lose the mail entirely, try each
+       * address on its own so the one that is allowed still gets the order.
+       */
+      if (to.length > 1) {
+        const results = await Promise.all(
+          to.map(async (address) => {
+            try {
+              return (await postTo([address])).ok;
+            } catch {
+              return false;
+            }
+          })
+        );
+        const reached = to.filter((_, index) => results[index]);
+        if (reached.length > 0) {
+          return {
+            delivered: true,
+            provider: "resend",
+            error:
+              reached.length < to.length
+                ? `only reached ${reached.join(", ")}; verify a domain in Resend to reach the rest`
+                : undefined,
+          };
+        }
+      }
+
       return {
         delivered: false,
         provider: "resend",

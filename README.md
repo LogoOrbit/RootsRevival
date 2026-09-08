@@ -169,8 +169,13 @@ reach `ainaabidi25@gmail.com`. To send to both, verify a domain in Resend (Domai
 Add Domain, then paste the DNS records at your registrar) and set `ORDER_EMAIL_FROM` to
 something on that domain, for example `Roots Revival <orders@rootsrevival.pk>`.
 
-If you do not have a domain yet, use the Gmail option below instead. It sends to both
-addresses today with no domain and no waiting.
+If you do not have a domain yet you can still use Resend: open the account with
+`rootsrevivalpakistan@gmail.com` and add only `RESEND_API_KEY`. Orders then reach that inbox
+straight away. The site tries both addresses together first, and if Resend refuses the pair it
+retries them one at a time, so the allowed inbox still gets the order instead of the mail being
+lost. `ainaabidi25@gmail.com` starts receiving once a domain is verified.
+
+The Gmail option below reaches both addresses today with no domain and no waiting.
 
 *Your own Gmail over SMTP.* In the Google account of `rootsrevivalpakistan@gmail.com`
 turn on two step verification, create an app password, then add in Vercel:
