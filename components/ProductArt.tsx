@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-/** The photographs are square, so the tiles fill rather than letterbox. */
+/** Square photographs on a cream ground sampled from the shot itself. */
 const packShots: Record<string, { src: string; alt: string; bg: string }> = {
   starter: {
     src: "/art/pack-single.jpg",
@@ -25,13 +25,13 @@ export function PackShot({
   className = "",
   priority = false,
   sizes = "(max-width: 768px) 90vw, 420px",
-  fit = "cover",
+  fit = "contain",
 }: {
   slug?: string;
   className?: string;
   priority?: boolean;
   sizes?: string;
-  /** Square photographs fill their tile by default; contain keeps the whole frame. */
+  /** The whole pack is always shown; pass cover only for a decorative crop. */
   fit?: "contain" | "cover";
 }) {
   const shot = packShots[slug] ?? packShots.starter;

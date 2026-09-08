@@ -4,12 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useT } from "./Providers";
-import Countdown from "./Countdown";
-import { TagIcon } from "./Icons";
+import { GiftIcon } from "./Icons";
 
 const HIDDEN_ON = ["/checkout", "/thankyou", "/cart"];
 
-/** A slim offer bar that slides up once the visitor starts reading. */
+/** A slim bar that keeps the free 60ml bottle in view once the visitor reads on. */
 export default function StickyOffer() {
   const t = useT();
   const pathname = usePathname();
@@ -32,23 +31,23 @@ export default function StickyOffer() {
       }`}
     >
       <div className="mx-auto max-w-5xl px-3 pb-3 sm:pb-4">
-        <div className="flex items-center gap-3 rounded-2xl bg-band px-4 py-3 text-bandtext shadow-[0_18px_40px_rgba(0,0,0,0.28)] sm:px-6">
-          <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-goldlight text-band sm:flex">
-            <TagIcon className="h-5 w-5" />
+        <div className="gift-shine flex items-center gap-3 rounded-2xl bg-band px-4 py-3 text-bandtext shadow-[0_18px_40px_rgba(0,0,0,0.28)] sm:px-6">
+          <span className="gift-pop hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-goldlight text-band sm:flex">
+            <GiftIcon className="h-6 w-6" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="hidden text-[0.7rem] uppercase tracking-[0.12em] text-goldlight sm:block">
-              {t.common.endsIn}
+            <p className="text-[0.95rem] font-semibold leading-snug text-goldlight sm:text-base">
+              {t.common.giftBanner}
             </p>
-            <div className="sm:mt-1">
-              <Countdown tone="light" compact />
-            </div>
+            <p className="hidden text-sm text-bandtext/80 sm:block">
+              {t.common.giftBannerNote}
+            </p>
           </div>
           <Link
-            href="/offers"
-            className="btn btn-gold shrink-0 px-3 py-2 text-[0.6rem] sm:px-4 sm:py-2.5 sm:text-[0.68rem]"
+            href="/product/duo"
+            className="btn btn-gold shrink-0 px-4 py-2.5 text-[0.72rem] sm:px-5 sm:text-[0.8rem]"
           >
-            {t.common.seeAllOffers}
+            {t.common.grabIt}
           </Link>
           <button
             type="button"

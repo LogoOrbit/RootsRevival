@@ -8,7 +8,7 @@
   --color-border: #e7dabe;
   --color-text: #17241d;
   --color-heading: #123524;
-  --color-muted: #5f6f65;
+  --color-muted: #4a5b51;
   --color-band: #123524;
   --color-bandsoft: #1a4630;
   --color-bandtext: #faf4e6;
@@ -31,7 +31,7 @@
   --color-border: #1f4130;
   --color-text: #e9f1e9;
   --color-heading: #f3f8f1;
-  --color-muted: #a4bbab;
+  --color-muted: #b3c8ba;
   --color-band: #061410;
   --color-bandsoft: #12301f;
   --color-bandtext: #f0f6ee;
@@ -54,8 +54,11 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-weight: 300;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 1.6;
+  font-size: 1rem;
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -90,9 +93,9 @@ h4 {
 
 .eyebrow {
   font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.3em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -109,6 +112,75 @@ h4 {
     );
 }
 
+/* Money and other figures. The body face with lining tabular numerals reads
+   far quicker than the display serif, which sets old style numerals. */
+.price {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--color-heading);
+  line-height: 1.1;
+}
+
+.price-xl {
+  font-size: 2.25rem;
+}
+
+.price-lg {
+  font-size: 1.75rem;
+}
+
+.price-md {
+  font-size: 1.15rem;
+}
+
+.price-was {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* Pack details such as "2 x 250ml, plus a free 60ml bottle". Sentence case at a
+   normal reading size, never tracked out small caps. */
+.spec {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-text);
+  font-variant-numeric: lining-nums;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.chip-gift {
+  background: color-mix(in srgb, var(--color-hibiscus) 14%, transparent);
+  color: var(--color-hibiscus);
+}
+
+.chip-save {
+  background: color-mix(in srgb, var(--color-leaf) 16%, transparent);
+  color: var(--color-leaf);
+}
+
+.chip-stock {
+  background: color-mix(in srgb, var(--color-leaf) 14%, transparent);
+  color: var(--color-leaf);
+}
+
 .card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -121,11 +193,11 @@ h4 {
   justify-content: center;
   gap: 0.5rem;
   border-radius: 999px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  font-size: 0.78rem;
-  padding: 0.9rem 1.75rem;
+  font-size: 0.85rem;
+  padding: 0.95rem 1.75rem;
   transition: transform 0.18s ease, background-color 0.18s ease,
     color 0.18s ease, box-shadow 0.18s ease;
 }
@@ -182,7 +254,7 @@ h4 {
   border: 1px solid var(--color-border);
   background: var(--color-card);
   padding: 0.8rem 1rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--color-text);
   outline: none;
   transition: border-color 0.16s ease, box-shadow 0.16s ease;
@@ -195,12 +267,11 @@ h4 {
 
 .label {
   display: block;
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: var(--color-heading);
   margin-bottom: 0.4rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .gold-rule {
@@ -275,6 +346,58 @@ h4 {
   animation: fadeUp 0.7s ease both;
 }
 
+/* The free 60ml bottle is the offer we want people to notice, so the callout
+   carries a slow gold shine and the gift chip breathes. */
+.gift-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.gift-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    color-mix(in srgb, var(--color-goldlight) 55%, transparent) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  animation: shine 4.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes shine {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes giftPop {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  40% {
+    transform: scale(1.08) rotate(-2deg);
+  }
+  70% {
+    transform: scale(1.02) rotate(1deg);
+  }
+}
+
+.gift-pop {
+  animation: giftPop 3.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
 @keyframes pulseRing {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-hibiscus) 45%, transparent);
@@ -306,8 +429,13 @@ h4 {
   .floaty,
   .marquee-track,
   .pulse-ring,
-  .fade-up {
+  .fade-up,
+  .gift-pop {
     animation: none;
+  }
+  .gift-shine::after {
+    animation: none;
+    opacity: 0;
   }
   .reveal {
     opacity: 1;
@@ -340,10 +468,18 @@ html[lang="ur"] h4 {
 
 html[lang="ur"] .eyebrow,
 html[lang="ur"] .btn,
-html[lang="ur"] .label {
+html[lang="ur"] .label,
+html[lang="ur"] .chip {
   letter-spacing: 0;
   text-transform: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+}
+
+html[lang="ur"] .price,
+html[lang="ur"] .price-was,
+html[lang="ur"] .spec {
+  font-family: var(--font-urdu);
+  letter-spacing: 0;
 }
 
 html[lang="ur"] .wordmark {

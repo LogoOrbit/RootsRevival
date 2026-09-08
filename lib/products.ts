@@ -1,6 +1,6 @@
 /**
- * Prices and structure live here. All wording lives in lib/i18n so the shop
- * reads the same in English and in Urdu.
+ * The three products we sell. Prices live here, all wording lives in lib/i18n
+ * so the shop reads the same in English and in Urdu.
  */
 
 export type ProductSlug = "starter" | "duo" | "family";
@@ -9,58 +9,27 @@ export type Product = {
   slug: ProductSlug;
   bottles: number;
   price: number;
-  /**
-   * What the same number of bottles costs one at a time. Left out when the pack
-   * is priced at the single bottle rate and the value sits in the free gift.
-   */
+  /** What the same bottles cost bought one at a time, when that is more. */
   compareAt?: number;
-  freeDelivery: boolean;
-  /** A gift that ships with the pack. The wording lives in lib/i18n. */
+  /** A free 60ml bottle ships with this pack. */
   gift?: boolean;
   bestValue?: boolean;
 };
 
-/** The single bottle price every pack is measured against. */
+/** The price of a single 250ml bottle, the yardstick for the bigger packs. */
 export const bottlePrice = 1400;
 
 export const products: Product[] = [
-  { slug: "starter", bottles: 1, price: bottlePrice, freeDelivery: false },
-  { slug: "duo", bottles: 2, price: 2 * bottlePrice, freeDelivery: true, gift: true },
-  {
-    slug: "family",
-    bottles: 3,
-    price: 4000,
-    compareAt: 3 * bottlePrice,
-    freeDelivery: true,
-    bestValue: true,
-  },
+  { slug: "starter", bottles: 1, price: bottlePrice },
+  { slug: "duo", bottles: 2, price: 2800, gift: true },
+  { slug: "family", bottles: 3, price: 4000, compareAt: 3 * bottlePrice, bestValue: true },
 ];
 
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export const heroProduct = products[0];
-
-/* Coupon codes */
-
-export type Coupon = {
-  code: "REVIVE10" | "ROOTS15" | "FREESHIP";
-  kind: "percent" | "flat" | "shipping";
-  value: number;
-  minimum: number;
-};
-
-export const coupons: Coupon[] = [
-  { code: "REVIVE10", kind: "percent", value: 10, minimum: 0 },
-  { code: "ROOTS15", kind: "percent", value: 15, minimum: 3000 },
-  { code: "FREESHIP", kind: "shipping", value: 0, minimum: 0 },
-];
-
-export function findCoupon(code: string): Coupon | undefined {
-  const clean = code.trim().toUpperCase();
-  return coupons.find((c) => c.code === clean);
-}
+export const heroProduct = products[1];
 
 export function savingOf(product: Product): number {
   return product.compareAt ? product.compareAt - product.price : 0;

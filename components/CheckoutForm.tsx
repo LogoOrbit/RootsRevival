@@ -8,11 +8,12 @@ import { useT } from "./Providers";
 import { PackShot } from "./ProductArt";
 import { brand, formatPrice } from "@/lib/brand";
 import { CheckIcon, WhatsappIcon } from "./Icons";
+import DeliveryPicker from "./DeliveryPicker";
 
 type Errors = Record<string, string>;
 
 export default function CheckoutForm() {
-  const { lines, totals, coupon, applyCoupon, clear, ready } = useCart();
+  const { lines, totals, zoneId, clear, ready } = useCart();
   const t = useT();
   const router = useRouter();
 
@@ -22,12 +23,10 @@ export default function CheckoutForm() {
     email: "",
     address: "",
     city: "",
-    province: "",
     notes: "",
     payment: "cod",
     website: "",
   });
-  const [code, setCode] = useState(coupon);
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState("");
@@ -51,8 +50,8 @@ export default function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          province: form.province || t.checkoutPage.provinces[0],
-          coupon,
+          city: "Karachi",
+          zoneId,
           lines,
         }),
       });
@@ -101,9 +100,7 @@ export default function CheckoutForm() {
 
   if (!ready) {
     return (
-      <p className="py-20 text-center text-sm uppercase tracking-[0.18em] text-muted">
-        {t.common.loading}
-      </p>
+      <p className="py-20 text-center text-base text-muted">{t.common.loading}</p>
     );
   }
 
@@ -112,9 +109,7 @@ export default function CheckoutForm() {
       <div className="card mx-auto max-w-xl p-10 text-center sm:p-12">
         <h2 className="text-3xl">{t.checkoutPage.emptyTitle}</h2>
         <div className="gold-rule mx-auto mt-6 w-24" />
-        <p className="mt-6 text-sm leading-relaxed text-muted">
-          {t.checkoutPage.emptyBody}
-        </p>
+        <p className="mt-6 text-base leading-relaxed">{t.checkoutPage.emptyBody}</p>
         <Link href="/shop" className="btn btn-gold mt-8">
           {t.checkoutPage.choosePack}
         </Link>
@@ -179,30 +174,15 @@ export default function CheckoutForm() {
               ) : null}
             </div>
             <Field
-              label={t.checkoutPage.city}
-              id="city"
+              label={t.checkoutPage.area}
+              id="area"
               value={form.city}
               onChange={(v) => update("city", v)}
               error={errors.city}
               required
             />
-            <div>
-              <label className="label" htmlFor="province">
-                {t.checkoutPage.province}
-              </label>
-              <select
-                id="province"
-                className="field"
-                value={form.province || t.checkoutPage.provinces[0]}
-                onChange={(event) => update("province", event.target.value)}
-              >
-                {t.checkoutPage.provinces.map((province) => (
-                  <option key={province} value={province}>
-                    {province}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* We deliver inside Karachi only, and the zone sets the charge. */}
+            <DeliveryPicker id="formzone" />
             <div className="sm:col-span-2">
               <label className="label" htmlFor="notes">
                 {t.checkoutPage.notes}
@@ -285,78 +265,52 @@ export default function CheckoutForm() {
               <li key={line.slug} className="flex items-center gap-4">
                 <PackShot
                   slug={line.product.slug}
-                  className="h-16 w-16 shrink-0 rounded-lg bg-[#0d1710]"
+                  className="h-16 w-16 shrink-0 rounded-lg"
                   sizes="80px"
                 />
                 <div className="flex-1">
                   <p className="font-display text-lg leading-tight">{copy.name}</p>
-                  <p className="text-xs uppercase tracking-[0.12em] text-muted">
+                  <p className="spec">{copy.volume}</p>
+                  <p className="text-[0.95rem] text-muted">
                     {t.checkoutPage.quantityLabel} {line.qty}
                   </p>
                 </div>
-                <p className="text-sm text-heading">{formatPrice(line.lineTotal)}</p>
+                <p className="price price-md">{formatPrice(line.lineTotal)}</p>
               </li>
             );
           })}
         </ul>
 
-        <div className="mt-6">
-          <label className="label" htmlFor="checkoutcoupon">
-            {t.common.discountCode}
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="checkoutcoupon"
-              className="field"
-              dir="ltr"
-              value={code}
-              onChange={(event) => setCode(event.target.value.toUpperCase())}
-              placeholder="REVIVE10"
-            />
-            <button
-              type="button"
-              onClick={() => applyCoupon(code)}
-              className="btn btn-primary shrink-0 px-5"
-            >
-              {t.common.apply}
-            </button>
-          </div>
-          {totals.couponCode ? (
-            <p className="mt-2 text-xs text-heading">
-              {t.coupons[totals.couponCode as keyof typeof t.coupons]}{" "}
-              {t.common.codeApplied}
-            </p>
-          ) : null}
-          {totals.couponInvalid ? (
-            <p className="mt-2 text-xs text-hibiscus">{t.common.codeInvalid}</p>
-          ) : null}
-        </div>
-
-        <div className="mt-6 space-y-3 border-t border-border pt-5 text-sm">
+        <div className="mt-6 space-y-3 border-t border-border pt-5 text-[0.95rem]">
           <div className="flex justify-between">
             <span className="text-muted">{t.common.subtotal}</span>
-            <span>{formatPrice(totals.subtotal)}</span>
+            <span className="font-semibold text-heading">
+              {formatPrice(totals.subtotal)}
+            </span>
           </div>
-          {totals.discount > 0 ? (
-            <div className="flex justify-between text-hibiscus">
-              <span>{totals.couponCode}</span>
-              <span>{formatPrice(totals.discount)}</span>
+          {totals.freeBottles > 0 ? (
+            <div className="flex justify-between">
+              <span className="text-muted">{t.cartPage.freeBottles}</span>
+              <span className="font-semibold text-hibiscus">
+                {totals.freeBottles} x 60ml
+              </span>
             </div>
           ) : null}
           <div className="flex justify-between">
             <span className="text-muted">{t.common.delivery}</span>
-            <span>
-              {totals.shipping === 0 ? t.common.free : formatPrice(totals.shipping)}
+            <span className="font-semibold text-heading">
+              {totals.shipping === null
+                ? t.delivery.pickShort
+                : formatPrice(totals.shipping)}
             </span>
           </div>
           <div className="flex items-baseline justify-between border-t border-border pt-4">
-            <span className="text-sm uppercase tracking-[0.14em] text-muted">
-              {t.common.total}
-            </span>
-            <span className="font-display text-3xl text-heading">
-              {formatPrice(totals.total)}
-            </span>
+            <span className="text-base font-semibold text-heading">{t.common.total}</span>
+            <span className="price price-xl">{formatPrice(totals.total)}</span>
           </div>
+          {totals.shipping === null ? (
+            <p className="text-end text-sm text-muted">{t.delivery.pendingNote}</p>
+          ) : null}
         </div>
 
         {errors.cart ? <p className="mt-4 text-xs text-hibiscus">{errors.cart}</p> : null}

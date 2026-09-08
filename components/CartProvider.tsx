@@ -11,33 +11,34 @@ import {
 import { computeTotals, type CartLine, type CartTotals } from "@/lib/cart";
 
 const STORAGE_KEY = "rootsrevival.cart.v1";
-const COUPON_KEY = "rootsrevival.coupon.v1";
+const ZONE_KEY = "rootsrevival.zone.v1";
 
 type CartContextValue = {
   lines: CartLine[];
-  coupon: string;
+  /** The Karachi area the buyer picked, which sets the delivery charge. */
+  zoneId: string;
   totals: CartTotals;
   ready: boolean;
   add: (slug: string, qty?: number) => void;
   setQty: (slug: string, qty: number) => void;
   remove: (slug: string) => void;
   clear: () => void;
-  applyCoupon: (code: string) => void;
+  setZone: (id: string) => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
-  const [coupon, setCoupon] = useState("");
+  const [zoneId, setZoneId] = useState("");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved) setLines(JSON.parse(saved) as CartLine[]);
-      const savedCoupon = window.localStorage.getItem(COUPON_KEY);
-      if (savedCoupon) setCoupon(savedCoupon);
+      const savedZone = window.localStorage.getItem(ZONE_KEY);
+      if (savedZone) setZoneId(savedZone);
     } catch {
       /* storage can be blocked, the cart simply starts empty */
     }
@@ -48,11 +49,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!ready) return;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
-      window.localStorage.setItem(COUPON_KEY, coupon);
+      window.localStorage.setItem(ZONE_KEY, zoneId);
     } catch {
       /* ignore */
     }
-  }, [lines, coupon, ready]);
+  }, [lines, zoneId, ready]);
 
   const add = useCallback((slug: string, qty = 1) => {
     setLines((current) => {
@@ -82,18 +83,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clear = useCallback(() => {
     setLines([]);
-    setCoupon("");
   }, []);
 
-  const applyCoupon = useCallback((code: string) => {
-    setCoupon(code.trim().toUpperCase());
+  const setZone = useCallback((id: string) => {
+    setZoneId(id);
   }, []);
 
-  const totals = useMemo(() => computeTotals(lines, coupon), [lines, coupon]);
+  const totals = useMemo(() => computeTotals(lines, zoneId), [lines, zoneId]);
 
   const value = useMemo(
-    () => ({ lines, coupon, totals, ready, add, setQty, remove, clear, applyCoupon }),
-    [lines, coupon, totals, ready, add, setQty, remove, clear, applyCoupon]
+    () => ({ lines, zoneId, totals, ready, add, setQty, remove, clear, setZone }),
+    [lines, zoneId, totals, ready, add, setQty, remove, clear, setZone]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

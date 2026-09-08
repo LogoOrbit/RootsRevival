@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useCart } from "@/components/CartProvider";
 import { useT } from "@/components/Providers";
 import { PackShot } from "@/components/ProductArt";
 import { PageHero, Section } from "@/components/ui";
-import { brand, formatPrice } from "@/lib/brand";
+import DeliveryPicker from "@/components/DeliveryPicker";
+import { formatPrice } from "@/lib/brand";
 
 export default function CartPage() {
   const t = useT();
@@ -25,13 +25,12 @@ export default function CartPage() {
 }
 
 function CartView() {
-  const { totals, setQty, remove, applyCoupon, coupon, ready } = useCart();
+  const { totals, setQty, remove, ready } = useCart();
   const t = useT();
-  const [code, setCode] = useState(coupon);
 
   if (!ready) {
     return (
-      <p className="py-20 text-center text-sm uppercase tracking-[0.18em] text-muted">
+      <p className="py-20 text-center text-base text-muted">
         {t.common.loading}
       </p>
     );
@@ -42,15 +41,13 @@ function CartView() {
       <div className="card mx-auto max-w-xl p-10 text-center sm:p-12">
         <h2 className="text-3xl">{t.cartPage.emptyTitle}</h2>
         <div className="gold-rule mx-auto mt-6 w-24" />
-        <p className="mt-6 text-sm leading-relaxed text-muted">{t.cartPage.emptyBody}</p>
+        <p className="mt-6 text-base leading-relaxed">{t.cartPage.emptyBody}</p>
         <Link href="/shop" className="btn btn-gold mt-8">
           {t.cartPage.browsePacks}
         </Link>
       </div>
     );
   }
-
-  const remaining = brand.shipping.freeAbove - (totals.subtotal - totals.discount);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
@@ -65,7 +62,7 @@ function CartView() {
               <Link href={`/product/${line.slug}`} className="shrink-0">
                 <PackShot
                   slug={line.product.slug}
-                  className="h-32 w-full rounded-xl bg-[#0d1710] sm:w-28"
+                  className="aspect-square w-full rounded-xl sm:w-28"
                   sizes="160px"
                 />
               </Link>
@@ -74,16 +71,17 @@ function CartView() {
                 <h3 className="font-display text-xl">
                   <Link href={`/product/${line.slug}`}>{copy.name}</Link>
                 </h3>
-                <p className="mt-1 text-xs uppercase tracking-[0.12em] text-muted">
-                  {copy.volume}
-                </p>
-                <p className="mt-2 text-sm text-muted">
+                <p className="spec mt-1">{copy.volume}</p>
+                <p className="mt-2 text-[0.95rem] text-muted">
                   {formatPrice(line.product.price)} {t.cartPage.each}
                 </p>
+                {line.product.gift ? (
+                  <span className="chip chip-gift mt-3">{t.common.freeGift}</span>
+                ) : null}
                 <button
                   type="button"
                   onClick={() => remove(line.slug)}
-                  className="mt-3 text-[0.7rem] uppercase tracking-[0.14em] text-hibiscus"
+                  className="mt-3 block text-sm font-semibold text-hibiscus"
                 >
                   {t.common.remove}
                 </button>
@@ -99,7 +97,7 @@ function CartView() {
                   >
                     −
                   </button>
-                  <span className="w-8 text-center text-sm">{line.qty}</span>
+                  <span className="price w-9 text-center text-base">{line.qty}</span>
                   <button
                     type="button"
                     aria-label="plus"
@@ -109,9 +107,7 @@ function CartView() {
                     +
                   </button>
                 </div>
-                <p className="font-display text-2xl text-heading">
-                  {formatPrice(line.lineTotal)}
-                </p>
+                <p className="price price-lg">{formatPrice(line.lineTotal)}</p>
               </div>
             </div>
           );
@@ -119,7 +115,7 @@ function CartView() {
 
         <Link
           href="/shop"
-          className="inline-block text-[0.72rem] uppercase tracking-[0.16em] text-muted transition-colors hover:text-gold"
+          className="inline-block text-sm font-semibold text-muted transition-colors hover:text-gold"
         >
           {t.common.continueShopping}
         </Link>
@@ -129,7 +125,7 @@ function CartView() {
         <h2 className="font-display text-2xl">{t.cartPage.summary}</h2>
         <div className="gold-rule mt-4 w-20" />
 
-        <div className="mt-6 space-y-3 text-sm">
+        <div className="mt-6 space-y-3 text-[0.95rem]">
           <Row
             label={`${t.common.items} (${totals.itemCount})`}
             value={formatPrice(totals.subtotal)}
@@ -141,71 +137,39 @@ function CartView() {
               accent
             />
           ) : null}
-          {totals.discount > 0 ? (
+          {totals.freeBottles > 0 ? (
             <Row
-              label={`${t.common.discountCode} ${totals.couponCode}`}
-              value={`${formatPrice(totals.discount)}`}
+              label={t.cartPage.freeBottles}
+              value={`${totals.freeBottles} x 60ml`}
               accent
             />
           ) : null}
           <Row
             label={t.common.delivery}
-            value={totals.shipping === 0 ? t.common.free : formatPrice(totals.shipping)}
+            value={
+              totals.shipping === null
+                ? t.delivery.pickShort
+                : formatPrice(totals.shipping)
+            }
           />
         </div>
 
-        <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
-          <span className="text-sm uppercase tracking-[0.14em] text-muted">
-            {t.common.total}
-          </span>
-          <span className="font-display text-3xl text-heading">
-            {formatPrice(totals.total)}
-          </span>
-        </div>
-
-        {!totals.freeShipping && remaining > 0 ? (
-          <p className="mt-4 rounded-xl bg-bgsoft px-4 py-3 text-xs leading-relaxed text-muted">
-            {t.cartPage.addMoreLead} {formatPrice(remaining)} {t.cartPage.addMore}
-          </p>
-        ) : null}
-
         <div className="mt-6">
-          <label className="label" htmlFor="coupon">
-            {t.common.discountCode}
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="coupon"
-              className="field"
-              dir="ltr"
-              value={code}
-              onChange={(event) => setCode(event.target.value.toUpperCase())}
-              placeholder="REVIVE10"
-            />
-            <button
-              type="button"
-              onClick={() => applyCoupon(code)}
-              className="btn btn-primary shrink-0 px-5"
-            >
-              {t.common.apply}
-            </button>
-          </div>
-          {totals.couponCode ? (
-            <p className="mt-2 text-xs text-heading">
-              {t.coupons[totals.couponCode as keyof typeof t.coupons]} {t.common.codeApplied}
-            </p>
-          ) : null}
-          {totals.couponInvalid ? (
-            <p className="mt-2 text-xs text-hibiscus">{t.common.codeInvalid}</p>
-          ) : null}
+          <DeliveryPicker id="cartzone" />
         </div>
+
+        <div className="mt-6 flex items-baseline justify-between border-t border-border pt-5">
+          <span className="text-base font-semibold text-heading">{t.common.total}</span>
+          <span className="price price-xl">{formatPrice(totals.total)}</span>
+        </div>
+        {totals.shipping === null ? (
+          <p className="mt-2 text-end text-sm text-muted">{t.delivery.pendingNote}</p>
+        ) : null}
 
         <Link href="/checkout" className="btn btn-gold mt-7 w-full">
           {t.common.checkout}
         </Link>
-        <p className="mt-4 text-center text-[0.66rem] uppercase tracking-[0.12em] text-muted">
-          {t.cartPage.payNote}
-        </p>
+        <p className="mt-4 text-center text-sm text-muted">{t.cartPage.payNote}</p>
       </aside>
     </div>
   );
@@ -223,7 +187,9 @@ function Row({
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "text-hibiscus" : "text-heading"}>{value}</span>
+      <span className={accent ? "font-semibold text-hibiscus" : "font-semibold text-heading"}>
+        {value}
+      </span>
     </div>
   );
 }

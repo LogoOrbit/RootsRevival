@@ -1,5 +1,5 @@
-import { brand } from "./brand";
-import { findCoupon, getProduct, type Product } from "./products";
+import { deliveryFee } from "./delivery";
+import { getProduct, type Product } from "./products";
 
 export type CartLine = { slug: string; qty: number };
 
@@ -11,11 +11,12 @@ export type CartTotals = {
   subtotal: number;
   compareSubtotal: number;
   bundleSaving: number;
-  couponCode: string | null;
-  couponInvalid: boolean;
-  discount: number;
-  shipping: number;
-  freeShipping: boolean;
+  /** Free 60ml bottles earned across the cart. */
+  freeBottles: number;
+  /** The chosen Karachi area, or null while the buyer has not picked one. */
+  zoneId: string | null;
+  /** Null until an area is chosen, so the total says so instead of guessing. */
+  shipping: number | null;
   total: number;
 };
 
@@ -32,7 +33,7 @@ export function resolveLines(lines: CartLine[]): ResolvedLine[] {
 
 export function computeTotals(
   rawLines: CartLine[],
-  couponInput?: string | null
+  zoneInput?: string | null
 ): CartTotals {
   const lines = resolveLines(rawLines);
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
@@ -41,27 +42,13 @@ export function computeTotals(
     0
   );
   const itemCount = lines.reduce((sum, l) => sum + l.qty, 0);
+  const freeBottles = lines.reduce(
+    (sum, l) => sum + (l.product.gift ? l.qty : 0),
+    0
+  );
 
-  const typed = (couponInput ?? "").trim();
-  const coupon = typed ? findCoupon(typed) : undefined;
-  const couponUsable = coupon && subtotal >= coupon.minimum ? coupon : undefined;
-
-  let discount = 0;
-  if (couponUsable) {
-    if (couponUsable.kind === "percent") {
-      discount = Math.round((subtotal * couponUsable.value) / 100);
-    } else if (couponUsable.kind === "flat") {
-      discount = Math.min(couponUsable.value, subtotal);
-    }
-  }
-
-  const qualifiesFreeShipping =
-    lines.some((l) => l.product.freeDelivery) ||
-    subtotal - discount >= brand.shipping.freeAbove ||
-    couponUsable?.kind === "shipping";
-
-  const shipping =
-    itemCount === 0 ? 0 : qualifiesFreeShipping ? 0 : brand.shipping.flatRate;
+  const fee = deliveryFee(zoneInput);
+  const shipping = itemCount === 0 ? 0 : fee;
 
   return {
     lines,
@@ -69,11 +56,9 @@ export function computeTotals(
     subtotal,
     compareSubtotal,
     bundleSaving: Math.max(0, compareSubtotal - subtotal),
-    couponCode: couponUsable ? couponUsable.code : null,
-    couponInvalid: Boolean(typed) && !couponUsable,
-    discount,
+    freeBottles,
+    zoneId: fee === null ? null : (zoneInput ?? null),
     shipping,
-    freeShipping: qualifiesFreeShipping,
-    total: Math.max(0, subtotal - discount) + shipping,
+    total: subtotal + (shipping ?? 0),
   };
 }

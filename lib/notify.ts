@@ -3,6 +3,8 @@ import { brand } from "./brand";
 /**
  * Delivery of order and message alerts.
  *
+ * Every order goes to all the addresses in brand.orderEmails.
+ *
  * Email, in order of preference:
  *   1. Resend, when RESEND_API_KEY is set.
  *   2. Any mailbox over SMTP, when SMTP_HOST, SMTP_USER and SMTP_PASS are set.
@@ -22,8 +24,21 @@ import { brand } from "./brand";
 
 export type MailResult = { delivered: boolean; provider: string; error?: string };
 
+/**
+ * Everyone who should see a new order. ORDER_EMAIL_TO overrides the list in
+ * lib/brand.ts and accepts several addresses separated by commas.
+ */
+export function shopEmails(): string[] {
+  const override = (process.env.ORDER_EMAIL_TO || "")
+    .split(",")
+    .map((address) => address.trim())
+    .filter(Boolean);
+  return override.length > 0 ? override : [...brand.orderEmails];
+}
+
+/** The single address a customer replies to, for mailto links. */
 export function shopEmail(): string {
-  return process.env.ORDER_EMAIL_TO || brand.contact.email;
+  return shopEmails()[0] || brand.contact.email;
 }
 
 export async function sendMail(
@@ -31,7 +46,7 @@ export async function sendMail(
   text: string,
   replyTo?: string
 ): Promise<MailResult> {
-  const to = shopEmail();
+  const to = shopEmails();
   const resendKey = process.env.RESEND_API_KEY;
 
   if (resendKey) {
@@ -46,7 +61,7 @@ export async function sendMail(
           from:
             process.env.ORDER_EMAIL_FROM ||
             "Roots Revival <onboarding@resend.dev>",
-          to: [to],
+          to,
           subject,
           text,
           ...(replyTo ? { reply_to: replyTo } : {}),
@@ -82,7 +97,7 @@ export async function sendMail(
       });
       await transport.sendMail({
         from: process.env.ORDER_EMAIL_FROM || `${brand.name} <${smtpUser}>`,
-        to,
+        to: to.join(", "),
         subject,
         text,
         ...(replyTo ? { replyTo } : {}),

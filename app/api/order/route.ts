@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { computeTotals, type CartLine } from "@/lib/cart";
+import { getZone } from "@/lib/delivery";
 import { en } from "@/lib/i18n/en";
-import { pushWhatsapp, sendMail } from "@/lib/notify";
+import { pushWhatsapp, sendMail, shopEmail } from "@/lib/notify";
 
 export const runtime = "nodejs";
 
@@ -15,7 +16,7 @@ type OrderBody = {
   province?: string;
   notes?: string;
   payment?: string;
-  coupon?: string;
+  zoneId?: string;
   lines?: CartLine[];
   website?: string; // honeypot
 };
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
   const province = clean(body.province, 60);
   const notes = clean(body.notes, 500);
   const payment = clean(body.payment, 40) === "bank" ? "bank" : "cod";
-  const coupon = clean(body.coupon, 40);
+  const zoneId = clean(body.zoneId, 40);
   const lines = Array.isArray(body.lines) ? body.lines : [];
 
   const errors: Record<string, string> = {};
@@ -61,11 +62,12 @@ export async function POST(request: Request) {
   if (phone.replace(/\D/g, "").length < 10)
     errors.phone = "Please write a working WhatsApp number.";
   if (address.length < 10) errors.address = "Please write your full address.";
-  if (city.length < 2) errors.city = "Please write your city.";
+  if (city.length < 2) errors.city = "Please write your area.";
+  if (!getZone(zoneId)) errors.zoneId = "Please pick your delivery area.";
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     errors.email = "Please check the email address.";
 
-  const totals = computeTotals(lines, coupon);
+  const totals = computeTotals(lines, zoneId);
   if (totals.itemCount === 0) errors.cart = "Your cart is empty.";
 
   if (Object.keys(errors).length > 0) {
@@ -100,17 +102,20 @@ export async function POST(request: Request) {
     `WhatsApp: ${phone}`,
     email ? `Email: ${email}` : "Email: not given",
     `Address: ${address}`,
-    `City: ${city}${province ? `, ${province}` : ""}`,
+    `Area: ${city}${province ? `, ${province}` : ""}`,
+    `Delivery zone: ${en.delivery.zones[zoneId as keyof typeof en.delivery.zones].label} (${formatPrice(
+      totals.shipping ?? 0
+    )})`,
     notes ? `Notes: ${notes}` : "",
     "",
     "ORDER",
     itemLines,
     "",
+    totals.freeBottles > 0
+      ? `Free gift: ${totals.freeBottles} x 60ml bottle`
+      : "",
     `Subtotal: ${formatPrice(totals.subtotal)}`,
-    totals.discount > 0
-      ? `Discount (${totals.couponCode}): ${formatPrice(totals.discount)} off`
-      : "Discount: none",
-    `Delivery: ${totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)}`,
+    `Delivery: ${formatPrice(totals.shipping ?? 0)}`,
     `TOTAL TO COLLECT: ${formatPrice(totals.total)}`,
     "",
     `Payment: ${paymentLabel}`,
@@ -131,14 +136,12 @@ export async function POST(request: Request) {
     "",
     itemLines,
     "",
-    `Total: ${formatPrice(totals.total)} (delivery ${
-      totals.shipping === 0 ? "free" : formatPrice(totals.shipping)
-    })`,
+    `Total: ${formatPrice(totals.total)} (delivery ${formatPrice(totals.shipping ?? 0)})`,
     `Payment: ${paymentLabel}`,
     "",
     `Name: ${name}`,
     `Phone: ${phone}`,
-    `Address: ${address}, ${city}${province ? `, ${province}` : ""}`,
+    `Address: ${address}, ${city}, Karachi`,
     notes ? `Notes: ${notes}` : "",
     "",
     payment === "bank"
@@ -154,9 +157,7 @@ export async function POST(request: Request) {
     total: totals.total,
     payment,
     whatsappUrl: waLink(customerMessage),
-    mailtoUrl: `mailto:${
-      process.env.ORDER_EMAIL_TO || brand.contact.email
-    }?subject=${encodeURIComponent(
+    mailtoUrl: `mailto:${shopEmail()}?subject=${encodeURIComponent(
       `Order ${orderId} from ${name}`
     )}&body=${encodeURIComponent(customerMessage)}`,
     emailDelivered: mail.delivered,

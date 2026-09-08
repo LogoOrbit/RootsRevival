@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
-import { coupons, products } from "@/lib/products";
+import { products } from "@/lib/products";
+import { deliveryZones, lowestFee, highestFee } from "@/lib/delivery";
 import { useT } from "@/components/Providers";
 import ProductCard from "@/components/ProductCard";
-import Countdown from "@/components/Countdown";
 import { PageHero, Section, SectionHeading, Reveal } from "@/components/ui";
-import { LeafIcon, ShieldIcon, TruckIcon, WhatsappIcon } from "@/components/Icons";
+import { GiftIcon, LeafIcon, ShieldIcon, TruckIcon, WhatsappIcon } from "@/components/Icons";
 
 export default function ShopPage() {
   const t = useT();
@@ -20,8 +20,13 @@ export default function ShopPage() {
   return (
     <>
       <PageHero eyebrow={t.shop.eyebrow} title={t.shop.title} intro={t.shop.intro}>
-        <div className="inline-flex rounded-2xl border border-border bg-card px-5 py-3">
-          <Countdown />
+        <div className="gift-shine inline-flex items-center gap-3 rounded-2xl border border-gold/50 bg-gold/12 px-5 py-3">
+          <span className="gift-pop text-gold">
+            <GiftIcon className="h-6 w-6" />
+          </span>
+          <span className="text-base font-semibold text-heading">
+            {t.common.giftBanner}
+          </span>
         </div>
       </PageHero>
 
@@ -39,45 +44,42 @@ export default function ShopPage() {
             <div key={perk.title} className="card p-7">
               <span className="text-gold">{perkIcons[index]}</span>
               <h3 className="mt-4 font-display text-xl">{perk.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{perk.note}</p>
+              <p className="mt-2 text-[0.95rem] leading-relaxed">{perk.note}</p>
             </div>
           ))}
         </div>
       </Section>
 
+      {/* Delivery, so the buyer knows the charge before the checkout page. */}
       <Section tone="soft">
         <SectionHeading
-          eyebrow={t.shop.codesEyebrow}
-          title={t.shop.codesTitle}
-          intro={t.shop.codesIntro}
+          eyebrow={t.delivery.eyebrow}
+          title={t.delivery.title}
+          intro={t.delivery.intro}
         />
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {coupons.map((coupon, index) => (
-            <Reveal key={coupon.code} delay={index * 80}>
-              <div className="card h-full p-7 text-center">
-                <p className="font-display text-3xl tracking-[0.14em] text-gold">
-                  {coupon.code}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-muted">
-                  {t.coupons[coupon.code]}
-                </p>
-                <p className="mt-4 text-[0.68rem] uppercase tracking-[0.14em] text-muted">
-                  {coupon.minimum > 0
-                    ? `${t.common.minimumOrder} ${formatPrice(coupon.minimum)}`
-                    : t.common.noMinimum}
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {deliveryZones.map((zone, index) => (
+            <Reveal key={zone.id} delay={index * 70}>
+              <div className="card h-full p-6">
+                <p className="price price-lg">{formatPrice(zone.fee)}</p>
+                <h3 className="mt-2 font-display text-xl">
+                  {t.delivery.zones[zone.id].label}
+                </h3>
+                <p className="mt-3 text-[0.95rem] leading-relaxed">
+                  {t.delivery.zones[zone.id].areas}
                 </p>
               </div>
             </Reveal>
           ))}
         </div>
-        <p className="mt-8 text-center text-xs uppercase tracking-[0.14em] text-muted">
-          {t.common.oneCodePerOrder}
+        <p className="mt-8 text-center text-[0.95rem] text-muted">
+          {t.delivery.note} {formatPrice(lowestFee)} to {formatPrice(highestFee)}.
         </p>
       </Section>
 
       <Section tone="band" className="text-center">
         <h2 className="text-3xl text-bandtext sm:text-4xl">{t.shop.messageTitle}</h2>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-bandtext/80">
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-bandtext/85">
           {t.shop.messageIntro}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -98,10 +100,7 @@ export default function ShopPage() {
         </div>
         <div className="mt-12 flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
           {t.assurances.map((item) => (
-            <span
-              key={item}
-              className="text-[0.66rem] uppercase tracking-[0.16em] text-bandtext/70"
-            >
+            <span key={item} className="text-sm text-bandtext/80">
               {item}
             </span>
           ))}

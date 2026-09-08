@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { brand, formatPrice } from "@/lib/brand";
-import { getProduct, hasSaving, percentOff, products, savingOf } from "@/lib/products";
+import { formatPrice } from "@/lib/brand";
+import { getProduct, hasSaving, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { AddToCart } from "@/components/AddToCart";
 import { ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
-import Countdown from "@/components/Countdown";
 import { HerbIcon } from "@/components/HerbIcons";
 import { Breadcrumb, Pill, Section, SectionHeading, TickList, Reveal } from "@/components/ui";
 import { LeafIcon, ShieldIcon, TruckIcon } from "@/components/Icons";
+import { lowestFee, highestFee } from "@/lib/delivery";
 
 export default function ProductDetail({ slug }: { slug: string }) {
   const t = useT();
@@ -44,11 +44,11 @@ export default function ProductDetail({ slug }: { slug: string }) {
       <Section tone="bg" className="pt-4">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
-            <div className="card overflow-hidden bg-[#0d1710] p-0">
+            <div className="card overflow-hidden bg-[#e7e2d6] p-0">
               {gallery[shot].kind === "pack" ? (
                 <PackShot
                   slug={product.slug}
-                  className="h-[22rem] w-full sm:h-[30rem]"
+                  className="aspect-square w-full"
                   priority
                   sizes="(max-width: 1024px) 92vw, 560px"
                 />
@@ -56,7 +56,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                 <ArtPanel
                   src={gallery[shot].src}
                   alt={gallery[shot].label}
-                  className="h-[22rem] w-full sm:h-[30rem]"
+                  className="aspect-square w-full"
                   sizes="(max-width: 1024px) 92vw, 560px"
                 />
               )}
@@ -67,19 +67,19 @@ export default function ProductDetail({ slug }: { slug: string }) {
                   key={item.label}
                   type="button"
                   onClick={() => setShot(index)}
-                  className={`card h-20 overflow-hidden p-0 transition-all sm:h-24 ${
+                  className={`card aspect-square overflow-hidden bg-[#e7e2d6] p-0 transition-all ${
                     shot === index ? "ring-2 ring-gold" : "opacity-70 hover:opacity-100"
                   }`}
                   aria-label={item.label}
                 >
                   {item.kind === "pack" ? (
-                    <PackShot slug={product.slug} className="h-full w-full" sizes="120px" />
+                    <PackShot slug={product.slug} className="aspect-square w-full" sizes="140px" />
                   ) : (
                     <ArtPanel
                       src={item.src}
                       alt={item.label}
-                      className="h-full w-full"
-                      sizes="120px"
+                      className="aspect-square w-full"
+                      sizes="140px"
                     />
                   )}
                 </button>
@@ -99,43 +99,39 @@ export default function ProductDetail({ slug }: { slug: string }) {
             </div>
 
             <h1 className="mt-5 text-3xl leading-tight sm:text-5xl">{copy.name}</h1>
-            <p className="mt-2 text-xs uppercase tracking-[0.18em] text-muted">
-              {brand.name} {t.common.category} {copy.volume}
-            </p>
+            <p className="spec mt-3">{copy.volume}</p>
 
-            <p className="mt-5 text-base leading-relaxed text-muted">
+            <p className="mt-5 text-base leading-relaxed">
               {copy.summary} {t.common.forAllHairTypes}.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-end gap-3">
-              <span className="font-display text-4xl text-heading sm:text-5xl">
+            <div className="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+              <span className="price price-xl sm:text-5xl">
                 {formatPrice(product.price)}
               </span>
               {hasSaving(product) && (
-                <>
-                  <span className="pb-2 text-base text-muted line-through">
-                    {formatPrice(product.compareAt!)}
-                  </span>
-                  <span className="mb-2 rounded-full bg-hibiscus px-3 py-1 text-[0.66rem] uppercase tracking-[0.12em] text-white">
-                    {percentOff(product)} {t.common.percentOff}
-                  </span>
-                </>
+                <span className="price-was text-xl">
+                  {formatPrice(product.compareAt!)}
+                </span>
               )}
-              <span className="pb-2 text-base text-muted">
-                {formatPrice(Math.round(product.price / product.bottles))}{" "}
-                {t.common.perBottle}
-              </span>
+              <span className="chip chip-stock">{t.common.inStock}</span>
             </div>
-            <p className="mt-2 text-xs uppercase tracking-[0.12em] text-muted">
-              {t.common.priceIncludesTaxes}{" "}
-              {product.freeDelivery
-                ? t.product.deliveryFreeOnPack
-                : t.product.deliveryFlat}
-            </p>
 
-            <div className="mt-6 rounded-2xl border border-border bg-bgsoft p-4">
-              <Countdown />
-            </div>
+            {product.gift || hasSaving(product) ? (
+              <div className="mt-4 rounded-2xl border border-gold/40 bg-gold/10 p-4">
+                <p className="text-base font-semibold text-heading">
+                  {product.gift ? t.product.giftHeadline : t.product.saveHeadline}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed">
+                  {product.gift ? t.product.giftBody : t.product.saveBody}
+                </p>
+              </div>
+            ) : null}
+
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              {t.common.priceIncludesTaxes} {t.product.deliveryNote}{" "}
+              {formatPrice(lowestFee)} to {formatPrice(highestFee)}.
+            </p>
 
             <div className="mt-7">
               <AddToCart product={product} />
@@ -147,13 +143,13 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               {[
-                { icon: <TruckIcon className="h-5 w-5" />, label: brand.shipping.deliveryDays },
+                { icon: <TruckIcon className="h-5 w-5" />, label: t.product.deliveryDays },
                 { icon: <ShieldIcon className="h-5 w-5" />, label: t.common.cashOnDelivery },
                 { icon: <LeafIcon className="h-5 w-5" />, label: t.assurances[0] },
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center gap-2 text-xs uppercase tracking-[0.1em] text-muted"
+                  className="flex items-center gap-2 text-sm"
                 >
                   <span className="text-gold">{item.icon}</span>
                   {item.label}
@@ -256,22 +252,23 @@ export default function ProductDetail({ slug }: { slug: string }) {
               >
                 <PackShot
                   slug={other.slug}
-                  className="h-32 w-28 shrink-0 rounded-xl bg-[#0d1710] transition-transform duration-500 group-hover:scale-105"
+                  className="aspect-square w-28 shrink-0 rounded-xl transition-transform duration-500 group-hover:scale-105"
                   sizes="140px"
                 />
                 <span>
                   <span className="block font-display text-2xl text-heading">
                     {otherCopy.name}
                   </span>
-                  <span className="mt-1 block text-sm text-muted">{otherCopy.volume}</span>
-                  <span className="mt-2 block font-display text-2xl text-heading">
-                    {formatPrice(other.price)}{" "}
-                    <span className="text-sm text-muted">
-                      {formatPrice(Math.round(other.price / other.bottles))}{" "}
-                      {t.common.perBottle}
-                    </span>
+                  <span className="spec mt-1 block">{otherCopy.volume}</span>
+                  <span className="mt-3 flex flex-wrap items-baseline gap-2">
+                    <span className="price price-md">{formatPrice(other.price)}</span>
+                    {other.compareAt ? (
+                      <span className="price-was text-sm">
+                        {formatPrice(other.compareAt)}
+                      </span>
+                    ) : null}
                   </span>
-                  <span className="mt-3 inline-block text-[0.7rem] uppercase tracking-[0.14em] text-gold">
+                  <span className="mt-3 inline-block text-sm font-semibold text-gold">
                     {t.common.viewPack}
                   </span>
                 </span>

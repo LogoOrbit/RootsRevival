@@ -18,6 +18,15 @@ export const brand = {
    */
   logoImage: null as string | null,
 
+  /**
+   * Every new order is emailed to all of these. Add or remove an address here
+   * and the order mail follows, no environment change needed.
+   */
+  orderEmails: [
+    "rootsrevivalpakistan@gmail.com",
+    "ainaabidi25@gmail.com",
+  ] as string[],
+
   contact: {
     email: "rootsrevivalpakistan@gmail.com",
     /** Digits only, used for wa.me links */
@@ -43,9 +52,9 @@ export const brand = {
   },
 
   shipping: {
-    flatRate: 200,
-    freeAbove: 2800,
-    deliveryDays: "2 to 4 working days",
+    /** We dispatch by rider from here, which is what sets the delivery charge. */
+    dispatchFrom: "Gulshan-e-Iqbal Block 10, Karachi",
+    deliveryDays: "1 to 2 working days inside Karachi",
   },
 
   site: {

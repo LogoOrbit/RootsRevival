@@ -3,70 +3,45 @@
 import Image from "next/image";
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
-import { coupons, products, savingOf } from "@/lib/products";
+import { hasSaving, products, savingOf } from "@/lib/products";
+import { deliveryZones, lowestFee, highestFee } from "@/lib/delivery";
 import { useT } from "@/components/Providers";
 import { artwork, PackShot } from "@/components/ProductArt";
-import Countdown from "@/components/Countdown";
-import { PageHero, Section, SectionHeading, Pill, Reveal } from "@/components/ui";
-import { InstagramIcon, SparkIcon, TagIcon, TruckIcon, WhatsappIcon } from "@/components/Icons";
+import { PageHero, Section, SectionHeading, Reveal } from "@/components/ui";
+import { GiftIcon, ShieldIcon, TruckIcon, WhatsappIcon } from "@/components/Icons";
 
 export default function OffersPage() {
   const t = useT();
-  const dealIcons = [
-    <TruckIcon key="a" className="h-6 w-6" />,
-    <TagIcon key="b" className="h-6 w-6" />,
-    <SparkIcon key="c" className="h-6 w-6" />,
-  ];
 
   return (
     <>
-      <PageHero eyebrow={t.offers.eyebrow} title={t.offers.title} intro={t.offers.intro}>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link href="/shop" className="btn btn-gold">
-            {t.offers.shopDeals}
-          </Link>
-          <a
-            href={waLink(
-              `Assalam o Alaikum ${brand.name} team, I would like to know about the current offers.`
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-outline"
-          >
-            {t.offers.askOffers}
-          </a>
-        </div>
-      </PageHero>
+      <PageHero eyebrow={t.offers.eyebrow} title={t.offers.title} intro={t.offers.intro} />
 
-      {/* Headline offer */}
-      <Section tone="bg">
-        <div className="card grid items-center gap-8 overflow-hidden p-0 lg:grid-cols-2">
-          <div className="p-8 lg:p-12">
-            <Pill tone="hibiscus">{t.offers.headlineBadge}</Pill>
-            <h2 className="mt-5 text-3xl leading-tight sm:text-5xl">
-              {t.offers.headlineTitle1}
-              <br />
+      {/* The one offer we run: a free 60ml bottle with the duo pack. */}
+      <Section tone="bg" className="pt-0">
+        <div className="card grid overflow-hidden lg:grid-cols-2">
+          <div className="gift-shine order-2 p-8 sm:p-12 lg:order-1">
+            <span className="chip chip-gift">
+              <span className="gift-pop">
+                <GiftIcon className="h-4 w-4" />
+              </span>
+              {t.offers.headlineBadge}
+            </span>
+            <h2 className="mt-5 text-3xl leading-tight sm:text-4xl">
+              {t.offers.headlineTitle1}{" "}
               <span className="text-gold">{t.offers.headlineTitle2}</span>
             </h2>
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-muted">
-              {t.offers.headlineBody}
-            </p>
-            <div className="mt-7">
-              <Countdown />
-            </div>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/product/family" className="btn btn-gold">
-                {t.offers.grabFamily}
+            <p className="mt-5 text-base leading-relaxed">{t.offers.headlineBody}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/product/duo" className="btn btn-gold">
+                {t.offers.grabDuo}
               </Link>
               <Link href="/shop" className="btn btn-outline">
                 {t.offers.comparePacks}
               </Link>
             </div>
-            <p className="mt-6 text-[0.68rem] uppercase tracking-[0.14em] text-muted">
-              {t.offers.whileStock}
-            </p>
           </div>
-          <div className="relative h-72 w-full lg:h-full lg:min-h-[30rem]">
+          <div className="relative order-1 h-72 w-full lg:order-2 lg:h-full lg:min-h-[26rem]">
             <Image
               src={artwork.hero}
               alt={t.offers.headlineTitle1}
@@ -78,7 +53,7 @@ export default function OffersPage() {
         </div>
       </Section>
 
-      {/* Pack pricing */}
+      {/* Every pack, listed on its own. */}
       <Section tone="soft">
         <SectionHeading
           eyebrow={t.offers.tableEyebrow}
@@ -86,217 +61,144 @@ export default function OffersPage() {
           intro={t.offers.tableIntro}
         />
 
-        <div className="mt-10 grid gap-6 md:hidden">
-          {products.map((product) => {
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {products.map((product, index) => {
             const copy = t.products[product.slug];
             return (
-              <div key={product.slug} className="card overflow-hidden">
-                <PackShot slug={product.slug} className="h-60 w-full" />
-                <div className="p-5">
-                  <h3 className="font-display text-2xl">{copy.name}</h3>
-                  <dl className="mt-3 space-y-2 text-sm">
-                    <Row
-                      label={t.offers.tableHeads[2]}
-                      value={formatPrice(product.compareAt ?? product.price)}
-                      strike={savingOf(product) > 0}
-                    />
-                    <Row label={t.offers.tableHeads[3]} value={formatPrice(product.price)} />
-                    <Row
-                      label={t.offers.tableHeads[4]}
-                      value={
-                        product.gift
-                          ? t.common.freeGift
-                          : savingOf(product) > 0
-                            ? formatPrice(savingOf(product))
-                            : "—"
-                      }
-                      accent
-                    />
-                    <Row
-                      label={t.offers.tableHeads[5]}
-                      value={formatPrice(Math.round(product.price / product.bottles))}
-                    />
-                  </dl>
-                  <Link href={`/product/${product.slug}`} className="btn btn-primary mt-5 w-full">
-                    {t.common.viewPack}
-                  </Link>
+              <Reveal key={product.slug} delay={index * 90}>
+                <div
+                  className={`card flex h-full flex-col overflow-hidden ${
+                    product.bestValue ? "ring-2 ring-gold" : ""
+                  }`}
+                >
+                  <PackShot slug={product.slug} className="aspect-square w-full" />
+                  <div className="flex flex-1 flex-col p-6">
+                    <p className="eyebrow text-gold">{copy.badge}</p>
+                    <h3 className="mt-2 font-display text-2xl">{copy.name}</h3>
+                    <p className="spec mt-2">{copy.volume}</p>
+
+                    <ul className="mt-4 flex-1 space-y-2 text-[0.95rem] leading-snug">
+                      {copy.highlights.map((point) => (
+                        <li key={point}>{point}</li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-5 flex flex-wrap items-baseline gap-3">
+                      <span className="price price-lg">{formatPrice(product.price)}</span>
+                      {hasSaving(product) ? (
+                        <span className="price-was text-base">
+                          {formatPrice(product.compareAt!)}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {product.gift ? (
+                        <span className="chip chip-gift">{t.common.freeGift}</span>
+                      ) : null}
+                      {hasSaving(product) ? (
+                        <span className="chip chip-save">
+                          {t.common.youSave} {formatPrice(savingOf(product))}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <Link
+                      href={`/product/${product.slug}`}
+                      className="btn btn-primary mt-6 w-full"
+                    >
+                      {t.common.viewPack}
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>
+      </Section>
 
-        <div className="mt-10 hidden overflow-x-auto md:block">
-          <table className="w-full min-w-[640px] overflow-hidden rounded-2xl bg-card">
+      {/* Delivery inside Karachi. */}
+      <Section tone="bg">
+        <SectionHeading
+          eyebrow={t.delivery.eyebrow}
+          title={t.delivery.title}
+          intro={t.delivery.intro}
+        />
+        <div className="mt-10 overflow-x-auto">
+          <table className="w-full min-w-[520px] overflow-hidden rounded-2xl bg-card">
             <thead>
               <tr className="bg-band text-bandtext">
-                {t.offers.tableHeads.map((heading) => (
-                  <th
-                    key={heading}
-                    className="px-5 py-4 text-start text-[0.68rem] font-medium uppercase tracking-[0.14em]"
-                  >
+                {t.delivery.tableHeads.map((heading) => (
+                  <th key={heading} className="px-5 py-4 text-start text-sm font-semibold">
                     {heading}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => {
-                const copy = t.products[product.slug];
-                return (
-                  <tr key={product.slug} className="border-b border-border">
-                    <td className="px-5 py-4">
-                      <Link
-                        href={`/product/${product.slug}`}
-                        className="font-display text-lg text-heading hover:text-gold"
-                      >
-                        {copy.name}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-4 text-sm text-muted">{product.bottles}</td>
-                    <td
-                      className={`px-5 py-4 text-sm text-muted ${
-                        savingOf(product) > 0 ? "line-through" : ""
-                      }`}
-                    >
-                      {formatPrice(product.compareAt ?? product.price)}
-                    </td>
-                    <td className="px-5 py-4 font-display text-xl text-heading">
-                      {formatPrice(product.price)}
-                    </td>
-                    <td className="px-5 py-4 text-sm text-hibiscus">
-                      {product.gift
-                        ? t.common.freeGift
-                        : savingOf(product) > 0
-                          ? formatPrice(savingOf(product))
-                          : "—"}
-                    </td>
-                    <td className="px-5 py-4 text-sm text-muted">
-                      {formatPrice(Math.round(product.price / product.bottles))}
-                    </td>
-                  </tr>
-                );
-              })}
+              {deliveryZones.map((zone) => (
+                <tr key={zone.id} className="border-b border-border last:border-0">
+                  <td className="px-5 py-4 font-display text-lg text-heading">
+                    {t.delivery.zones[zone.id].label}
+                  </td>
+                  <td className="px-5 py-4 text-[0.95rem] leading-relaxed">
+                    {t.delivery.zones[zone.id].areas}
+                  </td>
+                  <td className="px-5 py-4">
+                    <span className="price price-md">{formatPrice(zone.fee)}</span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
+        <p className="mt-6 text-center text-[0.95rem] text-muted">
+          {t.delivery.note} {formatPrice(lowestFee)} to {formatPrice(highestFee)}.
+        </p>
       </Section>
 
-      {/* Coupons */}
-      <Section tone="bg">
+      <Section tone="band">
         <SectionHeading
-          eyebrow={t.offers.codesEyebrow}
-          title={t.offers.codesTitle}
-          intro={t.offers.codesIntro}
+          eyebrow={t.offers.standingEyebrow}
+          title={t.offers.standingTitle}
+          tone="light"
         />
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {coupons.map((coupon, index) => (
-            <Reveal key={coupon.code} delay={index * 80}>
-              <div className="card h-full overflow-hidden text-center">
-                <div className="bg-band px-6 py-7">
-                  <p className="font-display text-3xl tracking-[0.14em] text-goldlight">
-                    {coupon.code}
-                  </p>
-                </div>
-                <div className="px-6 py-7">
-                  <p className="text-sm leading-relaxed text-muted">
-                    {t.coupons[coupon.code]}
-                  </p>
-                  <p className="mt-4 text-[0.66rem] uppercase tracking-[0.14em] text-muted">
-                    {coupon.minimum > 0
-                      ? `${t.common.minimumOrder} ${formatPrice(coupon.minimum)}`
-                      : t.common.noMinimum}
-                  </p>
-                  <Link href="/shop" className="btn btn-outline mt-6 w-full">
-                    {t.common.useThisCode}
-                  </Link>
-                </div>
+          {[
+            <GiftIcon key="a" className="h-6 w-6" />,
+            <ShieldIcon key="b" className="h-6 w-6" />,
+            <TruckIcon key="c" className="h-6 w-6" />,
+          ].map((icon, index) => (
+            <Reveal key={t.offers.standing[index].title} delay={index * 90}>
+              <div className="h-full rounded-2xl border border-bandtext/15 p-7">
+                <span className="text-goldlight">{icon}</span>
+                <h3 className="mt-4 font-display text-xl text-bandtext">
+                  {t.offers.standing[index].title}
+                </h3>
+                <p className="mt-2 text-base text-goldlight">
+                  {t.offers.standing[index].line}
+                </p>
+                <p className="mt-3 text-[0.95rem] leading-relaxed text-bandtext/80">
+                  {t.offers.standing[index].note}
+                </p>
               </div>
             </Reveal>
           ))}
         </div>
-      </Section>
-
-      {/* Standing offers */}
-      <Section tone="soft">
-        <SectionHeading eyebrow={t.offers.standingEyebrow} title={t.offers.standingTitle} />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {t.offers.standing.map((deal, index) => (
-            <Reveal key={deal.title} delay={index * 80}>
-              <div className="card h-full p-8">
-                <span className="text-gold">{dealIcons[index]}</span>
-                <h3 className="mt-4 font-display text-2xl">{deal.title}</h3>
-                <p className="mt-2 text-sm font-medium text-heading">{deal.line}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{deal.note}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      {/* Referral and Instagram */}
-      <Section tone="band">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-bandtext/15 p-8">
-            <p className="eyebrow text-goldlight">{t.offers.referEyebrow}</p>
-            <h3 className="mt-4 text-2xl text-bandtext">{t.offers.referTitle}</h3>
-            <p className="mt-4 text-sm leading-relaxed text-bandtext/80">
-              {t.offers.referBody}
-            </p>
-            <a
-              href={waLink(
-                "Assalam o Alaikum, I want to refer a friend to Roots Revival. My order number is "
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-whatsapp mt-7"
-            >
-              <WhatsappIcon className="h-5 w-5" />
-              {t.offers.referBtn}
-            </a>
-          </div>
-
-          <div className="rounded-2xl border border-bandtext/15 p-8">
-            <p className="eyebrow text-goldlight">{t.offers.instaEyebrow}</p>
-            <h3 className="mt-4 text-2xl text-bandtext">{t.offers.instaTitle}</h3>
-            <p className="mt-4 text-sm leading-relaxed text-bandtext/80">
-              {t.offers.instaBody}
-            </p>
-            <a
-              href={brand.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-gold mt-7"
-            >
-              <InstagramIcon className="h-5 w-5" />
-              {t.offers.instaBtn}
-            </a>
-          </div>
+        <div className="mt-12 text-center">
+          <a
+            href={waLink(
+              `Assalam o Alaikum ${brand.name} team, I would like to order the herbal hair oil.`
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-whatsapp"
+          >
+            <WhatsappIcon className="h-5 w-5" />
+            {t.common.orderOnWhatsapp}
+          </a>
         </div>
       </Section>
     </>
-  );
-}
-
-function Row({
-  label,
-  value,
-  strike,
-  accent,
-}: {
-  label: string;
-  value: string;
-  strike?: boolean;
-  accent?: boolean;
-}) {
-  return (
-    <div className="flex justify-between gap-3">
-      <dt className="text-muted">{label}</dt>
-      <dd
-        className={`${strike ? "text-muted line-through" : accent ? "text-hibiscus" : "text-heading"}`}
-      >
-        {value}
-      </dd>
-    </div>
   );
 }

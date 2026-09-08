@@ -47,15 +47,19 @@ files and nothing else.
 choice is remembered in the browser. Both palettes are defined at the top of `app/globals.css`,
 so changing a colour there changes it everywhere.
 
-**Artwork.** The uploaded brand files live in `public/brand`. The website uses processed copies
-in `public/art`, generated from them: the logo cut out with transparency plus a cream version for
-dark backgrounds, the front label, back label and box panels, and the product photography used on
-the shop cards. Ingredient icons and benefit marks are drawn in code in
+**Artwork.** The product photography lives in `public/art`, optimised from the original camera
+files: `hero.jpg` and its wide crop `banner.jpg`, the three square pack shots `pack-single.jpg`,
+`pack-duo.jpg` and `pack-family.jpg`, and the three sides of the box `box-front.jpg`,
+`box-ingredients.jpg` and `box-about.jpg`. The pack shots are square and every tile that holds
+one is square too, so a photo is never cropped on a phone. Paths are collected in
+`components/ProductArt.tsx`. Ingredient icons and benefit marks are drawn in code in
 `components/HerbIcons.tsx`, so they stay sharp at any size and follow the theme.
 
-**Offer countdown.** The launch offer counts down to the end of the current month, Pakistan time.
-It appears on the home hero, the shop, every product page, the offers page and the sticky bar.
-The logic is in `components/Countdown.tsx`.
+**The free 60ml bottle.** The one offer the shop runs is a free 60ml bottle with the duo pack.
+It is set by `gift: true` on the duo pack in `lib/products.ts`, and everything that shows it
+follows from there: the home hero callout, the deals banner, the badge on the pack cards, the
+sticky bar and the cart line. The gold shine and the gift animation are `.gift-shine` and
+`.gift-pop` in `app/globals.css`, and both stop for anyone who has reduced motion turned on.
 
 ## Where to change things
 
@@ -63,8 +67,10 @@ Everything a shop owner normally edits lives in three files.
 
 | What | File |
 | --- | --- |
-| WhatsApp number, email, Instagram link, bank details, delivery charges | `lib/brand.ts` |
-| Packs, prices, discount codes, ingredients, benefits, usage steps | `lib/products.ts` |
+| WhatsApp number, email, Instagram link, bank details, order email list | `lib/brand.ts` |
+| Delivery zones and charges | `lib/delivery.ts`, with the area names in `lib/i18n` |
+| Packs and prices | `lib/products.ts` |
+| Ingredients, benefits, usage steps and all other wording | `lib/i18n/en.ts` and `lib/i18n/ur.ts` |
 | Every word on the website, in English and in Urdu | `lib/i18n/en.ts` and `lib/i18n/ur.ts` |
 | Colours for light and dark | `app/globals.css` |
 
@@ -93,14 +99,34 @@ const reviews = [
 The reviews page shows the invitation card while the array is empty and switches to the
 review wall as soon as you add real customer words.
 
+## Delivery
+
+We dispatch by rider from Gulshan-e-Iqbal Block 10 and deliver **inside Karachi only**. The
+charge depends on how far the parcel travels, so the buyer picks their area at checkout and
+sees the exact amount before ordering. The four zones are in `lib/delivery.ts`:
+
+| Zone | Delivery |
+| --- | --- |
+| Gulshan and around | Rs 150 |
+| Central Karachi | Rs 300 |
+| Wider Karachi | Rs 450 |
+| Outer Karachi | Rs 600 |
+
+To change a charge, edit the `fee` in `lib/delivery.ts`. To move an area between zones, edit
+the `areas` line for that zone in `lib/i18n/en.ts` and `lib/i18n/ur.ts`. The server recalculates
+the delivery charge from the zone id when the order is posted, so it cannot be changed from the
+browser.
+
 ## How an order reaches you
 
 When a customer presses **Place Order** on `/checkout`:
 
 1. The order is posted to `/api/order`, where the totals are recalculated on the server
    so a customer can never change the price from their browser.
-2. An email with the full order (customer, address, items, total, payment method) is sent
-   to `rootsrevivalpakistan@gmail.com`, as soon as one of the mail settings below is added.
+2. An email with the full order (customer, address, delivery zone, items, total, payment
+   method) is sent to **both** `rootsrevivalpakistan@gmail.com` and `ainaabidi25@gmail.com`,
+   as soon as one of the mail settings below is added. That list lives in `orderEmails` in
+   `lib/brand.ts`; add or remove an address there and the order mail follows.
 3. A WhatsApp message containing the same details opens in a new tab, addressed to
    `+92 311 3839767`, so the order lands in your WhatsApp inbox as well.
 4. The customer lands on `/thankyou` with their order number, and the Meezan Bank details
@@ -128,13 +154,24 @@ Every order is now pushed to `+92 311 3839767` by the website itself.
 
 *Resend, the simpler one.* Create a free account at resend.com using
 `rootsrevivalpakistan@gmail.com`, copy the API key, add it in Vercel as `RESEND_API_KEY`,
-then redeploy. Orders arrive from `onboarding@resend.dev`.
+then redeploy.
+
+One catch worth knowing before you pick it: on a new Resend account the only sender you
+have is `onboarding@resend.dev`, and Resend will deliver from it **only to the address you
+signed up with**. So orders would reach `rootsrevivalpakistan@gmail.com` and silently not
+reach `ainaabidi25@gmail.com`. To send to both, verify a domain in Resend (Domains, then
+Add Domain, then paste the DNS records at your registrar) and set `ORDER_EMAIL_FROM` to
+something on that domain, for example `Roots Revival <orders@rootsrevival.pk>`.
+
+If you do not have a domain yet, use the Gmail option below instead. It sends to both
+addresses today with no domain and no waiting.
 
 *Your own Gmail over SMTP.* In the Google account of `rootsrevivalpakistan@gmail.com`
 turn on two step verification, create an app password, then add in Vercel:
 `SMTP_HOST` as `smtp.gmail.com`, `SMTP_PORT` as `465`, `SMTP_USER` as
 `rootsrevivalpakistan@gmail.com` and `SMTP_PASS` as the app password. Orders then arrive
-from your own address, so replying to one writes straight back to the customer.
+from your own address at both inboxes, so replying to one writes straight back to the
+customer.
 
 Until one of these is added, the website does not pretend the mail went out. The order
 confirmation page asks the customer to press the WhatsApp button instead, and it switches
@@ -154,7 +191,7 @@ All of them are optional. See `.env.example`.
 | `CALLMEBOT_PHONE` | The number CallMeBot messages, defaults to the shop number |
 | `RESEND_API_KEY` | Sends order emails through Resend |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Sends order emails through any mailbox, a Gmail app password included |
-| `ORDER_EMAIL_TO` | Where orders are emailed, defaults to the address in `lib/brand.ts` |
+| `ORDER_EMAIL_TO` | Overrides who gets the order emails; several addresses separated by commas. Leave it empty to use the list in `lib/brand.ts` |
 | `ORDER_EMAIL_FROM` | Sender shown on the order emails |
 | `ORDER_WEBHOOK_URL` | Posts the order to any webhook, for Zapier, Make, Slack or Discord |
 

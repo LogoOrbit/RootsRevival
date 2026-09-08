@@ -124,3 +124,15 @@ export function TagIcon({ className = "h-5 w-5" }: { className?: string }) {
     </svg>
   );
 }
+
+export function GiftIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 12v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8" />
+      <path d="M3 8h18v4H3z" />
+      <path d="M12 21V8" />
+      <path d="M12 8H7.5a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8Z" />
+      <path d="M12 8h4.5a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8Z" />
+    </svg>
+  );
+}

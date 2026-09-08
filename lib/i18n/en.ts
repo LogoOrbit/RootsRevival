@@ -19,10 +19,12 @@ export const en = {
     save: "Save",
     youSave: "You save",
     percentOff: "percent off",
-    perBottle: "per bottle",
     freeGift: "Free 60ml bottle",
-    freeDelivery: "Free delivery",
-    plusFreeDelivery: "plus free delivery",
+    inStock: "In stock, ready to ship",
+    giftBanner: "Take 2 bottles, get a 60ml bottle free",
+    giftBannerNote: "Our best selling pack, and the gift ships with it",
+    grabIt: "Grab It",
+    claimFreeBottle: "Claim The Free Bottle",
     cashOnDelivery: "Cash on delivery",
     quantity: "Quantity",
     remove: "Remove",
@@ -32,10 +34,6 @@ export const en = {
     free: "Free",
     total: "Total",
     items: "Items",
-    discountCode: "Discount code",
-    apply: "Apply",
-    codeApplied: "applied.",
-    codeInvalid: "That code is not valid for this order.",
     checkout: "Proceed To Checkout",
     placeOrder: "Place Order",
     placingOrder: "Placing your order",
@@ -44,7 +42,6 @@ export const en = {
     forAllHairTypes: "For all hair types, for women and men",
     ourStory: "Our Story",
     readFullStory: "Read The Full Story",
-    seeAllOffers: "See All Offers",
     fullUsageGuide: "Full Usage Guide",
     whatEachHerbDoes: "What Each Herb Does",
     contactPage: "Contact Page",
@@ -55,11 +52,6 @@ export const en = {
     language: "Language",
     home: "Home",
     shop: "Shop",
-    minimumOrder: "Minimum order",
-    noMinimum: "No minimum order",
-    oneCodePerOrder: "One code per order",
-    useThisCode: "Use This Code",
-    endsIn: "Launch offer ends in",
     days: "days",
     hours: "hours",
     minutes: "minutes",
@@ -80,24 +72,23 @@ export const en = {
   },
 
   announce: [
-    "Launch offer: a free 60ml bottle with every duo pack",
-    "Free delivery on every order above Rs 2,800",
-    "Cash on delivery available all over Pakistan",
-    "Use code REVIVE10 for 10 percent off your first order",
+    "Take 2 bottles and a 60ml bottle comes free",
+    "Same day dispatch across Karachi, delivery Rs 150 to Rs 600",
+    "Cash on delivery at your door",
     "Handmade in small batches with 16 natural herbs and oils",
   ],
 
   products: {
     starter: {
       name: "Single Bottle",
-      volume: "250ml e 8.45 fl.oz",
-      badge: "Most Popular",
+      volume: "1 x 250ml bottle in a printed gift box",
+      badge: "Start Here",
       summary:
-        "One full size bottle of our handmade herbal hair oil. Perfect for a first month of care.",
+        "One full size bottle of our handmade herbal hair oil, enough for a first month of real care.",
       highlights: [
-        "250ml bottle in a printed gift box",
-        "Lasts roughly one month with regular use",
-        "Cash on delivery all over Pakistan",
+        "Less hair fall and stronger roots from the first month",
+        "16 herbs and oils, no chemicals of any kind",
+        "Cash on delivery at your door",
       ],
     },
     duo: {
@@ -105,31 +96,25 @@ export const en = {
       volume: "2 x 250ml, plus a free 60ml bottle",
       badge: "Best Seller",
       summary:
-        "Two bottles for a complete treatment course, and a free 60ml bottle to keep in your bag or to pass on.",
+        "Two bottles is the full course your hair actually needs, and we send a 60ml bottle with it free.",
       highlights: [
-        "Two full size 250ml bottles",
-        "A free 60ml bottle with every duo pack",
-        "Free delivery all over Pakistan",
+        "A free 60ml bottle in every duo pack",
+        "The full course, so results have time to show",
+        "Keep the 60ml for travel or gift it to a friend",
       ],
     },
     family: {
       name: "Family Pack",
-      volume: "3 x 250ml",
+      volume: "3 x 250ml bottles",
       badge: "Best Value",
       summary:
-        "Three bottles at our lowest price per bottle. Made for families and for resellers.",
+        "Three bottles, our best price. Made for families who share it and for anyone who is in it for the long run.",
       highlights: [
-        "Three full size 250ml bottles",
-        "Free delivery all over Pakistan",
-        "Rs 1,333 a bottle, the lowest price we offer",
+        "The lowest price we offer on any pack",
+        "Enough for the whole family, or a long full course",
+        "One delivery instead of three",
       ],
     },
-  },
-
-  coupons: {
-    REVIVE10: "10 percent off your first order",
-    ROOTS15: "15 percent off orders of Rs 3,000 and above",
-    FREESHIP: "Free delivery on any order",
   },
 
   assurances: [
@@ -209,20 +194,23 @@ export const en = {
     heroTitle2: "Reveal Your Beauty",
     heroIntro:
       "A carefully crafted blend of traditional herbs and nutrient rich oils, slow infused at home by hand. Sixteen ingredients, zero chemicals, made to strengthen your hair from the roots.",
-    launchOffer: "Launch offer",
+    giftTitle: "Buy 2 bottles, get a 60ml bottle free",
+    giftBody:
+      "Our best selling pack. Two full size bottles for the complete course, and a 60ml bottle in the box at no extra cost.",
+    giftBannerTitle: "The free 60ml bottle is still on",
+    giftBannerBody:
+      "Every duo pack leaves our door with a 60ml bottle inside it. Take the pack our customers take.",
     trust: [
-      "Free delivery above Rs 2,800",
+      "Same day dispatch in Karachi",
       "Cash on delivery",
       "Made fresh by hand",
     ],
     herbCount: "Herbs and oils",
     bottleSize: "Full size bottle",
     dealsEyebrow: "Deals of the season",
-    dealsTitle: "Save more when you take the full course",
+    dealsTitle: "Three ways to start, one clear favourite",
     dealsIntro:
-      "Hair care works with consistency. Our bundle prices are built so a complete course costs less than buying one bottle at a time.",
-    couponLine: "Extra discount code for first orders:",
-    couponAfter: "for 10 percent off",
+      "Hair rewards consistency. Take the duo pack and the free 60ml bottle comes with it, which is why it is the one most people order.",
     benefitsEyebrow: "Why it works",
     benefitsTitle: "Seven reasons your hair will thank you",
     benefitsIntro:
@@ -244,7 +232,7 @@ export const en = {
     shopEyebrow: "Choose your pack",
     shopTitle: "Order your bottle today",
     shopIntro:
-      "Cash on delivery all over Pakistan, or pay online through Meezan Bank. Orders leave us within one working day.",
+      "Cash on delivery anywhere in Karachi, or pay online through Meezan Bank. Orders leave us the same working day.",
     journeyEyebrow: "Your hair journey",
     journeyTitle: "What to expect, week by week",
     journeyIntro:
@@ -272,16 +260,12 @@ export const en = {
     eyebrow: "The shop",
     title: "One oil, three ways to buy it",
     intro:
-      "Every pack holds the same handmade 250ml bottle of Roots Revival herbal hair oil. The more bottles you take, the less each one costs.",
+      "Every pack holds the same handmade 250ml bottle of Roots Revival herbal hair oil, filled by hand after you order.",
     perks: [
-      { title: "Fast delivery", note: "Dispatched within one working day, delivered in 2 to 4 working days." },
+      { title: "Fast Karachi delivery", note: "Dispatched the same working day, at your door in 1 to 2 days." },
       { title: "Pay your way", note: "Cash on delivery, or online transfer to Meezan Bank before dispatch." },
       { title: "Fresh batches", note: "Bottled by hand after your order, never sitting in a warehouse." },
     ],
-    codesEyebrow: "Save even more",
-    codesTitle: "Working discount codes",
-    codesIntro:
-      "Enter the code in your cart or at checkout and the total updates straight away.",
     messageTitle: "Rather order by message?",
     messageIntro:
       "Send us your name, address and the pack you want. We confirm the order, share the total and dispatch it the same day.",
@@ -303,51 +287,88 @@ export const en = {
     fullListTitle: "Everything inside the bottle",
     fullListIntro: "Straight from the label, in the same order it is printed.",
     gallerySides: ["Box front", "Ingredients and how to use", "About the oil"],
-    deliveryFreeOnPack: "Delivery is free on this pack.",
-    deliveryFlat: "Delivery Rs 200, free above Rs 2,800.",
+    giftHeadline: "A free 60ml bottle comes with this pack",
+    giftBody:
+      "We pack the 60ml bottle in the box ourselves. Keep it in your bag, take it travelling, or give it to someone whose hair needs it.",
+    saveHeadline: "Our best price on the oil",
+    saveBody:
+      "Three bottles for less than three bought one at a time, and it all arrives in a single delivery.",
+    deliveryNote: "Delivery across Karachi is",
+    deliveryDays: "Delivered in 1 to 2 days",
+  },
+
+  delivery: {
+    eyebrow: "Delivery",
+    title: "We deliver across Karachi",
+    intro:
+      "Every parcel leaves our hands in Gulshan-e-Iqbal Block 10, so the charge depends on how far it travels. Pick your area at checkout and you will see the exact charge before you order.",
+    note: "Delivery across Karachi runs from",
+    pickLabel: "Your delivery area in Karachi",
+    pickPlaceholder: "Choose your area",
+    pickHint:
+      "Pick your area and the delivery charge is added to your total straight away.",
+    pickShort: "Pick your area",
+    pendingNote: "Delivery is added once you pick your area.",
+    tableHeads: ["Zone", "Areas we cover", "Delivery"],
+    zones: {
+      near: {
+        label: "Gulshan and around",
+        areas:
+          "Gulshan-e-Iqbal, Gulistan-e-Johar, Pehlwan Goth, Safoora Goth, Civic Centre, Karimabad, Aisha Manzil, Water Pump, Federal B Area",
+      },
+      central: {
+        label: "Central Karachi",
+        areas:
+          "North Nazimabad, Nazimabad, Liaquatabad, Buffer Zone, PECHS, Bahadurabad, Tariq Road, Shahra-e-Faisal, Gulberg, Garden, Jamshed Town",
+      },
+      wider: {
+        label: "Wider Karachi",
+        areas:
+          "Saddar, Clifton, DHA Phase 1 to 6, Korangi, Landhi, Malir, Model Colony, Shah Faisal Colony, North Karachi, New Karachi, Surjani Town, Orangi, SITE, Lyari, Keamari, Baldia",
+      },
+      outer: {
+        label: "Outer Karachi",
+        areas:
+          "DHA Phase 7 and 8, Bahria Town, Gulshan-e-Maymar, Ahsanabad, outer Scheme 33, Gadap, Steel Town, Bin Qasim, Port Qasim, Hawksbay, Memon Goth, Northern Bypass",
+      },
+    },
   },
 
   offers: {
-    eyebrow: "Deals and discounts",
-    title: "Real savings on real herbal care",
+    eyebrow: "The offer",
+    title: "Take 2 bottles, the third is on us",
     intro:
-      "We keep the price honest instead of marking it up and calling it a sale. These are the offers running right now on every Roots Revival pack.",
-    shopDeals: "Shop The Deals",
-    askOffers: "Ask On WhatsApp",
-    headlineBadge: "Launch offer",
-    headlineTitle1: "A free bottle",
-    headlineTitle2: "with the duo pack",
+      "We run one offer and we run it properly. Every duo pack leaves our door with a free 60ml bottle inside it.",
+    headlineBadge: "Free 60ml bottle",
+    headlineTitle1: "Buy the duo pack,",
+    headlineTitle2: "get a 60ml bottle free",
     headlineBody:
-      "Hair repairs itself slowly, so we price the bigger packs the way a course should be priced. Take two bottles and a 60ml bottle comes free. Take three and the price per bottle drops to Rs 1,333.",
-    grabFamily: "Grab The Family Pack",
+      "Two full size 250ml bottles is the complete course, the length of time your hair needs to show a real difference. Order it and we pack a 60ml bottle in the box at no extra cost, ready for your bag, a trip, or someone you want to share it with.",
+    grabDuo: "Get The Duo Pack",
     comparePacks: "Compare All Packs",
-    whileStock: "Offer runs while this batch lasts",
-    tableEyebrow: "Bundle pricing",
-    tableTitle: "Price per bottle drops with every pack",
+    tableEyebrow: "Every pack",
+    tableTitle: "Pick the pack that fits your hair journey",
     tableIntro:
-      "Same handmade oil, same 250ml bottle, simply a better price when you take more.",
-    tableHeads: ["Pack", "Bottles", "Regular price", "Your price", "You save", "Price per bottle"],
-    codesEyebrow: "Discount codes",
-    codesTitle: "Add a code, watch the total drop",
-    codesIntro:
-      "Enter your code in the cart or on the checkout page. One code per order.",
+      "Same handmade oil, same 250ml bottle, filled by hand after you order.",
     standingEyebrow: "Always on",
-    standingTitle: "Standing offers for every order",
+    standingTitle: "What you get with every order",
     standing: [
-      { title: "Free delivery", line: "On every order above Rs 2,800", note: "The duo pack and the family pack already qualify, so delivery is on us." },
-      { title: "Cash on delivery", line: "Pay when the parcel reaches your door", note: "Available in every city of Pakistan, with no advance payment needed." },
-      { title: "Wholesale rates", line: "For 6 bottles and above", note: "Salons, resellers and gift orders get a separate price. Message us on WhatsApp." },
+      {
+        title: "Free 60ml bottle",
+        line: "With every duo pack",
+        note: "Packed in the box by us, at no extra cost, on every duo pack order.",
+      },
+      {
+        title: "Cash on delivery",
+        line: "Pay when the parcel reaches your door",
+        note: "Anywhere in Karachi, with no advance payment needed.",
+      },
+      {
+        title: "Fast Karachi delivery",
+        line: "Dispatched the same working day",
+        note: "Delivery Rs 150 to Rs 600 depending on your area, shown before you order.",
+      },
     ],
-    referEyebrow: "Refer a friend",
-    referTitle: "Share the oil, share the discount",
-    referBody:
-      "Send your order number to a friend. Their first order gets 10 percent off with the code REVIVE10, and your next order ships free. Simply mention the order number when you message us.",
-    referBtn: "Send Referral",
-    instaEyebrow: "Instagram family",
-    instaTitle: "Follow us for surprise batch offers",
-    instaBody:
-      "Fresh batch announcements, giveaway days and offers we only share with our followers. Send us a screenshot of your follow and we will share the running code with you.",
-    instaBtn: "Follow On Instagram",
   },
 
   about: {
@@ -575,15 +596,14 @@ export const en = {
     eyebrow: "Almost there",
     title: "Your cart",
     intro:
-      "Check your packs, add a discount code, then place the order. We confirm every order on WhatsApp before it is dispatched.",
+      "Check your packs, pick your area in Karachi, then place the order. We confirm every order on WhatsApp before it is dispatched.",
     emptyTitle: "Your cart is empty",
     emptyBody:
       "Every pack holds the same handmade 250ml bottle. Pick the one that suits your hair journey and we will bottle it fresh for you.",
     browsePacks: "Browse The Packs",
     summary: "Order summary",
     bundleSaving: "Bundle saving",
-    addMore: "more and your delivery becomes free.",
-    addMoreLead: "Add",
+    freeBottles: "Free 60ml bottles",
     payNote: "Cash on delivery or bank transfer",
     each: "each",
   },
@@ -603,13 +623,12 @@ export const en = {
     emailOptional: "Email (optional)",
     address: "Complete address",
     addressPlaceholder: "House number, street, area, nearest landmark",
-    city: "City",
-    province: "Province",
+    area: "Your area",
     notes: "Order notes (optional)",
     notesPlaceholder: "Anything we should know, for example a preferred delivery time",
     paymentMethod: "Payment method",
     codTitle: "Cash on delivery",
-    codNote: "Pay the courier when your parcel arrives. Available all over Pakistan.",
+    codNote: "Pay our rider when your parcel arrives, anywhere in Karachi.",
     bankTitle: "Online bank transfer",
     bankNote:
       "Transfer the amount, then send the receipt to our WhatsApp. We dispatch the same day.",
@@ -624,20 +643,12 @@ export const en = {
     quantityLabel: "Quantity",
     whatsappNote:
       "When you place the order, your details open in WhatsApp so our team can confirm with you right away. Nothing is charged online.",
-    provinces: [
-      "Punjab",
-      "Sindh",
-      "Khyber Pakhtunkhwa",
-      "Balochistan",
-      "Islamabad Capital Territory",
-      "Gilgit Baltistan",
-      "Azad Jammu and Kashmir",
-    ],
     errors: {
       name: "Please write your full name.",
       phone: "Please write a working WhatsApp number.",
       address: "Please write your full address.",
-      city: "Please write your city.",
+      city: "Please write your area.",
+      zoneId: "Please pick your delivery area in Karachi.",
       email: "Please check the email address.",
       cart: "Your cart is empty.",
       failed:
@@ -706,7 +717,7 @@ export const en = {
     intro:
       "Clear, simple rules with no fine print games. If anything goes wrong with your parcel, one message is all it takes.",
     cards: [
-      { title: "Delivery charges", note: "A flat Rs 200 anywhere in Pakistan. Delivery is free on every order above Rs 2,800, which includes the duo pack and the family pack." },
+      { title: "Delivery charges", note: "We deliver across Karachi only. The charge is Rs 150 to Rs 600 depending on how far your area is from Gulshan-e-Iqbal Block 10, and you see the exact amount at checkout before you order." },
       { title: "Delivery time", note: "Orders are dispatched within one working day of confirmation and usually reach you in 2 to 4 working days. Remote areas can take a little longer." },
       { title: "Tracking", note: "As soon as the courier collects your parcel we send the tracking number to your WhatsApp, so you always know where it is." },
     ],
@@ -737,7 +748,7 @@ export const en = {
     intro:
       "We are a small family brand and we treat your information the way we would want ours treated.",
     sections: [
-      { title: "What we collect", body: "When you place an order we ask for your name, WhatsApp number, delivery address, city and, if you choose to share it, your email address. If you write to us through the contact form we keep the message you send along with the way you asked us to reply. That is the whole list." },
+      { title: "What we collect", body: "When you place an order we ask for your name, WhatsApp number, delivery address, area and, if you choose to share it, your email address. If you write to us through the contact form we keep the message you send along with the way you asked us to reply. That is the whole list." },
       { title: "Why we collect it", body: "We use these details for one purpose only: to confirm your order, pack it, deliver it and answer your questions. Your address goes to the courier company so the parcel can reach you, and nothing more than that is shared." },
       { title: "How the details reach us", body: "Your order is sent to our own email inbox and to our own WhatsApp number. We do not run advertising trackers on this website and we do not build profiles of visitors." },
       { title: "What we never do", body: "We never sell, rent or trade your details to anyone. We never add you to a marketing list without you asking for it, and we never share your number with another business." },
@@ -757,7 +768,7 @@ export const en = {
     sections: [
       { title: "Who we are", body: "Roots Revival Herbal Hair Oil is a home run herbal hair oil brand based in Pakistan. Orders placed on this website are handled directly by our own family, and every message you send reaches us and nobody else." },
       { title: "Placing an order", body: "An order placed on this website is a request to buy. It becomes final once we confirm it with you on WhatsApp. If a pack is out of stock or an address is outside our courier network, we will tell you honestly and cancel the order without any charge." },
-      { title: "Prices and payment", body: "All prices are shown in Pakistani Rupees and include taxes. Delivery is Rs 200 and becomes free above Rs 2,800. Payment is either cash to the courier on delivery, or an online transfer to the Meezan Bank account named on our payment page. We never ask for a payment to any other account." },
+      { title: "Prices and payment", body: "All prices are shown in Pakistani Rupees and include taxes. Delivery inside Karachi is Rs 150 to Rs 600 depending on your area, shown at checkout before you order. Payment is either cash to the courier on delivery, or an online transfer to the Meezan Bank account named on our payment page. We never ask for a payment to any other account." },
       { title: "Discount codes", body: "One discount code applies per order. Codes may carry a minimum order value, they cannot be exchanged for cash, and we may end an offer at any time. An order already confirmed keeps the price it was confirmed at." },
       { title: "Product use", body: "Roots Revival herbal hair oil is for external use only. Please do a patch test before your first use, keep the bottle away from children and stop using it if any irritation appears. If you are pregnant, nursing or under treatment for a scalp condition, speak to your doctor first." },
       { title: "Honest results", body: "Our oil is a natural care product, not a medicine, and it does not claim to cure any medical condition. Results depend on your hair, your health and how regularly you use it. We describe what our customers usually experience and we will never promise more than that." },
@@ -791,7 +802,7 @@ export const en = {
     terms: "Terms Of Service",
     rights: "All rights reserved.",
     bankTransfer: "Meezan Bank transfer",
-    deliveryAll: "Delivery all over Pakistan",
+    deliveryAll: "Delivery across Karachi",
   },
 };
 

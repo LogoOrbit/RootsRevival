@@ -3,14 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
-import { hasSaving, percentOff, products, savingOf } from "@/lib/products";
+import { hasSaving, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { artwork, ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import ProductCard from "@/components/ProductCard";
-import Countdown from "@/components/Countdown";
 import { HerbIcon, BenefitIcon } from "@/components/HerbIcons";
 import { Section, SectionHeading, Pill, Stat, Reveal } from "@/components/ui";
 import {
+  GiftIcon,
   HandIcon,
   InstagramIcon,
   LeafIcon,
@@ -40,25 +40,27 @@ export default function HomePage() {
               {t.home.heroIntro}
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-4">
-              <div className="flex items-baseline gap-2">
-                <span className="font-display text-4xl text-heading">
-                  {formatPrice(hero.price)}
+            <div className="gift-shine mt-7 rounded-2xl border-2 border-gold/50 bg-gold/12 p-5">
+              <div className="flex items-start gap-4">
+                <span className="gift-pop mt-0.5 shrink-0 text-gold">
+                  <GiftIcon className="h-8 w-8" />
                 </span>
-                <span className="text-sm text-muted">{t.common.perBottle}</span>
+                <div>
+                  <p className="font-display text-2xl leading-tight text-heading sm:text-3xl">
+                    {t.home.giftTitle}
+                  </p>
+                  <p className="mt-2 text-base leading-relaxed">{t.home.giftBody}</p>
+                  <div className="mt-4 flex flex-wrap items-baseline gap-3">
+                    <span className="price price-lg">{formatPrice(hero.price)}</span>
+                    <span className="chip chip-gift">{t.common.freeGift}</span>
+                  </div>
+                </div>
               </div>
-              <span className="pulse-ring rounded-full bg-hibiscus px-3 py-1 text-[0.7rem] uppercase tracking-[0.12em] text-white">
-                {t.home.launchOffer} {t.common.freeGift}
-              </span>
-            </div>
-
-            <div className="mt-6 inline-flex rounded-2xl border border-border bg-card px-4 py-3">
-              <Countdown />
             </div>
 
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/shop" className="btn btn-gold">
-                {t.common.shopTheOil}
+              <Link href="/product/duo" className="btn btn-gold">
+                {t.common.claimFreeBottle}
               </Link>
               <a
                 href={waLink(
@@ -146,17 +148,17 @@ export default function HomePage() {
                   href={`/product/${product.slug}`}
                   className="card group flex h-full flex-col overflow-hidden text-center transition-shadow hover:shadow-[0_20px_50px_rgba(18,53,36,0.16)]"
                 >
-                  <span className="relative block h-60 bg-[#0d1710] sm:h-64">
+                  <span className="relative block aspect-square w-full">
                     <PackShot
                       slug={product.slug}
                       className="h-full w-full transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 92vw, 380px"
                     />
                     {(product.gift || hasSaving(product)) && (
-                      <span className="absolute end-3 top-3 rounded-full bg-hibiscus px-2.5 py-1 text-[0.6rem] uppercase tracking-[0.12em] text-white">
+                      <span className="absolute end-3 top-3 rounded-full bg-hibiscus px-3 py-1.5 text-[0.72rem] font-semibold text-white">
                         {product.gift
                           ? t.common.freeGift
-                          : `${percentOff(product)} ${t.common.percentOff}`}
+                          : `${t.common.save} ${formatPrice(savingOf(product))}`}
                       </span>
                     )}
                   </span>
@@ -165,22 +167,25 @@ export default function HomePage() {
                     <span className="mt-2 font-display text-2xl text-heading">
                       {copy.name}
                     </span>
-                    <span className="mt-1 text-xs uppercase tracking-[0.12em] text-muted">
-                      {copy.volume}
+                    <span className="spec mt-2">{copy.volume}</span>
+                    <span className="mt-4 flex flex-wrap items-baseline justify-center gap-3">
+                      <span className="price price-lg">{formatPrice(product.price)}</span>
+                      {hasSaving(product) ? (
+                        <span className="price-was text-base">
+                          {formatPrice(product.compareAt!)}
+                        </span>
+                      ) : null}
                     </span>
-                    <span className="mt-4 font-display text-3xl text-heading">
-                      {formatPrice(product.price)}
-                    </span>
-                    <span className="mt-1 text-sm text-muted">
-                      {formatPrice(Math.round(product.price / product.bottles))}{" "}
-                      {t.common.perBottle}
-                    </span>
-                    <span className="mt-3 text-xs uppercase tracking-[0.12em] text-hibiscus">
-                      {product.gift
-                        ? t.common.freeGift
-                        : hasSaving(product)
-                          ? `${t.common.save} ${formatPrice(savingOf(product))}`
-                          : t.common.cashOnDelivery}
+                    <span className="mt-3 flex flex-wrap justify-center gap-2">
+                      {product.gift ? (
+                        <span className="chip chip-gift">{t.common.freeGift}</span>
+                      ) : null}
+                      {hasSaving(product) ? (
+                        <span className="chip chip-save">
+                          {t.common.youSave} {formatPrice(savingOf(product))}
+                        </span>
+                      ) : null}
+                      <span className="chip chip-stock">{t.common.inStock}</span>
                     </span>
                     <span className="btn btn-outline mt-5 w-full">
                       {t.common.viewPack}
@@ -192,27 +197,23 @@ export default function HomePage() {
           })}
         </div>
 
-        <div className="mt-10 overflow-hidden rounded-3xl bg-band">
-          <div className="grid items-center gap-8 p-8 lg:grid-cols-[1.2fr_1fr] lg:p-10">
+        <div className="gift-shine mt-10 overflow-hidden rounded-3xl bg-band">
+          <div className="grid items-center gap-8 p-8 lg:grid-cols-[auto_1fr_auto] lg:p-10">
+            <span className="gift-pop flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-goldlight text-band">
+              <GiftIcon className="h-10 w-10" />
+            </span>
             <div>
               <p className="eyebrow text-goldlight">{t.offers.headlineBadge}</p>
               <h3 className="mt-3 text-3xl text-bandtext sm:text-4xl">
-                {t.home.couponLine}{" "}
-                <span className="rounded-lg bg-goldlight px-3 py-1 font-display text-band">
-                  REVIVE10
-                </span>{" "}
-                {t.home.couponAfter}
+                {t.home.giftBannerTitle}
               </h3>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/offers" className="btn btn-gold">
-                  {t.common.seeAllOffers}
-                </Link>
-                <Link href="/shop" className="btn btn-outline border-bandtext text-bandtext">
-                  {t.common.shopNow}
-                </Link>
-              </div>
+              <p className="mt-3 text-base leading-relaxed text-bandtext/85">
+                {t.home.giftBannerBody}
+              </p>
             </div>
-            <Countdown tone="light" />
+            <Link href="/product/duo" className="btn btn-gold shrink-0">
+              {t.common.claimFreeBottle}
+            </Link>
           </div>
         </div>
       </Section>
