@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { computeTotals, type CartLine } from "@/lib/cart";
-import { getZone } from "@/lib/delivery";
 import { en } from "@/lib/i18n/en";
 import { pushWhatsapp, sendMail, shopEmail } from "@/lib/notify";
 import { orderEmailHtml } from "@/lib/email";
@@ -17,7 +16,6 @@ type OrderBody = {
   province?: string;
   notes?: string;
   payment?: string;
-  zoneId?: string;
   lines?: CartLine[];
   website?: string; // honeypot
 };
@@ -55,7 +53,6 @@ export async function POST(request: Request) {
   const province = clean(body.province, 60);
   const notes = clean(body.notes, 500);
   const payment = clean(body.payment, 40) === "bank" ? "bank" : "cod";
-  const zoneId = clean(body.zoneId, 40);
   const lines = Array.isArray(body.lines) ? body.lines : [];
 
   const errors: Record<string, string> = {};
@@ -64,11 +61,10 @@ export async function POST(request: Request) {
     errors.phone = "Please write a working WhatsApp number.";
   if (address.length < 10) errors.address = "Please write your full address.";
   if (city.length < 2) errors.city = "Please write your area.";
-  if (!getZone(zoneId)) errors.zoneId = "Please pick your delivery area.";
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     errors.email = "Please check the email address.";
 
-  const totals = computeTotals(lines, zoneId);
+  const totals = computeTotals(lines);
   if (totals.itemCount === 0) errors.cart = "Your cart is empty.";
 
   if (Object.keys(errors).length > 0) {
@@ -104,9 +100,6 @@ export async function POST(request: Request) {
     email ? `Email: ${email}` : "Email: not given",
     `Address: ${address}`,
     `Area: ${city}${province ? `, ${province}` : ""}`,
-    `Delivery zone: ${en.delivery.zones[zoneId as keyof typeof en.delivery.zones].label} (${formatPrice(
-      totals.shipping ?? 0
-    )})`,
     notes ? `Notes: ${notes}` : "",
     "",
     "ORDER",
@@ -116,7 +109,7 @@ export async function POST(request: Request) {
       ? `Free gift: ${totals.freeBottles} x 60ml bottle`
       : "",
     `Subtotal: ${formatPrice(totals.subtotal)}`,
-    `Delivery: ${formatPrice(totals.shipping ?? 0)}`,
+    `Delivery: ${formatPrice(totals.shipping)}`,
     `TOTAL TO COLLECT: ${formatPrice(totals.total)}`,
     "",
     `Payment: ${paymentLabel}`,
@@ -140,7 +133,6 @@ export async function POST(request: Request) {
       email,
       address,
       area: city,
-      zoneLabel: en.delivery.zones[zoneId as keyof typeof en.delivery.zones].label,
       notes,
       items: totals.lines.map((line) => ({
         name: en.products[line.product.slug].name,
@@ -150,7 +142,7 @@ export async function POST(request: Request) {
       })),
       freeBottles: totals.freeBottles,
       subtotal: totals.subtotal,
-      shipping: totals.shipping ?? 0,
+      shipping: totals.shipping,
       total: totals.total,
       paymentLabel,
       whatsappUrl: whatsappUrlForShop,
@@ -164,7 +156,7 @@ export async function POST(request: Request) {
     "",
     itemLines,
     "",
-    `Total: ${formatPrice(totals.total)} (delivery ${formatPrice(totals.shipping ?? 0)})`,
+    `Total: ${formatPrice(totals.total)} (delivery ${formatPrice(totals.shipping)})`,
     `Payment: ${paymentLabel}`,
     "",
     `Name: ${name}`,

@@ -3,7 +3,7 @@ import OffersPage from "@/components/pages/Offers";
 
 export const metadata: Metadata = {
   title: "Deals And Offers",
-  description: "Launch offers on Roots Revival herbal hair oil. Save up to Rs 2,500 on bundle packs, use code REVIVE10 for 10 percent off and free delivery above Rs 3,000.",
+  description: "Buy the Roots Revival duo pack and get a 60ml bottle of herbal hair oil free. Flat Rs 250 delivery and cash on delivery on every order.",
 };
 
 export default function Page() {

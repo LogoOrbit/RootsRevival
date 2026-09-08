@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { products } from "@/lib/products";
-import { deliveryZones, lowestFee, highestFee } from "@/lib/delivery";
 import { useT } from "@/components/Providers";
 import ProductCard from "@/components/ProductCard";
 import { PageHero, Section, SectionHeading, Reveal } from "@/components/ui";
@@ -50,31 +49,27 @@ export default function ShopPage() {
         </div>
       </Section>
 
-      {/* Delivery, so the buyer knows the charge before the checkout page. */}
+      {/* One flat delivery charge, so there is nothing to work out at checkout. */}
       <Section tone="soft">
         <SectionHeading
           eyebrow={t.delivery.eyebrow}
           title={t.delivery.title}
           intro={t.delivery.intro}
         />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {deliveryZones.map((zone, index) => (
-            <Reveal key={zone.id} delay={index * 70}>
-              <div className="card h-full p-6">
-                <p className="price price-lg">{formatPrice(zone.fee)}</p>
-                <h3 className="mt-2 font-display text-xl">
-                  {t.delivery.zones[zone.id].label}
-                </h3>
-                <p className="mt-3 text-[0.95rem] leading-relaxed">
-                  {t.delivery.zones[zone.id].areas}
-                </p>
-              </div>
-            </Reveal>
-          ))}
+        <div className="mx-auto mt-10 max-w-md">
+          <div className="card gift-shine p-8 text-center">
+            <span className="text-gold">
+              <TruckIcon className="mx-auto h-8 w-8" />
+            </span>
+            <p className="price price-xl mt-4">
+              {formatPrice(brand.shipping.flatRate)}
+            </p>
+            <p className="mt-2 text-base font-semibold text-heading">
+              {t.delivery.flatLabel}
+            </p>
+            <p className="mt-3 text-[0.95rem] leading-relaxed">{t.delivery.note}</p>
+          </div>
         </div>
-        <p className="mt-8 text-center text-[0.95rem] text-muted">
-          {t.delivery.note} {formatPrice(lowestFee)} to {formatPrice(highestFee)}.
-        </p>
       </Section>
 
       <Section tone="band" className="text-center">

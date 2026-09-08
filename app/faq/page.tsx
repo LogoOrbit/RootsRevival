@@ -5,7 +5,7 @@ import { en } from "@/lib/i18n/en";
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description:
-    "Answers about Roots Revival herbal hair oil: what is inside it, how often to use it, when results show, delivery times across Pakistan and how to pay.",
+    "Answers about Roots Revival herbal hair oil: what is inside it, how often to use it, when results show, delivery times and how to pay.",
 };
 
 const faqSchema = {

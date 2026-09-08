@@ -22,7 +22,7 @@ export async function generateMetadata({
     title: copy.name,
     description: `${copy.summary} ${formatPrice(
       product.price
-    )}. Cash on delivery all over Pakistan.`,
+    )}. Flat Rs 250 delivery, cash on delivery.`,
   };
 }
 

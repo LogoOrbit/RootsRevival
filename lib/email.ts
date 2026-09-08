@@ -89,7 +89,6 @@ export type OrderMailData = {
   email: string;
   address: string;
   area: string;
-  zoneLabel: string;
   notes: string;
   items: OrderMailItem[];
   freeBottles: number;
@@ -134,7 +133,6 @@ export function orderEmailHtml(order: OrderMailData): string {
     ["Email", order.email ? `<a href="mailto:${escape(order.email)}" style="color:${GREEN};">${escape(order.email)}</a>` : ""],
     ["Address", paragraph(order.address)],
     ["Area", escape(order.area)],
-    ["Delivery zone", escape(order.zoneLabel)],
     ["Notes", order.notes ? paragraph(order.notes) : ""],
   ])}
 
@@ -150,9 +148,7 @@ export function orderEmailHtml(order: OrderMailData): string {
       )}</td>
     </tr>
     <tr>
-      <td style="padding:6px 0;color:${MUTED};font-size:14px;">Delivery, ${escape(
-        order.zoneLabel
-      )}</td>
+      <td style="padding:6px 0;color:${MUTED};font-size:14px;">Delivery</td>
       <td style="padding:6px 0;text-align:right;font-size:14px;color:${TEXT};">${escape(
         formatPrice(order.shipping)
       )}</td>

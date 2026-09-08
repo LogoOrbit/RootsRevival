@@ -52,7 +52,8 @@ export const brand = {
   },
 
   shipping: {
-    /** We dispatch by rider from here, which is what sets the delivery charge. */
+    /** One flat delivery charge, the same for every area we deliver to. */
+    flatRate: 250,
     dispatchFrom: "Gulshan-e-Iqbal Block 10, Karachi",
     deliveryDays: "1 to 2 working days inside Karachi",
   },

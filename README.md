@@ -68,7 +68,7 @@ Everything a shop owner normally edits lives in three files.
 | What | File |
 | --- | --- |
 | WhatsApp number, email, Instagram link, bank details, order email list | `lib/brand.ts` |
-| Delivery zones and charges | `lib/delivery.ts`, with the area names in `lib/i18n` |
+| Delivery charge | `shipping.flatRate` in `lib/brand.ts` |
 | Packs and prices | `lib/products.ts` |
 | Ingredients, benefits, usage steps and all other wording | `lib/i18n/en.ts` and `lib/i18n/ur.ts` |
 | Every word on the website, in English and in Urdu | `lib/i18n/en.ts` and `lib/i18n/ur.ts` |
@@ -101,21 +101,14 @@ review wall as soon as you add real customer words.
 
 ## Delivery
 
-We dispatch by rider from Gulshan-e-Iqbal Block 10 and deliver **inside Karachi only**. The
-charge depends on how far the parcel travels, so the buyer picks their area at checkout and
-sees the exact amount before ordering. The four zones are in `lib/delivery.ts`:
-
-| Zone | Areas | Delivery |
-| --- | --- | --- |
-| Gulshan and the blocks around it | Gulshan-e-Iqbal, Gulistan-e-Johar, Civic Centre, NIPA, Karimabad, Federal B Area | Rs 200 |
-| Central Karachi | Safoora Goth, Saddar, PECHS, Bahadurabad, Tariq Road, North Nazimabad | Rs 350 |
-| Wider Karachi | Clifton, DHA 1 to 6, Korangi, Landhi, Malir, North Karachi, Surjani, Orangi | Rs 450 |
-| Outer Karachi | Saadi Town, Scheme 33, Gulshan-e-Maymar, Bahria Town, DHA 7 and 8, Gadap | Rs 600 |
-
-To change a charge, edit the `fee` in `lib/delivery.ts`. To move an area between zones, edit
-the `areas` line for that zone in `lib/i18n/en.ts` and `lib/i18n/ur.ts`. The server recalculates
-the delivery charge from the zone id when the order is posted, so it cannot be changed from the
+One flat charge on every order, currently **Rs 250**, the same wherever the parcel goes. It
+lives in `shipping.flatRate` in `lib/brand.ts` and nowhere else, so changing that number
+changes the cart, the checkout, the product pages, the shop, the offers page and the order
+email together. The server adds it when the order is posted, so it cannot be changed from the
 browser.
+
+Parcels are dispatched the same working day from Gulshan-e-Iqbal Block 10 and arrive in 1 to 2
+days.
 
 ## How an order reaches you
 
@@ -123,7 +116,7 @@ When a customer presses **Place Order** on `/checkout`:
 
 1. The order is posted to `/api/order`, where the totals are recalculated on the server
    so a customer can never change the price from their browser.
-2. A formatted email with the full order (customer, address, delivery zone, items, the free
+2. A formatted email with the full order (customer, address, items, the free
    60ml bottles to pack, delivery charge, total and payment method) is sent to **both**
    `rootsrevivalpakistan@gmail.com` and `ainaabidi25@gmail.com`. It is a branded HTML mail
    with a Confirm on WhatsApp button, and the same details go out as plain text for any

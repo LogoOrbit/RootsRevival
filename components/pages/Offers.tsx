@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { hasSaving, products, savingOf } from "@/lib/products";
-import { deliveryZones, lowestFee, highestFee } from "@/lib/delivery";
 import { useT } from "@/components/Providers";
 import { artwork, PackShot } from "@/components/ProductArt";
 import { PageHero, Section, SectionHeading, Reveal } from "@/components/ui";
@@ -117,44 +116,27 @@ export default function OffersPage() {
         </div>
       </Section>
 
-      {/* Delivery inside Karachi. */}
+      {/* One flat delivery charge for every order. */}
       <Section tone="bg">
         <SectionHeading
           eyebrow={t.delivery.eyebrow}
           title={t.delivery.title}
           intro={t.delivery.intro}
         />
-        <div className="mt-10 overflow-x-auto">
-          <table className="w-full min-w-[520px] overflow-hidden rounded-2xl bg-card">
-            <thead>
-              <tr className="bg-band text-bandtext">
-                {t.delivery.tableHeads.map((heading) => (
-                  <th key={heading} className="px-5 py-4 text-start text-sm font-semibold">
-                    {heading}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {deliveryZones.map((zone) => (
-                <tr key={zone.id} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4 font-display text-lg text-heading">
-                    {t.delivery.zones[zone.id].label}
-                  </td>
-                  <td className="px-5 py-4 text-[0.95rem] leading-relaxed">
-                    {t.delivery.zones[zone.id].areas}
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className="price price-md">{formatPrice(zone.fee)}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mx-auto mt-10 max-w-md">
+          <div className="card gift-shine p-8 text-center">
+            <span className="text-gold">
+              <TruckIcon className="mx-auto h-8 w-8" />
+            </span>
+            <p className="price price-xl mt-4">
+              {formatPrice(brand.shipping.flatRate)}
+            </p>
+            <p className="mt-2 text-base font-semibold text-heading">
+              {t.delivery.flatLabel}
+            </p>
+            <p className="mt-3 text-[0.95rem] leading-relaxed">{t.delivery.note}</p>
+          </div>
         </div>
-        <p className="mt-6 text-center text-[0.95rem] text-muted">
-          {t.delivery.note} {formatPrice(lowestFee)} to {formatPrice(highestFee)}.
-        </p>
       </Section>
 
       <Section tone="band">

@@ -1,4 +1,4 @@
-import { deliveryFee } from "./delivery";
+import { brand } from "./brand";
 import { getProduct, type Product } from "./products";
 
 export type CartLine = { slug: string; qty: number };
@@ -13,10 +13,8 @@ export type CartTotals = {
   bundleSaving: number;
   /** Free 60ml bottles earned across the cart. */
   freeBottles: number;
-  /** The chosen Karachi area, or null while the buyer has not picked one. */
-  zoneId: string | null;
-  /** Null until an area is chosen, so the total says so instead of guessing. */
-  shipping: number | null;
+  /** The flat delivery charge, or zero while the cart is empty. */
+  shipping: number;
   total: number;
 };
 
@@ -31,10 +29,7 @@ export function resolveLines(lines: CartLine[]): ResolvedLine[] {
     .filter(Boolean) as ResolvedLine[];
 }
 
-export function computeTotals(
-  rawLines: CartLine[],
-  zoneInput?: string | null
-): CartTotals {
+export function computeTotals(rawLines: CartLine[]): CartTotals {
   const lines = resolveLines(rawLines);
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
   const compareSubtotal = lines.reduce(
@@ -47,8 +42,7 @@ export function computeTotals(
     0
   );
 
-  const fee = deliveryFee(zoneInput);
-  const shipping = itemCount === 0 ? 0 : fee;
+  const shipping = itemCount === 0 ? 0 : brand.shipping.flatRate;
 
   return {
     lines,
@@ -57,8 +51,7 @@ export function computeTotals(
     compareSubtotal,
     bundleSaving: Math.max(0, compareSubtotal - subtotal),
     freeBottles,
-    zoneId: fee === null ? null : (zoneInput ?? null),
     shipping,
-    total: subtotal + (shipping ?? 0),
+    total: subtotal + shipping,
   };
 }

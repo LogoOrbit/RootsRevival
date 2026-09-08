@@ -4,7 +4,7 @@ import CheckoutPage from "@/components/pages/Checkout";
 export const metadata: Metadata = {
   title: "Checkout",
   description:
-    "Place your Roots Revival order with cash on delivery or an online transfer to Meezan Bank. Delivery all over Pakistan.",
+    "Place your Roots Revival order with cash on delivery or an online transfer to Meezan Bank. Flat Rs 250 delivery.",
   robots: { index: false },
 };
 

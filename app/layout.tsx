@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: `%s | ${brand.name}`,
   },
   description:
-    "Roots Revival is a handmade herbal hair oil made with 16 traditional herbs and nutrient rich oils. Helps reduce hair fall, control dandruff and nourish the scalp. Cash on delivery all over Pakistan.",
+    "Roots Revival is a handmade herbal hair oil made with 16 traditional herbs and nutrient rich oils. Helps reduce hair fall, control dandruff and nourish the scalp. Cash on delivery, flat Rs 250 delivery.",
   keywords: [
     "herbal hair oil",
     "hair fall oil Pakistan",

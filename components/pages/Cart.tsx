@@ -5,7 +5,6 @@ import { useCart } from "@/components/CartProvider";
 import { useT } from "@/components/Providers";
 import { PackShot } from "@/components/ProductArt";
 import { PageHero, Section } from "@/components/ui";
-import DeliveryPicker from "@/components/DeliveryPicker";
 import { formatPrice } from "@/lib/brand";
 
 export default function CartPage() {
@@ -146,25 +145,15 @@ function CartView() {
           ) : null}
           <Row
             label={t.common.delivery}
-            value={
-              totals.shipping === null
-                ? t.delivery.pickShort
-                : formatPrice(totals.shipping)
-            }
+            value={formatPrice(totals.shipping)}
           />
         </div>
 
-        <div className="mt-6">
-          <DeliveryPicker id="cartzone" />
-        </div>
 
         <div className="mt-6 flex items-baseline justify-between border-t border-border pt-5">
           <span className="text-base font-semibold text-heading">{t.common.total}</span>
           <span className="price price-xl">{formatPrice(totals.total)}</span>
         </div>
-        {totals.shipping === null ? (
-          <p className="mt-2 text-end text-sm text-muted">{t.delivery.pendingNote}</p>
-        ) : null}
 
         <Link href="/checkout" className="btn btn-gold mt-7 w-full">
           {t.common.checkout}

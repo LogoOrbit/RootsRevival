@@ -8,12 +8,11 @@ import { useT } from "./Providers";
 import { PackShot } from "./ProductArt";
 import { brand, formatPrice } from "@/lib/brand";
 import { CheckIcon, WhatsappIcon } from "./Icons";
-import DeliveryPicker from "./DeliveryPicker";
 
 type Errors = Record<string, string>;
 
 export default function CheckoutForm() {
-  const { lines, totals, zoneId, clear, ready } = useCart();
+  const { lines, totals, clear, ready } = useCart();
   const t = useT();
   const router = useRouter();
 
@@ -50,8 +49,7 @@ export default function CheckoutForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          city: "Karachi",
-          zoneId,
+          city: form.city,
           lines,
         }),
       });
@@ -181,8 +179,6 @@ export default function CheckoutForm() {
               error={errors.city}
               required
             />
-            {/* We deliver inside Karachi only, and the zone sets the charge. */}
-            <DeliveryPicker id="formzone" />
             <div className="sm:col-span-2">
               <label className="label" htmlFor="notes">
                 {t.checkoutPage.notes}
@@ -299,18 +295,13 @@ export default function CheckoutForm() {
           <div className="flex justify-between">
             <span className="text-muted">{t.common.delivery}</span>
             <span className="font-semibold text-heading">
-              {totals.shipping === null
-                ? t.delivery.pickShort
-                : formatPrice(totals.shipping)}
+              {formatPrice(totals.shipping)}
             </span>
           </div>
           <div className="flex items-baseline justify-between border-t border-border pt-4">
             <span className="text-base font-semibold text-heading">{t.common.total}</span>
             <span className="price price-xl">{formatPrice(totals.total)}</span>
           </div>
-          {totals.shipping === null ? (
-            <p className="text-end text-sm text-muted">{t.delivery.pendingNote}</p>
-          ) : null}
         </div>
 
         {errors.cart ? <p className="mt-4 text-xs text-hibiscus">{errors.cart}</p> : null}

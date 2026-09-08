@@ -73,7 +73,7 @@ export const en = {
 
   announce: [
     "Take 2 bottles and a 60ml bottle comes free",
-    "Same day dispatch across Karachi, delivery Rs 200 to Rs 600",
+    "Same day dispatch, flat Rs 250 delivery on every order",
     "Cash on delivery at your door",
     "Handmade in small batches with 16 natural herbs and oils",
   ],
@@ -262,7 +262,7 @@ export const en = {
     intro:
       "Every pack holds the same handmade 250ml bottle of Roots Revival herbal hair oil, filled by hand after you order.",
     perks: [
-      { title: "Fast Karachi delivery", note: "Dispatched the same working day, at your door in 1 to 2 days." },
+      { title: "Flat Rs 250 delivery", note: "The same charge on every order. Dispatched the same working day, at your door in 1 to 2 days." },
       { title: "Pay your way", note: "Cash on delivery, or online transfer to Meezan Bank before dispatch." },
       { title: "Fresh batches", note: "Bottled by hand after your order, never sitting in a warehouse." },
     ],
@@ -293,45 +293,18 @@ export const en = {
     saveHeadline: "Our best price on the oil",
     saveBody:
       "Three bottles for less than three bought one at a time, and it all arrives in a single delivery.",
-    deliveryNote: "Delivery across Karachi is",
+    deliveryNote: "Delivery is a flat",
     deliveryDays: "Delivered in 1 to 2 days",
   },
 
   delivery: {
     eyebrow: "Delivery",
-    title: "We deliver across Karachi",
+    title: "One flat delivery charge",
     intro:
-      "Every parcel leaves our hands in Gulshan-e-Iqbal Block 10, so the charge depends on how far it travels. Pick your area at checkout and you will see the exact charge before you order.",
-    note: "Delivery across Karachi runs from",
-    pickLabel: "Your delivery area in Karachi",
-    pickPlaceholder: "Choose your area",
-    pickHint:
-      "Pick your area and the delivery charge is added to your total straight away.",
-    pickShort: "Pick your area",
-    pendingNote: "Delivery is added once you pick your area.",
-    tableHeads: ["Zone", "Areas we cover", "Delivery"],
-    zones: {
-      near: {
-        label: "Gulshan and the blocks around it",
-        areas:
-          "Gulshan-e-Iqbal all blocks, Gulistan-e-Johar, Civic Centre, NIPA, Karimabad, Aisha Manzil, Water Pump, Federal B Area, Ancholi",
-      },
-      central: {
-        label: "Central Karachi",
-        areas:
-          "Safoora Goth, Pehlwan Goth, Saddar, PECHS, Bahadurabad, Tariq Road, Shahra-e-Faisal, Gulberg, North Nazimabad, Nazimabad, Liaquatabad, Buffer Zone, Garden, Jamshed Town",
-      },
-      wider: {
-        label: "Wider Karachi",
-        areas:
-          "Clifton, DHA Phase 1 to 6, Korangi, Landhi, Malir, Model Colony, Shah Faisal Colony, North Karachi, New Karachi, Surjani Town, Orangi, SITE, Lyari, Keamari, Baldia",
-      },
-      outer: {
-        label: "Outer Karachi",
-        areas:
-          "Saadi Town, Scheme 33, Gulshan-e-Maymar, Ahsanabad, Bahria Town, DHA Phase 7 and 8, Gadap, Steel Town, Bin Qasim, Port Qasim, Hawksbay, Memon Goth, Northern Bypass",
-      },
-    },
+      "No zones and no surprises. Every order costs the same to deliver, wherever you are, and you see it in your total before you place the order.",
+    flatLabel: "Flat rate on every order",
+    note:
+      "Dispatched the same working day from Gulshan-e-Iqbal Block 10 and at your door in 1 to 2 days.",
   },
 
   offers: {
@@ -364,9 +337,9 @@ export const en = {
         note: "Anywhere in Karachi, with no advance payment needed.",
       },
       {
-        title: "Fast Karachi delivery",
-        line: "Dispatched the same working day",
-        note: "Delivery Rs 200 to Rs 600 depending on your area, shown before you order.",
+        title: "Flat Rs 250 delivery",
+        line: "The same charge on every order",
+        note: "A flat Rs 250 on every order, wherever you are, shown before you order.",
       },
     ],
   },
@@ -596,7 +569,7 @@ export const en = {
     eyebrow: "Almost there",
     title: "Your cart",
     intro:
-      "Check your packs, pick your area in Karachi, then place the order. We confirm every order on WhatsApp before it is dispatched.",
+      "Check your packs and place the order. Delivery is a flat Rs 250, and we confirm every order on WhatsApp before it is dispatched.",
     emptyTitle: "Your cart is empty",
     emptyBody:
       "Every pack holds the same handmade 250ml bottle. Pick the one that suits your hair journey and we will bottle it fresh for you.",
@@ -648,7 +621,6 @@ export const en = {
       phone: "Please write a working WhatsApp number.",
       address: "Please write your full address.",
       city: "Please write your area.",
-      zoneId: "Please pick your delivery area in Karachi.",
       email: "Please check the email address.",
       cart: "Your cart is empty.",
       failed:
@@ -717,7 +689,7 @@ export const en = {
     intro:
       "Clear, simple rules with no fine print games. If anything goes wrong with your parcel, one message is all it takes.",
     cards: [
-      { title: "Delivery charges", note: "We deliver across Karachi only. The charge is Rs 200 to Rs 600 depending on how far your area is from Gulshan-e-Iqbal Block 10, and you see the exact amount at checkout before you order." },
+      { title: "Delivery charges", note: "A flat Rs 250 on every order, the same wherever you are. You see it in your total at checkout before you place the order." },
       { title: "Delivery time", note: "Orders are dispatched within one working day of confirmation and usually reach you in 2 to 4 working days. Remote areas can take a little longer." },
       { title: "Tracking", note: "As soon as the courier collects your parcel we send the tracking number to your WhatsApp, so you always know where it is." },
     ],
@@ -768,7 +740,7 @@ export const en = {
     sections: [
       { title: "Who we are", body: "Roots Revival Herbal Hair Oil is a home run herbal hair oil brand based in Pakistan. Orders placed on this website are handled directly by our own family, and every message you send reaches us and nobody else." },
       { title: "Placing an order", body: "An order placed on this website is a request to buy. It becomes final once we confirm it with you on WhatsApp. If a pack is out of stock or an address is outside our courier network, we will tell you honestly and cancel the order without any charge." },
-      { title: "Prices and payment", body: "All prices are shown in Pakistani Rupees and include taxes. Delivery inside Karachi is Rs 200 to Rs 600 depending on your area, shown at checkout before you order. Payment is either cash to the courier on delivery, or an online transfer to the Meezan Bank account named on our payment page. We never ask for a payment to any other account." },
+      { title: "Prices and payment", body: "All prices are shown in Pakistani Rupees and include taxes. Delivery is a flat Rs 250 on every order, shown at checkout before you place it. Payment is either cash to the courier on delivery, or an online transfer to the Meezan Bank account named on our payment page. We never ask for a payment to any other account." },
       { title: "Discount codes", body: "One discount code applies per order. Codes may carry a minimum order value, they cannot be exchanged for cash, and we may end an offer at any time. An order already confirmed keeps the price it was confirmed at." },
       { title: "Product use", body: "Roots Revival herbal hair oil is for external use only. Please do a patch test before your first use, keep the bottle away from children and stop using it if any irritation appears. If you are pregnant, nursing or under treatment for a scalp condition, speak to your doctor first." },
       { title: "Honest results", body: "Our oil is a natural care product, not a medicine, and it does not claim to cure any medical condition. Results depend on your hair, your health and how regularly you use it. We describe what our customers usually experience and we will never promise more than that." },
@@ -802,7 +774,7 @@ export const en = {
     terms: "Terms Of Service",
     rights: "All rights reserved.",
     bankTransfer: "Meezan Bank transfer",
-    deliveryAll: "Delivery across Karachi",
+    deliveryAll: "Flat Rs 250 delivery",
   },
 };
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { formatPrice } from "@/lib/brand";
+import { brand, formatPrice } from "@/lib/brand";
 import { getProduct, hasSaving, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { AddToCart } from "@/components/AddToCart";
@@ -10,7 +10,6 @@ import { ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import { HerbIcon } from "@/components/HerbIcons";
 import { Breadcrumb, Pill, Section, SectionHeading, TickList, Reveal } from "@/components/ui";
 import { LeafIcon, ShieldIcon, TruckIcon } from "@/components/Icons";
-import { lowestFee, highestFee } from "@/lib/delivery";
 
 export default function ProductDetail({ slug }: { slug: string }) {
   const t = useT();
@@ -130,7 +129,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
             <p className="mt-4 text-sm leading-relaxed text-muted">
               {t.common.priceIncludesTaxes} {t.product.deliveryNote}{" "}
-              {formatPrice(lowestFee)} to {formatPrice(highestFee)}.
+              {formatPrice(brand.shipping.flatRate)}.
             </p>
 
             <div className="mt-7">
