@@ -105,12 +105,12 @@ We dispatch by rider from Gulshan-e-Iqbal Block 10 and deliver **inside Karachi 
 charge depends on how far the parcel travels, so the buyer picks their area at checkout and
 sees the exact amount before ordering. The four zones are in `lib/delivery.ts`:
 
-| Zone | Delivery |
-| --- | --- |
-| Gulshan and around | Rs 150 |
-| Central Karachi | Rs 300 |
-| Wider Karachi | Rs 450 |
-| Outer Karachi | Rs 600 |
+| Zone | Areas | Delivery |
+| --- | --- | --- |
+| Gulshan and the blocks around it | Gulshan-e-Iqbal, Gulistan-e-Johar, Civic Centre, NIPA, Karimabad, Federal B Area | Rs 200 |
+| Central Karachi | Safoora Goth, Saddar, PECHS, Bahadurabad, Tariq Road, North Nazimabad | Rs 350 |
+| Wider Karachi | Clifton, DHA 1 to 6, Korangi, Landhi, Malir, North Karachi, Surjani, Orangi | Rs 450 |
+| Outer Karachi | Saadi Town, Scheme 33, Gulshan-e-Maymar, Bahria Town, DHA 7 and 8, Gadap | Rs 600 |
 
 To change a charge, edit the `fee` in `lib/delivery.ts`. To move an area between zones, edit
 the `areas` line for that zone in `lib/i18n/en.ts` and `lib/i18n/ur.ts`. The server recalculates
@@ -123,8 +123,11 @@ When a customer presses **Place Order** on `/checkout`:
 
 1. The order is posted to `/api/order`, where the totals are recalculated on the server
    so a customer can never change the price from their browser.
-2. An email with the full order (customer, address, delivery zone, items, total, payment
-   method) is sent to **both** `rootsrevivalpakistan@gmail.com` and `ainaabidi25@gmail.com`,
+2. A formatted email with the full order (customer, address, delivery zone, items, the free
+   60ml bottles to pack, delivery charge, total and payment method) is sent to **both**
+   `rootsrevivalpakistan@gmail.com` and `ainaabidi25@gmail.com`. It is a branded HTML mail
+   with a Confirm on WhatsApp button, and the same details go out as plain text for any
+   client that refuses HTML. The templates are in `lib/email.ts`. It goes out
    as soon as one of the mail settings below is added. That list lives in `orderEmails` in
    `lib/brand.ts`; add or remove an address there and the order mail follows.
 3. A WhatsApp message containing the same details opens in a new tab, addressed to
@@ -132,7 +135,10 @@ When a customer presses **Place Order** on `/checkout`:
 4. The customer lands on `/thankyou` with their order number, and the Meezan Bank details
    if they chose online payment.
 
-The contact form on `/contact` works the same way through `/api/contact`.
+The contact form on `/contact` works the same way through `/api/contact`, and sends its own
+formatted mail with the sender's name, WhatsApp number, email, subject and message, plus a
+Reply on WhatsApp button. Replying to either mail writes straight back to the customer,
+because their address is set as the reply-to.
 
 ### Turning on the two automatic alerts
 

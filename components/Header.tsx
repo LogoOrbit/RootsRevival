@@ -7,14 +7,15 @@ import { LogoLink } from "./Logo";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Providers";
 import { brand, waLink } from "@/lib/brand";
-import { GlobeIcon, MoonIcon, SunIcon, WhatsappIcon } from "./Icons";
+import { CartIcon, GlobeIcon, MoonIcon, SunIcon, WhatsappIcon } from "./Icons";
 
 export default function Header() {
   const pathname = usePathname();
-  const { totals } = useCart();
+  const { totals, addedTick, addedQty } = useCart();
   const { t, lang, setLang, theme, toggleTheme } = useSite();
   const [open, setOpen] = useState(false);
   const [solid, setSolid] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   const nav = [
     { href: "/shop", label: t.nav.shop },
@@ -27,6 +28,14 @@ export default function Header() {
   ];
 
   useEffect(() => setOpen(false), [pathname]);
+
+  /* Play the cart animation once per add, then clear it so it can play again. */
+  useEffect(() => {
+    if (addedTick === 0) return;
+    setJustAdded(true);
+    const timer = window.setTimeout(() => setJustAdded(false), 1000);
+    return () => window.clearTimeout(timer);
+  }, [addedTick]);
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 12);
@@ -98,15 +107,27 @@ export default function Header() {
           <Link
             href="/cart"
             aria-label={t.nav.cart}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-band text-bandtext transition-transform hover:scale-105"
+            className={`relative flex h-10 w-10 items-center justify-center rounded-full bg-band text-bandtext transition-transform hover:scale-105 ${
+              justAdded ? "cart-ring" : ""
+            }`}
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M6 7h12l-1.2 12.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7z" strokeLinejoin="round" />
-              <path d="M9 7a3 3 0 0 1 6 0" strokeLinecap="round" />
-            </svg>
+            <span className={justAdded ? "cart-bump" : ""}>
+              <CartIcon className="h-5 w-5" />
+            </span>
             {totals.itemCount > 0 ? (
-              <span className="absolute -top-1 -end-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-hibiscus px-1 text-[0.65rem] font-semibold text-white">
+              <span
+                key={totals.itemCount}
+                className="badge-pop absolute -top-1 -end-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-hibiscus px-1 text-[0.68rem] font-semibold text-white"
+              >
                 {totals.itemCount}
+              </span>
+            ) : null}
+            {justAdded ? (
+              <span
+                aria-hidden="true"
+                className="plus-one pointer-events-none absolute -top-2 start-1/2 -translate-x-1/2 text-sm font-bold text-gold"
+              >
+                +{addedQty}
               </span>
             ) : null}
           </Link>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { waLink } from "@/lib/brand";
 import { pushWhatsapp, sendMail } from "@/lib/notify";
+import { contactEmailHtml } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -51,10 +52,16 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n");
 
+  const whatsappUrl = waLink(`Assalam o Alaikum, my name is ${name}. ${message}`);
+  const receivedAt = new Date().toLocaleString("en-PK", {
+    timeZone: "Asia/Karachi",
+  });
+
   const mail = await sendMail(
-    `Website message from ${name}`,
+    `Website message from ${name}: ${subject}`,
     text,
-    email || undefined
+    email || undefined,
+    contactEmailHtml({ name, email, phone, subject, message, receivedAt, whatsappUrl })
   );
   const whatsappPushed = await pushWhatsapp(text);
 
@@ -62,8 +69,6 @@ export async function POST(request: Request) {
     ok: true,
     emailDelivered: mail.delivered,
     whatsappPushed,
-    whatsappUrl: waLink(
-      `Assalam o Alaikum, my name is ${name}. ${message}`
-    ),
+    whatsappUrl,
   });
 }

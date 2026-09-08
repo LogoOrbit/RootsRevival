@@ -44,7 +44,8 @@ export function shopEmail(): string {
 export async function sendMail(
   subject: string,
   text: string,
-  replyTo?: string
+  replyTo?: string,
+  html?: string
 ): Promise<MailResult> {
   const to = shopEmails();
   const resendKey = process.env.RESEND_API_KEY;
@@ -64,6 +65,7 @@ export async function sendMail(
           to,
           subject,
           text,
+          ...(html ? { html } : {}),
           ...(replyTo ? { reply_to: replyTo } : {}),
         }),
       });
@@ -100,6 +102,7 @@ export async function sendMail(
         to: to.join(", "),
         subject,
         text,
+        ...(html ? { html } : {}),
         ...(replyTo ? { replyTo } : {}),
       });
       return { delivered: true, provider: "smtp" };
@@ -118,7 +121,7 @@ export async function sendMail(
       const response = await fetch(webhook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, text, replyTo, to }),
+        body: JSON.stringify({ subject, text, html, replyTo, to }),
       });
       if (response.ok) return { delivered: true, provider: "webhook" };
       return {

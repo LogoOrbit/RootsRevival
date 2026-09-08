@@ -4,6 +4,7 @@ import { computeTotals, type CartLine } from "@/lib/cart";
 import { getZone } from "@/lib/delivery";
 import { en } from "@/lib/i18n/en";
 import { pushWhatsapp, sendMail, shopEmail } from "@/lib/notify";
+import { orderEmailHtml } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -123,10 +124,37 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n");
 
+  const whatsappUrlForShop = waLink(
+    `Assalam o Alaikum ${name}, thank you for order ${orderId} from ${brand.name}.`
+  );
+
   const mail = await sendMail(
     `New order ${orderId} from ${name}, ${formatPrice(totals.total)}`,
     summary,
-    email || undefined
+    email || undefined,
+    orderEmailHtml({
+      orderId,
+      placedAt,
+      name,
+      phone,
+      email,
+      address,
+      area: city,
+      zoneLabel: en.delivery.zones[zoneId as keyof typeof en.delivery.zones].label,
+      notes,
+      items: totals.lines.map((line) => ({
+        name: en.products[line.product.slug].name,
+        volume: en.products[line.product.slug].volume,
+        qty: line.qty,
+        total: line.lineTotal,
+      })),
+      freeBottles: totals.freeBottles,
+      subtotal: totals.subtotal,
+      shipping: totals.shipping ?? 0,
+      total: totals.total,
+      paymentLabel,
+      whatsappUrl: whatsappUrlForShop,
+    })
   );
   const whatsappPushed = await pushWhatsapp(summary);
 

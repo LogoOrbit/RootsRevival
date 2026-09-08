@@ -16,8 +16,8 @@ export type DeliveryZone = {
 };
 
 export const deliveryZones: DeliveryZone[] = [
-  { id: "near", fee: 150 },
-  { id: "central", fee: 300 },
+  { id: "near", fee: 200 },
+  { id: "central", fee: 350 },
   { id: "wider", fee: 450 },
   { id: "outer", fee: 600 },
 ];

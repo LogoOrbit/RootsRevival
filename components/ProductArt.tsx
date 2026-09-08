@@ -1,21 +1,18 @@
 import Image from "next/image";
 
-/** Square photographs on a cream ground sampled from the shot itself. */
-const packShots: Record<string, { src: string; alt: string; bg: string }> = {
+/** Square photographs. Any letterbox falls back to the page ground. */
+const packShots: Record<string, { src: string; alt: string }> = {
   starter: {
     src: "/art/pack-single.jpg",
     alt: "Roots Revival single 250ml herbal hair oil bottle with its printed box",
-    bg: "#e7e2d6",
   },
   duo: {
     src: "/art/pack-duo.jpg",
     alt: "Roots Revival duo pack, two 250ml bottles with the free 60ml bottle",
-    bg: "#e7e2d6",
   },
   family: {
     src: "/art/pack-family.jpg",
     alt: "Roots Revival family pack, three 250ml bottles",
-    bg: "#e7e2d6",
   },
 };
 
@@ -36,10 +33,7 @@ export function PackShot({
 }) {
   const shot = packShots[slug] ?? packShots.starter;
   return (
-    <span
-      className={`relative block overflow-hidden ${className}`}
-      style={{ backgroundColor: shot.bg }}
-    >
+    <span className={`relative block overflow-hidden bg-bgsoft ${className}`}>
       <Image
         src={shot.src}
         alt={shot.alt}

@@ -44,7 +44,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
       <Section tone="bg" className="pt-4">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
           <div>
-            <div className="card overflow-hidden bg-[#e7e2d6] p-0">
+            <div className="card overflow-hidden bg-bgsoft p-0">
               {gallery[shot].kind === "pack" ? (
                 <PackShot
                   slug={product.slug}
@@ -67,7 +67,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                   key={item.label}
                   type="button"
                   onClick={() => setShot(index)}
-                  className={`card aspect-square overflow-hidden bg-[#e7e2d6] p-0 transition-all ${
+                  className={`card aspect-square overflow-hidden bg-bgsoft p-0 transition-all ${
                     shot === index ? "ring-2 ring-gold" : "opacity-70 hover:opacity-100"
                   }`}
                   aria-label={item.label}

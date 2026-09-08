@@ -398,6 +398,78 @@ h4 {
   transform-origin: center;
 }
 
+/* Feedback when a pack lands in the cart: the button bumps, a ring goes out,
+   the count pops and a +1 floats away. */
+@keyframes cartBump {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.2) rotate(-8deg);
+  }
+  50% {
+    transform: scale(0.92) rotate(4deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.cart-bump {
+  animation: cartBump 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cartRing {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-gold) 70%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 18px transparent;
+  }
+}
+
+.cart-ring {
+  animation: cartRing 0.75s ease-out;
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.3);
+  }
+  60% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-pop {
+  animation: badgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes plusOne {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.7);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) scale(1);
+  }
+}
+
+.plus-one {
+  animation: plusOne 1s ease-out forwards;
+}
+
 @keyframes pulseRing {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-hibiscus) 45%, transparent);
@@ -430,8 +502,15 @@ h4 {
   .marquee-track,
   .pulse-ring,
   .fade-up,
-  .gift-pop {
+  .gift-pop,
+  .cart-bump,
+  .cart-ring,
+  .badge-pop,
+  .plus-one {
     animation: none;
+  }
+  .plus-one {
+    opacity: 0;
   }
   .gift-shine::after {
     animation: none;

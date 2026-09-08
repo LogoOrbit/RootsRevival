@@ -136,3 +136,14 @@ export function GiftIcon({ className = "h-5 w-5" }: { className?: string }) {
     </svg>
   );
 }
+
+/** A shopping cart with wheels. Unmistakably a cart, not a bin. */
+export function CartIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2.5 3.5h2.2a1 1 0 0 1 .98.8L6.2 7m0 0 1.62 7.6a1.6 1.6 0 0 0 1.57 1.27h7.5a1.6 1.6 0 0 0 1.56-1.23l1.47-6.1A1.2 1.2 0 0 0 18.75 7H6.2Z" />
+      <circle cx="9.5" cy="20" r="1.5" />
+      <circle cx="17" cy="20" r="1.5" />
+    </svg>
+  );
+}

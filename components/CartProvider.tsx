@@ -17,6 +17,10 @@ type CartContextValue = {
   lines: CartLine[];
   /** The Karachi area the buyer picked, which sets the delivery charge. */
   zoneId: string;
+  /** Bumped on every add, so the header can play its animation. */
+  addedTick: number;
+  /** How many bottles the last add put in, for the floating count. */
+  addedQty: number;
   totals: CartTotals;
   ready: boolean;
   add: (slug: string, qty?: number) => void;
@@ -31,6 +35,8 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [zoneId, setZoneId] = useState("");
+  const [addedTick, setAddedTick] = useState(0);
+  const [addedQty, setAddedQty] = useState(1);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -56,6 +62,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [lines, zoneId, ready]);
 
   const add = useCallback((slug: string, qty = 1) => {
+    setAddedTick((tick) => tick + 1);
+    setAddedQty(qty);
     setLines((current) => {
       const existing = current.find((l) => l.slug === slug);
       if (existing) {
@@ -92,8 +100,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const totals = useMemo(() => computeTotals(lines, zoneId), [lines, zoneId]);
 
   const value = useMemo(
-    () => ({ lines, zoneId, totals, ready, add, setQty, remove, clear, setZone }),
-    [lines, zoneId, totals, ready, add, setQty, remove, clear, setZone]
+    () => ({
+      lines,
+      zoneId,
+      addedTick,
+      addedQty,
+      totals,
+      ready,
+      add,
+      setQty,
+      remove,
+      clear,
+      setZone,
+    }),
+    [lines, zoneId, addedTick, addedQty, totals, ready, add, setQty, remove, clear, setZone]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
