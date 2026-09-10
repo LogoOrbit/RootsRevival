@@ -66,23 +66,29 @@ export default function OffersPage() {
             return (
               <Reveal key={product.slug} delay={index * 90}>
                 <div
-                  className={`card flex h-full flex-col overflow-hidden ${
+                  className={`card flex h-full flex-row overflow-hidden sm:flex-col ${
                     product.bestValue ? "ring-2 ring-gold" : ""
                   }`}
                 >
-                  <PackShot slug={product.slug} className="aspect-square w-full" />
-                  <div className="flex flex-1 flex-col p-6">
+                  <PackShot
+                    slug={product.slug}
+                    className="w-32 shrink-0 self-stretch sm:aspect-square sm:w-full"
+                    sizes="(max-width: 640px) 128px, (max-width: 1024px) 45vw, 380px"
+                  />
+                  <div className="flex flex-1 flex-col p-4 sm:p-6">
                     <p className="eyebrow text-gold">{copy.badge}</p>
-                    <h3 className="mt-2 font-display text-2xl">{copy.name}</h3>
-                    <p className="spec mt-2">{copy.volume}</p>
+                    <h3 className="mt-1 font-display text-xl sm:mt-2 sm:text-2xl">
+                      {copy.name}
+                    </h3>
+                    <p className="spec mt-1 sm:mt-2">{copy.volume}</p>
 
-                    <ul className="mt-4 flex-1 space-y-2 text-[0.95rem] leading-snug">
+                    <ul className="mt-4 hidden flex-1 space-y-2 text-[0.95rem] leading-snug sm:block">
                       {copy.highlights.map((point) => (
                         <li key={point}>{point}</li>
                       ))}
                     </ul>
 
-                    <div className="mt-5 flex flex-wrap items-baseline gap-3">
+                    <div className="mt-3 flex flex-wrap items-baseline gap-3 sm:mt-5">
                       <span className="price price-lg">{formatPrice(product.price)}</span>
                       {hasSaving(product) ? (
                         <span className="price-was text-base">
@@ -91,7 +97,7 @@ export default function OffersPage() {
                       ) : null}
                     </div>
 
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                       {product.gift ? (
                         <span className="chip chip-gift">{t.common.freeGift}</span>
                       ) : null}
@@ -104,7 +110,7 @@ export default function OffersPage() {
 
                     <Link
                       href={`/product/${product.slug}`}
-                      className="btn btn-primary mt-6 w-full"
+                      className="btn btn-primary mt-4 w-full sm:mt-6"
                     >
                       {t.common.viewPack}
                     </Link>

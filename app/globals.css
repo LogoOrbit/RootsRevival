@@ -565,3 +565,33 @@ html[lang="ur"] .wordmark {
   letter-spacing: 0;
 }
 }
+
+/* Phone sizing. Figures, chips and buttons all come down a step so a whole
+   product card fits on the screen without the shopper scrolling for it. */
+@media (max-width: 640px) {
+  .price-xl {
+    font-size: 1.85rem;
+  }
+
+  .price-lg {
+    font-size: 1.35rem;
+  }
+
+  .price-md {
+    font-size: 1.05rem;
+  }
+
+  .chip {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.72rem;
+  }
+
+  .btn {
+    padding: 0.8rem 1.25rem;
+    font-size: 0.8rem;
+  }
+
+  .card {
+    border-radius: 1rem;
+  }
+}

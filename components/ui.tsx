@@ -25,7 +25,7 @@ export function Section({
           : "bg-bg";
   return (
     <section id={id} className={`${skin} ${className}`}>
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-20 lg:px-8">
         {children}
       </div>
     </section>
@@ -55,7 +55,7 @@ export function SectionHeading({
         </p>
       ) : null}
       <h2
-        className={`mt-3 text-3xl leading-tight sm:text-4xl ${
+        className={`mt-3 text-[1.7rem] leading-tight sm:text-4xl ${
           tone === "light" ? "text-bandtext" : ""
         }`}
       >
@@ -63,7 +63,7 @@ export function SectionHeading({
       </h2>
       {intro ? (
         <p
-          className={`mt-4 text-base leading-relaxed ${
+          className={`mt-3 text-[0.95rem] leading-relaxed sm:mt-4 sm:text-base ${
             tone === "light" ? "text-bandtext/80" : "text-muted"
           }`}
         >
@@ -71,7 +71,7 @@ export function SectionHeading({
         </p>
       ) : null}
       <div
-        className={`gold-rule mt-6 w-24 ${align === "center" ? "mx-auto" : ""}`}
+        className={`gold-rule mt-5 w-24 sm:mt-6 ${align === "center" ? "mx-auto" : ""}`}
       />
     </div>
   );
@@ -93,16 +93,16 @@ export function PageHero({
   return (
     <div className="leaf-pattern relative overflow-hidden bg-bgsoft">
       {image ? <div className="absolute inset-0 opacity-25">{image}</div> : null}
-      <div className="relative mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8">
+      <div className="relative mx-auto max-w-4xl px-4 py-9 text-center sm:px-6 sm:py-20 lg:px-8">
         {eyebrow ? <p className="eyebrow text-gold">{eyebrow}</p> : null}
-        <h1 className="mt-4 text-3xl leading-tight sm:text-5xl">{title}</h1>
+        <h1 className="mt-3 text-[1.9rem] leading-tight sm:mt-4 sm:text-5xl">{title}</h1>
         {intro ? (
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted">
+          <p className="mx-auto mt-4 max-w-2xl text-[0.95rem] leading-relaxed text-muted sm:mt-5 sm:text-base">
             {intro}
           </p>
         ) : null}
-        <div className="gold-rule mx-auto mt-7 w-28" />
-        {children ? <div className="mt-8">{children}</div> : null}
+        <div className="gold-rule mx-auto mt-5 w-24 sm:mt-7 sm:w-28" />
+        {children ? <div className="mt-6 sm:mt-8">{children}</div> : null}
       </div>
     </div>
   );

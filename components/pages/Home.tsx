@@ -145,29 +145,29 @@ export default function HomePage() {
               <Reveal key={product.slug} delay={index * 90}>
                 <Link
                   href={`/product/${product.slug}`}
-                  className="card group flex h-full flex-col overflow-hidden text-center transition-shadow hover:shadow-[0_20px_50px_rgba(18,53,36,0.16)]"
+                  className="card group flex h-full flex-row overflow-hidden text-start transition-shadow hover:shadow-[0_20px_50px_rgba(18,53,36,0.16)] sm:flex-col sm:text-center"
                 >
-                  <span className="relative block aspect-square w-full">
+                  <span className="relative block w-32 shrink-0 self-stretch sm:aspect-square sm:w-full">
                     <PackShot
                       slug={product.slug}
                       className="h-full w-full transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 92vw, 380px"
+                      sizes="(max-width: 640px) 128px, (max-width: 1024px) 45vw, 380px"
                     />
                     {(product.gift || hasSaving(product)) && (
-                      <span className="absolute end-3 top-3 rounded-full bg-hibiscus px-3 py-1.5 text-[0.72rem] font-semibold text-white">
+                      <span className="absolute end-3 top-3 hidden rounded-full bg-hibiscus px-3 py-1.5 text-[0.72rem] font-semibold text-white sm:block">
                         {product.gift
                           ? t.common.freeGift
                           : `${t.common.save} ${formatPrice(savingOf(product))}`}
                       </span>
                     )}
                   </span>
-                  <span className="flex flex-1 flex-col p-6">
+                  <span className="flex flex-1 flex-col p-4 sm:p-6">
                     <span className="eyebrow text-gold">{copy.badge}</span>
-                    <span className="mt-2 font-display text-2xl text-heading">
+                    <span className="mt-1 font-display text-xl text-heading sm:mt-2 sm:text-2xl">
                       {copy.name}
                     </span>
-                    <span className="spec mt-2">{copy.volume}</span>
-                    <span className="mt-4 flex flex-wrap items-baseline justify-center gap-3">
+                    <span className="spec mt-1 sm:mt-2">{copy.volume}</span>
+                    <span className="mt-3 flex flex-wrap items-baseline gap-3 sm:mt-4 sm:justify-center">
                       <span className="price price-lg">{formatPrice(product.price)}</span>
                       {hasSaving(product) ? (
                         <span className="price-was text-base">
@@ -175,7 +175,7 @@ export default function HomePage() {
                         </span>
                       ) : null}
                     </span>
-                    <span className="mt-3 flex flex-wrap justify-center gap-2">
+                    <span className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:justify-center sm:gap-2">
                       {product.gift ? (
                         <span className="chip chip-gift">{t.common.freeGift}</span>
                       ) : null}
@@ -186,7 +186,7 @@ export default function HomePage() {
                       ) : null}
                       <span className="chip chip-stock">{t.common.inStock}</span>
                     </span>
-                    <span className="btn btn-outline mt-5 w-full">
+                    <span className="btn btn-outline mt-4 w-full sm:mt-5">
                       {t.common.viewPack}
                     </span>
                   </span>
