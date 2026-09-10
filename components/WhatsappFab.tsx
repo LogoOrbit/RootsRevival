@@ -18,7 +18,7 @@ export default function WhatsappFab() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp"
-      className={`fixed end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#1faa54] text-white shadow-[0_12px_30px_rgba(31,170,84,0.4)] transition-transform hover:scale-110 ${
+      className={`press fixed end-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#1faa54] text-white shadow-[0_12px_30px_rgba(31,170,84,0.4)] ${
         lifted ? "bottom-32 sm:bottom-28" : "bottom-5"
       }`}
     >

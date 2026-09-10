@@ -48,7 +48,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext transition-colors hover:border-gold hover:text-goldlight"
+                className="press flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext hover:border-gold hover:text-goldlight"
               >
                 <InstagramIcon />
               </a>
@@ -57,14 +57,14 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext transition-colors hover:border-gold hover:text-goldlight"
+                className="press flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext hover:border-gold hover:text-goldlight"
               >
                 <WhatsappIcon />
               </a>
               <a
                 href={mailLink}
                 aria-label="Email"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext transition-colors hover:border-gold hover:text-goldlight"
+                className="press flex h-10 w-10 items-center justify-center rounded-full border border-bandtext/25 text-bandtext hover:border-gold hover:text-goldlight"
               >
                 <MailIcon />
               </a>

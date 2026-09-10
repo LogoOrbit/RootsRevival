@@ -54,7 +54,7 @@ export function Logo({
 
 export function LogoLink({ size = "sm" }: { size?: "sm" | "md" | "lg" }) {
   return (
-    <Link href="/" aria-label={`${brand.name} home`} className="shrink-0">
+    <Link href="/" aria-label={`${brand.name} home`} className="press shrink-0">
       <Logo size={size} />
     </Link>
   );

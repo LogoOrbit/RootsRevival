@@ -60,7 +60,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`link-underline text-[0.8rem] uppercase tracking-[0.12em] transition-colors ${
+                className={`press link-underline text-[0.8rem] uppercase tracking-[0.12em] transition-colors ${
                   active ? "text-gold" : "text-heading hover:text-gold"
                 }`}
               >
@@ -98,7 +98,7 @@ export default function Header() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden h-10 items-center rounded-full bg-[#1faa54] px-4 text-[0.72rem] uppercase tracking-[0.1em] text-white transition-transform hover:scale-105 lg:inline-flex"
+            className="press hidden h-10 items-center rounded-full bg-[#1faa54] px-4 text-[0.72rem] uppercase tracking-[0.1em] text-white hover:brightness-110 lg:inline-flex"
           >
             <WhatsappIcon className="me-1.5 h-4 w-4" />
             WhatsApp
@@ -107,7 +107,7 @@ export default function Header() {
           <Link
             href="/cart"
             aria-label={t.nav.cart}
-            className={`relative flex h-10 w-10 items-center justify-center rounded-full bg-band text-bandtext transition-transform hover:scale-105 ${
+            className={`press relative flex h-10 w-10 items-center justify-center rounded-full bg-band text-bandtext ${
               justAdded ? "cart-ring" : ""
             }`}
           >
@@ -164,7 +164,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="border-b border-border py-4 font-display text-2xl text-heading"
+                className="press block border-b border-border py-4 font-display text-2xl text-heading"
               >
                 {item.label}
               </Link>

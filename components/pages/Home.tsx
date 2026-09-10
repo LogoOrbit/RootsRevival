@@ -8,7 +8,7 @@ import { useT } from "@/components/Providers";
 import { artwork, ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import ProductCard from "@/components/ProductCard";
 import { HerbIcon, BenefitIcon } from "@/components/HerbIcons";
-import { Section, SectionHeading, Pill, Stat, Reveal } from "@/components/ui";
+import { Section, SectionHeading, Stat, Reveal } from "@/components/ui";
 import {
   GiftIcon,
   HandIcon,
@@ -29,7 +29,11 @@ export default function HomePage() {
       <section className="leaf-pattern relative overflow-hidden bg-bgsoft">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:py-20">
           <div className="fade-up order-2 lg:order-1">
-            <Pill tone="gold">{t.home.heroBadge}</Pill>
+            {/* A maker's mark, not a badge: a hairline and the line of type. */}
+            <p className="flex items-center gap-3 text-[0.68rem] uppercase leading-none tracking-[0.24em] text-gold">
+              <span aria-hidden="true" className="h-px w-8 bg-gold sm:w-12" />
+              {t.home.heroBadge}
+            </p>
             <h1 className="mt-5 text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
               {t.home.heroTitle1}
               <br />
