@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
 import { useT } from "./Providers";
 import { PackShot } from "./ProductArt";
@@ -11,33 +11,91 @@ import { CheckIcon, WhatsappIcon } from "./Icons";
 
 type Errors = Record<string, string>;
 
+const SAVED_KEY = "rootsrevival.checkout";
+
+const emptyBilling = {
+  firstName: "",
+  lastName: "",
+  address: "",
+  city: "",
+  postal: "",
+};
+
+const emptyForm = {
+  contact: "",
+  newsletter: true,
+  country: "",
+  firstName: "",
+  lastName: "",
+  address: "",
+  city: "",
+  postal: "",
+  phone: "",
+  notes: "",
+  saveInfo: false,
+  payment: "cod",
+  billingSame: true,
+  billing: emptyBilling,
+  website: "",
+};
+
+type Form = typeof emptyForm;
+
 export default function CheckoutForm() {
   const { lines, totals, clear, ready } = useCart();
   const t = useT();
   const router = useRouter();
 
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    notes: "",
-    payment: "cod",
-    website: "",
-  });
+  const [form, setForm] = useState<Form>(emptyForm);
+  const [discount, setDiscount] = useState("");
+  const [showDiscount, setShowDiscount] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState("");
 
-  const update = (key: keyof typeof form, value: string) =>
+  // Bring back whatever the shopper asked us to remember last time.
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(SAVED_KEY);
+      if (!saved) return;
+      const parsed = JSON.parse(saved) as Partial<Form>;
+      setForm((current) => ({
+        ...current,
+        ...parsed,
+        billing: { ...emptyBilling, ...(parsed.billing || {}) },
+        saveInfo: true,
+        website: "",
+      }));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const update = <K extends keyof Form>(key: K, value: Form[K]) =>
     setForm((current) => ({ ...current, [key]: value }));
+
+  const updateBilling = (key: keyof typeof emptyBilling, value: string) =>
+    setForm((current) => ({
+      ...current,
+      billing: { ...current.billing, [key]: value },
+    }));
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (sending) return;
     setErrors({});
     setFailed("");
+
+    const name = `${form.firstName} ${form.lastName}`.trim();
+    if (!form.lastName.trim()) {
+      setErrors({ lastName: t.checkoutPage.errors.lastName });
+      return;
+    }
+
+    const country = form.country || t.checkoutPage.countries[0];
+    const contact = form.contact.trim();
+    const email = contact.includes("@") ? contact : "";
+
     setSending(true);
 
     // Opened on the click itself so the browser does not treat it as a popup.
@@ -48,8 +106,22 @@ export default function CheckoutForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...form,
+          name,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          contact,
+          email,
+          phone: form.phone,
+          newsletter: form.newsletter,
+          country,
+          address: form.address,
           city: form.city,
+          postal: form.postal,
+          notes: form.notes,
+          payment: form.payment,
+          discount,
+          billing: form.billingSame ? null : { ...form.billing, country },
+          website: form.website,
           lines,
         }),
       });
@@ -69,6 +141,14 @@ export default function CheckoutForm() {
       }
 
       try {
+        if (form.saveInfo) {
+          window.localStorage.setItem(
+            SAVED_KEY,
+            JSON.stringify({ ...form, website: "" })
+          );
+        } else {
+          window.localStorage.removeItem(SAVED_KEY);
+        }
         window.sessionStorage.setItem(
           "rootsrevival.lastorder",
           JSON.stringify({
@@ -79,7 +159,7 @@ export default function CheckoutForm() {
             mailtoUrl: data.mailtoUrl,
             emailDelivered: data.emailDelivered,
             whatsappPushed: data.whatsappPushed,
-            name: form.name,
+            name,
           })
         );
       } catch {
@@ -119,42 +199,65 @@ export default function CheckoutForm() {
     <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
       <div className="space-y-8">
         <section className="card p-6 sm:p-7">
-          <h2 className="font-display text-2xl">{t.checkoutPage.deliveryDetails}</h2>
+          <h2 className="font-display text-2xl">{t.checkoutPage.contact}</h2>
           <div className="gold-rule mt-4 w-20" />
 
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+          <div className="mt-6 space-y-4">
             <Field
-              label={t.checkoutPage.fullName}
-              id="name"
-              value={form.name}
-              onChange={(v) => update("name", v)}
-              error={errors.name}
-              placeholder={t.checkoutPage.fullNamePlaceholder}
-              required
-            />
-            <Field
-              label={t.checkoutPage.whatsappNumber}
-              id="phone"
-              value={form.phone}
-              onChange={(v) => update("phone", v)}
-              error={errors.phone}
-              placeholder="0311 3839767"
-              type="tel"
+              label={t.checkoutPage.emailOrPhone}
+              id="contact"
+              value={form.contact}
+              onChange={(v) => update("contact", v)}
+              error={errors.email}
+              placeholder="you@example.com"
               ltr
               required
             />
+            <Checkbox
+              id="newsletter"
+              checked={form.newsletter}
+              onChange={(v) => update("newsletter", v)}
+              label={t.checkoutPage.newsletterOptIn}
+            />
+          </div>
+        </section>
+
+        <section className="card p-6 sm:p-7">
+          <h2 className="font-display text-2xl">{t.checkoutPage.delivery}</h2>
+          <div className="gold-rule mt-4 w-20" />
+
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Field
-                label={t.checkoutPage.emailOptional}
-                id="email"
-                value={form.email}
-                onChange={(v) => update("email", v)}
-                error={errors.email}
-                placeholder="you@example.com"
-                type="email"
-                ltr
-              />
+              <label className="label" htmlFor="country">
+                {t.checkoutPage.countryRegion}
+              </label>
+              <select
+                id="country"
+                className="field"
+                value={form.country || t.checkoutPage.countries[0]}
+                onChange={(event) => update("country", event.target.value)}
+              >
+                {t.checkoutPage.countries.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
+                  </option>
+                ))}
+              </select>
             </div>
+            <Field
+              label={t.checkoutPage.firstNameOptional}
+              id="firstName"
+              value={form.firstName}
+              onChange={(v) => update("firstName", v)}
+            />
+            <Field
+              label={t.checkoutPage.lastName}
+              id="lastName"
+              value={form.lastName}
+              onChange={(v) => update("lastName", v)}
+              error={errors.lastName || errors.name}
+              required
+            />
             <div className="sm:col-span-2">
               <label className="label" htmlFor="address">
                 {t.checkoutPage.address}
@@ -172,13 +275,35 @@ export default function CheckoutForm() {
               ) : null}
             </div>
             <Field
-              label={t.checkoutPage.area}
-              id="area"
+              label={t.checkoutPage.city}
+              id="city"
               value={form.city}
               onChange={(v) => update("city", v)}
               error={errors.city}
+              placeholder="Karachi"
               required
             />
+            <Field
+              label={t.checkoutPage.postalCodeOptional}
+              id="postal"
+              value={form.postal}
+              onChange={(v) => update("postal", v)}
+              placeholder="75300"
+              ltr
+            />
+            <div className="sm:col-span-2">
+              <Field
+                label={t.checkoutPage.phone}
+                id="phone"
+                value={form.phone}
+                onChange={(v) => update("phone", v)}
+                error={errors.phone}
+                placeholder="0311 3839767"
+                type="tel"
+                ltr
+                required
+              />
+            </div>
             <div className="sm:col-span-2">
               <label className="label" htmlFor="notes">
                 {t.checkoutPage.notes}
@@ -189,6 +314,14 @@ export default function CheckoutForm() {
                 value={form.notes}
                 onChange={(event) => update("notes", event.target.value)}
                 placeholder={t.checkoutPage.notesPlaceholder}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Checkbox
+                id="saveInfo"
+                checked={form.saveInfo}
+                onChange={(v) => update("saveInfo", v)}
+                label={t.checkoutPage.saveInfo}
               />
             </div>
           </div>
@@ -205,8 +338,28 @@ export default function CheckoutForm() {
         </section>
 
         <section className="card p-6 sm:p-7">
-          <h2 className="font-display text-2xl">{t.checkoutPage.paymentMethod}</h2>
+          <h2 className="font-display text-2xl">{t.checkoutPage.shippingMethod}</h2>
           <div className="gold-rule mt-4 w-20" />
+
+          <div className="mt-6 rounded-2xl border border-gold bg-bgsoft p-5">
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="font-display text-lg text-heading">
+                {t.checkoutPage.shippingStandard}
+              </span>
+              <span className="price price-md">
+                {totals.shipping === 0 ? t.common.free : formatPrice(totals.shipping)}
+              </span>
+            </div>
+            <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">
+              {t.checkoutPage.shippingNote}
+            </p>
+          </div>
+        </section>
+
+        <section className="card p-6 sm:p-7">
+          <h2 className="font-display text-2xl">{t.checkoutPage.payment}</h2>
+          <div className="gold-rule mt-4 w-20" />
+          <p className="mt-4 text-[0.95rem] text-muted">{t.checkoutPage.paymentSecure}</p>
 
           <div className="mt-6 space-y-4">
             <PaymentOption
@@ -248,6 +401,73 @@ export default function CheckoutForm() {
             </div>
           ) : null}
         </section>
+
+        <section className="card p-6 sm:p-7">
+          <h2 className="font-display text-2xl">{t.checkoutPage.billingAddress}</h2>
+          <div className="gold-rule mt-4 w-20" />
+
+          <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+            <BillingChoice
+              id="billingsame"
+              selected={form.billingSame}
+              onSelect={() => update("billingSame", true)}
+              label={t.checkoutPage.billingSame}
+            />
+            <div className="border-t border-border">
+              <BillingChoice
+                id="billingother"
+                selected={!form.billingSame}
+                onSelect={() => update("billingSame", false)}
+                label={t.checkoutPage.billingDifferent}
+              />
+            </div>
+          </div>
+
+          {!form.billingSame ? (
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              <Field
+                label={t.checkoutPage.firstNameOptional}
+                id="billingFirstName"
+                value={form.billing.firstName}
+                onChange={(v) => updateBilling("firstName", v)}
+              />
+              <Field
+                label={t.checkoutPage.lastName}
+                id="billingLastName"
+                value={form.billing.lastName}
+                onChange={(v) => updateBilling("lastName", v)}
+                required
+              />
+              <div className="sm:col-span-2">
+                <label className="label" htmlFor="billingAddress">
+                  {t.checkoutPage.address}
+                </label>
+                <textarea
+                  id="billingAddress"
+                  className="field min-h-24"
+                  value={form.billing.address}
+                  onChange={(event) => updateBilling("address", event.target.value)}
+                  placeholder={t.checkoutPage.addressPlaceholder}
+                  required
+                />
+              </div>
+              <Field
+                label={t.checkoutPage.city}
+                id="billingCity"
+                value={form.billing.city}
+                onChange={(v) => updateBilling("city", v)}
+                required
+              />
+              <Field
+                label={t.checkoutPage.postalCodeOptional}
+                id="billingPostal"
+                value={form.billing.postal}
+                onChange={(v) => updateBilling("postal", v)}
+                ltr
+              />
+            </div>
+          ) : null}
+        </section>
       </div>
 
       <aside className="card h-fit p-6 sm:p-7">
@@ -276,6 +496,34 @@ export default function CheckoutForm() {
             );
           })}
         </ul>
+
+        <div className="mt-6">
+          {showDiscount ? (
+            <>
+              <label className="label" htmlFor="discount">
+                {t.checkoutPage.discountCode}
+              </label>
+              <input
+                id="discount"
+                className="field"
+                dir="ltr"
+                value={discount}
+                onChange={(event) => setDiscount(event.target.value.toUpperCase())}
+              />
+              <p className="mt-2 text-xs leading-relaxed text-muted">
+                {t.checkoutPage.discountNote}
+              </p>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowDiscount(true)}
+              className="rounded-full border border-border px-5 py-2 text-[0.95rem] text-heading transition-colors hover:border-gold"
+            >
+              {t.checkoutPage.addDiscount}
+            </button>
+          )}
+        </div>
 
         <div className="mt-6 space-y-3 border-t border-border pt-5 text-[0.95rem]">
           <div className="flex justify-between">
@@ -308,7 +556,7 @@ export default function CheckoutForm() {
         {failed ? <p className="mt-4 text-xs text-hibiscus">{failed}</p> : null}
 
         <button type="submit" disabled={sending} className="btn btn-gold mt-6 w-full">
-          {sending ? t.common.placingOrder : t.common.placeOrder}
+          {sending ? t.common.placingOrder : t.checkoutPage.payNow}
         </button>
 
         <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-muted">
@@ -363,6 +611,41 @@ function Field({
   );
 }
 
+function Checkbox({
+  id,
+  checked,
+  onChange,
+  label,
+}: {
+  id: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+}) {
+  return (
+    <label
+      htmlFor={id}
+      className="flex cursor-pointer items-center gap-3 text-[0.95rem] text-muted"
+    >
+      <input
+        id={id}
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+      />
+      <span
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+          checked ? "border-gold bg-gold text-white" : "border-border"
+        }`}
+      >
+        {checked ? <CheckIcon className="h-3 w-3" /> : null}
+      </span>
+      {label}
+    </label>
+  );
+}
+
 function BankRow({
   label,
   value,
@@ -379,6 +662,44 @@ function BankRow({
         {value}
       </dd>
     </div>
+  );
+}
+
+function BillingChoice({
+  id,
+  selected,
+  onSelect,
+  label,
+}: {
+  id: string;
+  selected: boolean;
+  onSelect: () => void;
+  label: string;
+}) {
+  return (
+    <label
+      htmlFor={id}
+      className={`flex cursor-pointer items-center gap-4 p-5 transition-colors ${
+        selected ? "bg-bgsoft" : "bg-card"
+      }`}
+    >
+      <input
+        id={id}
+        type="radio"
+        name="billing"
+        className="sr-only"
+        checked={selected}
+        onChange={onSelect}
+      />
+      <span
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+          selected ? "border-gold bg-gold text-white" : "border-border"
+        }`}
+      >
+        {selected ? <CheckIcon className="h-3 w-3" /> : null}
+      </span>
+      <span className="text-[0.95rem] text-heading">{label}</span>
+    </label>
   );
 }
 

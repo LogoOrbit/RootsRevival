@@ -13,7 +13,19 @@ type OrderBody = {
   email?: string;
   address?: string;
   city?: string;
-  province?: string;
+  postal?: string;
+  country?: string;
+  contact?: string;
+  newsletter?: boolean;
+  discount?: string;
+  billing?: {
+    firstName?: string;
+    lastName?: string;
+    address?: string;
+    city?: string;
+    postal?: string;
+    country?: string;
+  } | null;
   notes?: string;
   payment?: string;
   lines?: CartLine[];
@@ -50,18 +62,36 @@ export async function POST(request: Request) {
   const email = clean(body.email, 120);
   const address = clean(body.address, 400);
   const city = clean(body.city, 60);
-  const province = clean(body.province, 60);
+  const postal = clean(body.postal, 20);
+  const country = clean(body.country, 60) || "Pakistan";
+  const contact = clean(body.contact, 120);
+  const newsletter = body.newsletter === true;
+  const discount = clean(body.discount, 40).toUpperCase();
+  const billing = body.billing
+    ? {
+        name: `${clean(body.billing.firstName, 90)} ${clean(
+          body.billing.lastName,
+          90
+        )}`.trim(),
+        address: clean(body.billing.address, 400),
+        city: clean(body.billing.city, 60),
+        postal: clean(body.billing.postal, 20),
+        country: clean(body.billing.country, 60) || country,
+      }
+    : null;
   const notes = clean(body.notes, 500);
   const payment = clean(body.payment, 40) === "bank" ? "bank" : "cod";
   const lines = Array.isArray(body.lines) ? body.lines : [];
 
   const errors: Record<string, string> = {};
-  if (name.length < 3) errors.name = "Please write your full name.";
+  if (name.length < 2) errors.name = "Please write your last name.";
   if (phone.replace(/\D/g, "").length < 10)
     errors.phone = "Please write a working WhatsApp number.";
   if (address.length < 10) errors.address = "Please write your full address.";
-  if (city.length < 2) errors.city = "Please write your area.";
+  if (city.length < 2) errors.city = "Please write your city.";
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    errors.email = "Please check the email address.";
+  if (!email && !contact && phone.length === 0)
     errors.email = "Please check the email address.";
 
   const totals = computeTotals(lines);
@@ -97,9 +127,17 @@ export async function POST(request: Request) {
     "CUSTOMER",
     `Name: ${name}`,
     `WhatsApp: ${phone}`,
-    email ? `Email: ${email}` : "Email: not given",
+    email ? `Email: ${email}` : `Contact: ${contact || "not given"}`,
+    `Newsletter opt in: ${newsletter ? "yes" : "no"}`,
     `Address: ${address}`,
-    `Area: ${city}${province ? `, ${province}` : ""}`,
+    `City: ${city}${postal ? ` ${postal}` : ""}`,
+    `Country: ${country}`,
+    billing
+      ? `Billing address: ${billing.name}, ${billing.address}, ${billing.city}${
+          billing.postal ? ` ${billing.postal}` : ""
+        }, ${billing.country}`
+      : "Billing address: same as shipping",
+    discount ? `Discount code requested: ${discount}` : "",
     notes ? `Notes: ${notes}` : "",
     "",
     "ORDER",
@@ -161,7 +199,11 @@ export async function POST(request: Request) {
     "",
     `Name: ${name}`,
     `Phone: ${phone}`,
-    `Address: ${address}, ${city}, Karachi`,
+    `Address: ${address}, ${city}${postal ? ` ${postal}` : ""}, ${country}`,
+    billing
+      ? `Billing address: ${billing.name}, ${billing.address}, ${billing.city}`
+      : "",
+    discount ? `Discount code: ${discount}` : "",
     notes ? `Notes: ${notes}` : "",
     "",
     payment === "bank"
