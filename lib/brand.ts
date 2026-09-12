@@ -49,8 +49,8 @@ export const brand = {
   },
 
   site: {
-    /** Used for metadata and the sitemap. Update once a custom domain is live. */
-    url: "https://rootsrevival-zeta.vercel.app",
+    /** Used for metadata and the sitemap. */
+    url: "https://rootsrevival.com.pk",
   },
 } as const;
 
