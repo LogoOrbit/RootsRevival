@@ -50,7 +50,7 @@ export const brand = {
 
   site: {
     /** Used for metadata and the sitemap. */
-    url: "https://rootsrevival.com.pk",
+    url: "https://rootsrevival.pk",
   },
 } as const;
 
