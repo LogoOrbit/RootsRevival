@@ -161,14 +161,114 @@ export function TickList({
   );
 }
 
+/**
+ * Counts a figure up once it scrolls into view. The value is split so "250ml"
+ * animates the number and keeps the unit, and anything without a leading number
+ * is printed as it is.
+ */
+export function CountUp({ value, className = "" }: { value: string; className?: string }) {
+  const match = value.match(/^(\D*)(\d[\d,]*)(.*)$/);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [shown, setShown] = useState(match ? 0 : null);
+
+  const target = match ? Number(match[2].replace(/,/g, "")) : 0;
+
+  useEffect(() => {
+    if (!match) return;
+    const node = ref.current;
+    if (!node) return;
+
+    const settle = () => setShown(target);
+    if (
+      typeof IntersectionObserver === "undefined" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      settle();
+      return;
+    }
+
+    let frame = 0;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        const start = performance.now();
+        const duration = 1100;
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / duration, 1);
+          // Ease out, so the number lands softly on its final value.
+          setShown(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+          if (progress < 1) frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(node);
+
+    // Safety net: a figure must never be left reading zero.
+    const fallback = window.setTimeout(settle, 1600);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+      window.clearTimeout(fallback);
+    };
+  }, [match, target]);
+
+  if (!match) return <span className={className}>{value}</span>;
+
+  return (
+    <span ref={ref} className={className}>
+      {match[1]}
+      {(shown ?? 0).toLocaleString("en-US")}
+      {match[3]}
+    </span>
+  );
+}
+
 export function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="text-center">
-      <p className="font-display text-4xl text-gold">{value}</p>
+      <CountUp value={value} className="block font-display text-4xl text-gold" />
       <p className="mt-1 text-[0.7rem] uppercase tracking-[0.2em] text-muted">
         {label}
       </p>
     </div>
+  );
+}
+
+/** A hairline across the top of the page showing how far down the reader is. */
+export function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const scrollable =
+        document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(scrollable > 0 ? window.scrollY / scrollable : 0);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return (
+    <div
+      className="scroll-progress w-full"
+      style={{ transform: `scaleX(${progress})` }}
+      aria-hidden="true"
+    />
   );
 }
 

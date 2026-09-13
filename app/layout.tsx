@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import TopBar from "@/components/TopBar";
 import WhatsappFab from "@/components/WhatsappFab";
 import StickyOffer from "@/components/StickyOffer";
+import { ScrollProgress } from "@/components/ui";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.site.url),
@@ -83,6 +84,7 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen flex-col antialiased">
         <SiteProvider>
+          <ScrollProgress />
           <TopBar />
           <Header />
           <main className="flex-1">{children}</main>

@@ -3,16 +3,11 @@
 import Link from "next/link";
 import { useT } from "@/components/Providers";
 import { artwork, ArtPanel } from "@/components/ProductArt";
-import { HerbIcon, MustardOilIcon, CoconutOilIcon, CastorOilIcon } from "@/components/HerbIcons";
+import { HerbMedallion } from "@/components/HerbArt";
 import { PageHero, Section, SectionHeading, TickList, Reveal } from "@/components/ui";
 
 export default function IngredientsPage() {
   const t = useT();
-  const baseIcons = [
-    <MustardOilIcon key="a" className="h-10 w-10" />,
-    <CoconutOilIcon key="b" className="h-10 w-10" />,
-    <CastorOilIcon key="c" className="h-10 w-10" />,
-  ];
 
   return (
     <>
@@ -31,9 +26,9 @@ export default function IngredientsPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {t.ingredientsPage.baseOils.map((oil, index) => (
             <Reveal key={oil.name} delay={index * 80}>
-              <div className="card h-full p-8">
-                <span className="text-gold">{baseIcons[index]}</span>
-                <h3 className="mt-4 font-display text-2xl">{oil.name}</h3>
+              <div className="card lift group h-full p-8">
+                <HerbMedallion index={index} className="h-24 w-24" />
+                <h3 className="mt-5 font-display text-2xl">{oil.name}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{oil.note}</p>
               </div>
             </Reveal>
@@ -50,10 +45,8 @@ export default function IngredientsPage() {
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {t.ingredients.map((item, index) => (
             <Reveal key={item.name} delay={index * 35}>
-              <div className="card flex h-full gap-4 p-6">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-band text-goldlight">
-                  <HerbIcon index={index} className="h-8 w-8" />
-                </span>
+              <div className="card lift group flex h-full gap-4 p-6">
+                <HerbMedallion index={index} className="h-16 w-16" />
                 <div>
                   <h3 className="font-display text-lg leading-snug">{item.name}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-muted">{item.note}</p>

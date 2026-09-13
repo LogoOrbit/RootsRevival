@@ -305,6 +305,124 @@ h4 {
   backdrop-filter: blur(10px);
 }
 
+/* The round ground behind every ingredient drawing. A warm wash in light mode,
+   a lifted tile in dark, so the art never floats loose on the card. */
+.herb-medallion {
+  background:
+    radial-gradient(
+      circle at 32% 28%,
+      color-mix(in srgb, var(--color-goldlight) 34%, transparent) 0,
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--color-leaf) 12%, var(--color-bgsoft));
+  border: 1px solid color-mix(in srgb, var(--color-gold) 24%, transparent);
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1),
+    border-color 0.3s ease, box-shadow 0.35s ease;
+}
+
+/* The medallion stays a light disc in dark mode too, the way a botanical is
+   printed on paper. The deep greens in the art have nothing to read against on
+   a dark ground, and a dimmed cream keeps it from glaring. */
+.dark .herb-medallion {
+  background:
+    radial-gradient(
+      circle at 32% 28%,
+      color-mix(in srgb, var(--color-goldlight) 40%, transparent) 0,
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--color-leaf) 12%, #e4dcc8);
+  border-color: color-mix(in srgb, var(--color-goldlight) 34%, transparent);
+}
+
+.group:hover .herb-medallion {
+  transform: translateY(-3px) rotate(-4deg) scale(1.06);
+  border-color: var(--color-gold);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--color-gold) 26%, transparent);
+}
+
+/* Cards that answer the pointer with a small lift instead of a colour change. */
+.lift {
+  transition: transform 0.35s cubic-bezier(0.34, 1.3, 0.64, 1),
+    box-shadow 0.35s ease, border-color 0.3s ease;
+}
+
+.lift:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--color-gold) 55%, transparent);
+  box-shadow: 0 22px 46px rgba(18, 53, 36, 0.16);
+}
+
+.dark .lift:hover {
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.45);
+}
+
+/* A slow drift across the hero photograph, so the first screen is never static. */
+@keyframes kenburns {
+  0%,
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+.kenburns {
+  animation: kenburns 22s ease-in-out infinite;
+}
+
+/* Reading position, painted across the top of the page. */
+.scroll-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: 3px;
+  z-index: 60;
+  background: linear-gradient(
+    90deg,
+    var(--color-gold),
+    var(--color-goldlight),
+    var(--color-leaf)
+  );
+  transform-origin: 0 50%;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* A faint botanical scatter for wide bands of flat colour. */
+.botanical {
+  position: relative;
+  isolation: isolate;
+}
+
+.botanical::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  background-image: radial-gradient(
+      ellipse 60px 22px at 12% 18%,
+      color-mix(in srgb, var(--color-leaf) 22%, transparent) 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 50px 18px at 84% 32%,
+      color-mix(in srgb, var(--color-gold) 20%, transparent) 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 70px 24px at 68% 82%,
+      color-mix(in srgb, var(--color-leaf) 18%, transparent) 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 44px 16px at 28% 72%,
+      color-mix(in srgb, var(--color-gold) 16%, transparent) 0,
+      transparent 100%
+    );
+}
+
 @keyframes floaty {
   0%,
   100% {
@@ -505,6 +623,7 @@ h4 {
   .marquee-track,
   .pulse-ring,
   .fade-up,
+  .kenburns,
   .gift-pop,
   .cart-bump,
   .cart-ring,
@@ -523,6 +642,10 @@ h4 {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .lift:hover,
+  .group:hover .herb-medallion {
+    transform: none;
   }
   html {
     scroll-behavior: auto;

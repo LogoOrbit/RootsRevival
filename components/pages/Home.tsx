@@ -7,7 +7,8 @@ import { hasSaving, heroProduct, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { artwork, ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import ProductCard from "@/components/ProductCard";
-import { HerbIcon, BenefitIcon } from "@/components/HerbIcons";
+import { BenefitIcon } from "@/components/HerbIcons";
+import { HerbArt, HerbMedallion } from "@/components/HerbArt";
 import { Section, SectionHeading, Stat, Reveal } from "@/components/ui";
 import {
   GiftIcon,
@@ -101,7 +102,7 @@ export default function HomePage() {
                 width={1600}
                 height={1066}
                 priority
-                className="h-full w-full object-cover"
+                className="kenburns h-full w-full object-cover"
               />
             </div>
             <div className="card floaty absolute -bottom-5 start-2 hidden px-4 py-3 text-center shadow-lg sm:block">
@@ -231,7 +232,7 @@ export default function HomePage() {
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {t.benefits.map((benefit, index) => (
             <Reveal key={benefit.title} delay={index * 60}>
-              <div className="card h-full p-6">
+              <div className="card lift h-full p-6">
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-band text-goldlight">
                   <BenefitIcon index={index} className="h-7 w-7" />
                 </span>
@@ -292,11 +293,9 @@ export default function HomePage() {
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {t.ingredients.map((item, index) => (
             <Reveal key={item.name} delay={index * 35}>
-              <div className="card group flex h-full flex-col items-center p-5 text-center transition-colors hover:border-gold">
-                <span className="text-gold transition-transform duration-500 group-hover:scale-110">
-                  <HerbIcon index={index} className="h-10 w-10" />
-                </span>
-                <span className="mt-3 font-display text-lg leading-tight text-heading">
+              <div className="card lift group flex h-full flex-col items-center p-5 text-center">
+                <HerbMedallion index={index} className="h-20 w-20" />
+                <span className="mt-4 font-display text-lg leading-tight text-heading">
                   {item.name}
                 </span>
                 <span className="mt-1 text-xs leading-relaxed text-muted">
@@ -305,6 +304,30 @@ export default function HomePage() {
               </div>
             </Reveal>
           ))}
+        </div>
+
+        {/* The whole label, read end to end without scrolling the grid. */}
+        <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-bgsoft py-4">
+          <div className="marquee-track items-center gap-8">
+            {[0, 1].map((pass) => (
+              <div key={pass} className="flex items-center gap-8" aria-hidden={pass === 1}>
+                {t.ingredients.map((item, index) => (
+                  <span
+                    key={`${pass}-${item.name}`}
+                    className="flex shrink-0 items-center gap-2.5"
+                  >
+                    <HerbArt index={index} className="h-7 w-7" />
+                    <span className="whitespace-nowrap font-display text-lg text-heading">
+                      {item.name}
+                    </span>
+                    <span aria-hidden="true" className="text-gold">
+                      ✦
+                    </span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
         <div className="mt-10 text-center">
           <Link href="/ingredients" className="btn btn-outline">
@@ -323,7 +346,7 @@ export default function HomePage() {
         <div className="mt-10 grid gap-6 sm:grid-cols-3">
           {boxSides.map((src, index) => (
             <Reveal key={src} delay={index * 90}>
-              <div className="card h-full overflow-hidden p-4">
+              <div className="card lift h-full overflow-hidden p-4">
                 <ArtPanel
                   src={src}
                   alt={t.home.packaging[index].title}
@@ -406,7 +429,7 @@ export default function HomePage() {
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {t.expectations.map((item, index) => (
             <Reveal key={item.period} delay={index * 80}>
-              <div className="card h-full p-6">
+              <div className="card lift h-full p-6">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-goldlight font-display text-lg text-band">
                   {index + 1}
                 </span>
