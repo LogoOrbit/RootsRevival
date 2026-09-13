@@ -33,7 +33,8 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
   const [ready, setReady] = useState(false);
 
-  // Pick up the saved choice, or fall back to the language of the device.
+  // Pick up the saved choice. English stays the default for every new visitor,
+  // whatever language their device is set to.
   useEffect(() => {
     let nextLang: Lang = "en";
     let nextTheme: Theme = "light";
@@ -41,12 +42,6 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
       const savedLang = window.localStorage.getItem(LANG_KEY);
       if (savedLang === "ur" || savedLang === "en") {
         nextLang = savedLang;
-      } else {
-        const languages = [
-          ...(navigator.languages || []),
-          navigator.language || "",
-        ].map((value) => value.toLowerCase());
-        if (languages.some((value) => value.startsWith("ur"))) nextLang = "ur";
       }
       const savedTheme = window.localStorage.getItem(THEME_KEY);
       if (savedTheme === "dark" || savedTheme === "light") nextTheme = savedTheme;
