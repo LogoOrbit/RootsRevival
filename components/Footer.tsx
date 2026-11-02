@@ -12,7 +12,9 @@ export default function Footer() {
   const shopLinks = [
     { href: "/shop", label: t.footer.shopAll },
     { href: "/offers", label: t.footer.deals },
+    { href: "/product/mini", label: t.products.mini.name },
     { href: "/product/starter", label: t.products.starter.name },
+    { href: "/product/combo", label: t.products.combo.name },
     { href: "/product/duo", label: t.products.duo.name },
     { href: "/product/family", label: t.products.family.name },
   ];

@@ -28,6 +28,8 @@ export async function generateMetadata({
 
 /** The photograph search engines show for each pack. */
 const packImage: Record<string, string> = {
+  mini: "/art/pack-mini.jpg",
+  combo: "/art/pack-combo.jpg",
   starter: "/art/pack-single.jpg",
   duo: "/art/pack-duo.jpg",
   family: "/art/pack-family.jpg",

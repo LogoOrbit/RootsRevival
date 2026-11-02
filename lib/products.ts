@@ -1,9 +1,9 @@
 /**
- * The three products we sell. Prices live here, all wording lives in lib/i18n
+ * The products we sell. Prices live here, all wording lives in lib/i18n
  * so the shop reads the same in English and in Urdu.
  */
 
-export type ProductSlug = "starter" | "duo" | "family";
+export type ProductSlug = "mini" | "starter" | "combo" | "duo" | "family";
 
 export type Product = {
   slug: ProductSlug;
@@ -19,8 +19,14 @@ export type Product = {
 /** The price of a single 250ml bottle, the yardstick for the bigger packs. */
 export const bottlePrice = 1400;
 
+/** The price of a single 120ml bottle. */
+export const miniPrice = 1000;
+
 export const products: Product[] = [
+  { slug: "mini", bottles: 1, price: miniPrice },
   { slug: "starter", bottles: 1, price: bottlePrice },
+  /* Special offer: a 120ml and a 250ml together, Rs 200 off. */
+  { slug: "combo", bottles: 2, price: 2200, compareAt: miniPrice + bottlePrice },
   { slug: "duo", bottles: 2, price: 2800, gift: true },
   { slug: "family", bottles: 3, price: 4000, compareAt: 3 * bottlePrice, bestValue: true },
 ];
@@ -29,7 +35,7 @@ export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export const heroProduct = products[1];
+export const heroProduct = getProduct("duo")!;
 
 export function savingOf(product: Product): number {
   return product.compareAt ? product.compareAt - product.price : 0;

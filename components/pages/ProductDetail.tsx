@@ -6,7 +6,7 @@ import { brand, formatPrice } from "@/lib/brand";
 import { getProduct, hasSaving, products, savingOf } from "@/lib/products";
 import { useT } from "@/components/Providers";
 import { AddToCart } from "@/components/AddToCart";
-import { ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
+import { ArtPanel, boxSides, packGallery, PackShot } from "@/components/ProductArt";
 import { HerbIcon } from "@/components/HerbIcons";
 import { Breadcrumb, Pill, Section, SectionHeading, TickList, Reveal } from "@/components/ui";
 import { LeafIcon, ShieldIcon, TruckIcon } from "@/components/Icons";
@@ -20,15 +20,19 @@ export default function ProductDetail({ slug }: { slug: string }) {
   const copy = t.products[product.slug];
   const others = products.filter((p) => p.slug !== product.slug);
 
-  /* The pack itself, then the three sides of the box, the same on every pack. */
+  /* The pack itself, then its own photos, or the three sides of the 250ml box. */
+  const extra = packGallery[product.slug];
   const gallery = [
     { kind: "pack" as const, src: "", label: copy.name },
-    ...boxSides.map((src, index) => ({
-      kind: "art" as const,
-      src,
-      label: t.product.gallerySides[index],
-    })),
+    ...(extra
+      ? extra.map((photo) => ({ kind: "art" as const, src: photo.src, label: photo.alt }))
+      : boxSides.map((src, index) => ({
+          kind: "art" as const,
+          src,
+          label: t.product.gallerySides[index],
+        }))),
   ];
+  const isCombo = product.slug === "combo";
 
   return (
     <>
@@ -119,10 +123,18 @@ export default function ProductDetail({ slug }: { slug: string }) {
             {product.gift || hasSaving(product) ? (
               <div className="mt-4 rounded-2xl border border-gold/40 bg-gold/10 p-4">
                 <p className="text-base font-semibold text-heading">
-                  {product.gift ? t.product.giftHeadline : t.product.saveHeadline}
+                  {product.gift
+                    ? t.product.giftHeadline
+                    : isCombo
+                      ? t.product.comboHeadline
+                      : t.product.saveHeadline}
                 </p>
                 <p className="mt-1 text-sm leading-relaxed">
-                  {product.gift ? t.product.giftBody : t.product.saveBody}
+                  {product.gift
+                    ? t.product.giftBody
+                    : isCombo
+                      ? t.product.comboBody
+                      : t.product.saveBody}
                 </p>
               </div>
             ) : null}

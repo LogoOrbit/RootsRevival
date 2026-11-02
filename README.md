@@ -9,7 +9,7 @@ Built with Next.js 15 (App Router), React 19, TypeScript and Tailwind CSS 4, rea
 | --- | --- |
 | Home | `/` |
 | Shop | `/shop` |
-| Product detail | `/product/starter`, `/product/duo`, `/product/family` |
+| Product detail | `/product/mini`, `/product/starter`, `/product/combo`, `/product/duo`, `/product/family` |
 | Deals and offers | `/offers` |
 | Our story | `/about` |
 | Ingredients | `/ingredients` |

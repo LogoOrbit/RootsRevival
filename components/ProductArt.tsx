@@ -2,6 +2,14 @@ import Image from "next/image";
 
 /** Square photographs. Any letterbox falls back to the page ground. */
 const packShots: Record<string, { src: string; alt: string }> = {
+  mini: {
+    src: "/art/pack-mini.jpg",
+    alt: "Roots Revival 120ml herbal hair oil bottle with its printed box",
+  },
+  combo: {
+    src: "/art/pack-combo.jpg",
+    alt: "Roots Revival special offer, a 120ml and a 250ml bottle with their boxes",
+  },
   starter: {
     src: "/art/pack-single.jpg",
     alt: "Roots Revival single 250ml herbal hair oil bottle with its printed box",
@@ -91,3 +99,23 @@ export const boxSides = [
   artwork.boxIngredients,
   artwork.boxAbout,
 ] as const;
+
+/**
+ * Extra photographs for packs that have their own shoot. Packs listed here show
+ * these instead of the box sides.
+ */
+export const packGallery: Record<string, { src: string; alt: string }[]> = {
+  mini: [
+    { src: "/art/mini-2.jpg", alt: "The 120ml bottle among the herbs" },
+    { src: "/art/mini-3.jpg", alt: "The 120ml bottle and box beside a hibiscus" },
+    { src: "/art/mini-4.jpg", alt: "The 120ml bottle with its box on the greens" },
+    { src: "/art/mini-5.jpg", alt: "The 120ml box and bottle side by side" },
+    { src: "/art/mini-6.jpg", alt: "The 120ml bottle next to its box" },
+    { src: "/art/mini-7.jpg", alt: "The 120ml bottle standing on its box" },
+  ],
+  combo: [
+    { src: "/art/combo-2.jpg", alt: "The 120ml and 250ml bottles with both boxes" },
+    { src: "/art/combo-3.jpg", alt: "The 250ml and 120ml bottles among the plants" },
+    { src: "/art/mini-2.jpg", alt: "The 120ml bottle among the herbs" },
+  ],
+};

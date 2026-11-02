@@ -72,6 +72,7 @@ export const en = {
   },
 
   announce: [
+    "Special offer: 120ml + 250ml together for Rs 2,200",
     "Take 2 bottles and a 60ml bottle comes free",
     "Same day dispatch, flat Rs 250 delivery on every order",
     "Cash on delivery at your door",
@@ -79,6 +80,30 @@ export const en = {
   ],
 
   products: {
+    mini: {
+      name: "Travel Bottle",
+      volume: "1 x 120ml bottle in a printed box",
+      badge: "New",
+      summary:
+        "The same handmade herbal hair oil in a 120ml bottle. An easy way to try it, and small enough for your bag.",
+      highlights: [
+        "The same 16 herbs and oils as the full size bottle",
+        "Handy size for trying it out or for travel",
+        "Cash on delivery at your door",
+      ],
+    },
+    combo: {
+      name: "Special Offer Pack",
+      volume: "1 x 120ml + 1 x 250ml bottles",
+      badge: "Special Offer",
+      summary:
+        "A full size 250ml bottle for home and a 120ml bottle for your bag or to share, together for Rs 200 less.",
+      highlights: [
+        "Rs 200 off when you take both sizes together",
+        "Keep the 250ml at home, the 120ml for travel",
+        "Both bottles arrive in a single delivery",
+      ],
+    },
     starter: {
       name: "Single Bottle",
       volume: "1 x 250ml bottle in a printed gift box",
@@ -183,7 +208,7 @@ export const en = {
 
   storyStats: [
     { value: "16", label: "Natural herbs and oils" },
-    { value: "250ml", label: "In every bottle" },
+    { value: "120 / 250ml", label: "Two bottle sizes" },
     { value: "0", label: "Chemicals added" },
     { value: "100%", label: "Made by hand" },
   ],
@@ -258,9 +283,9 @@ export const en = {
 
   shop: {
     eyebrow: "The shop",
-    title: "One oil, three ways to buy it",
+    title: "One oil, a pack for everyone",
     intro:
-      "Every pack holds the same handmade 250ml bottle of Roots Revival herbal hair oil, filled by hand after you order.",
+      "Every pack holds the same handmade Roots Revival herbal hair oil, in 120ml or 250ml bottles filled by hand after you order.",
     perks: [
       { title: "Flat Rs 250 delivery", note: "The same charge on every order. Dispatched the same working day, at your door in 1 to 2 days." },
       { title: "Pay your way", note: "Cash on delivery, or online transfer to Meezan Bank before dispatch." },
@@ -290,6 +315,9 @@ export const en = {
     giftHeadline: "A free 60ml bottle comes with this pack",
     giftBody:
       "We pack the 60ml bottle in the box ourselves. Keep it in your bag, take it travelling, or give it to someone whose hair needs it.",
+    comboHeadline: "Special offer, Rs 200 off",
+    comboBody:
+      "Both sizes together cost less than buying them one at a time, and they arrive in a single delivery.",
     saveHeadline: "Our best price on the oil",
     saveBody:
       "Three bottles for less than three bought one at a time, and it all arrives in a single delivery.",
@@ -572,7 +600,7 @@ export const en = {
       "Check your packs and place the order. Delivery is a flat Rs 250, and we confirm every order on WhatsApp before it is dispatched.",
     emptyTitle: "Your cart is empty",
     emptyBody:
-      "Every pack holds the same handmade 250ml bottle. Pick the one that suits your hair journey and we will bottle it fresh for you.",
+      "Every pack holds the same handmade oil, in 120ml or 250ml bottles. Pick the one that suits your hair journey and we will bottle it fresh for you.",
     browsePacks: "Browse The Packs",
     summary: "Order summary",
     bundleSaving: "Bundle saving",
