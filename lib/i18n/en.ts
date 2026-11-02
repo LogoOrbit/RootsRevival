@@ -498,6 +498,11 @@ export const en = {
     title: "Honest words from real hair journeys",
     intro:
       "We only publish reviews that were actually sent to us on WhatsApp or Instagram, in the words the customer used. Nothing invented, nothing bought.",
+    videoEyebrow: "Video reviews",
+    videoTitle: "Hear it from our customers",
+    videoIntro: "Real customers, filmed on their own phones, sharing how the oil has worked for them.",
+    videoLabel: "Customer video review",
+    seeAllReviews: "See All Reviews",
     emptyTitle: "Our review wall is being built",
     emptyBody1:
       "Roots Revival is a young brand and we would rather show you nothing than show you words we wrote ourselves. Every review sent to us on WhatsApp or Instagram is collected here as our customers share them, with their permission and in their own words.",

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { brand, waLink } from "@/lib/brand";
 import { useT } from "@/components/Providers";
 import { PageHero, Section, SectionHeading, Reveal } from "@/components/ui";
+import VideoReviews from "@/components/VideoReviews";
 import { InstagramIcon, StarIcon, WhatsappIcon } from "@/components/Icons";
 
 /**
@@ -29,8 +30,41 @@ export default function ReviewsPage() {
         intro={t.reviewsPage.intro}
       />
 
+      <Section tone="bg" className="pt-0">
+        <SectionHeading
+          eyebrow={t.reviewsPage.videoEyebrow}
+          title={t.reviewsPage.videoTitle}
+          intro={t.reviewsPage.videoIntro}
+        />
+        <div className="mt-10">
+          <VideoReviews />
+        </div>
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <a
+            href={waLink(
+              `Assalam o Alaikum ${brand.name} team, I would like to share my review of the herbal hair oil.`
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-whatsapp"
+          >
+            <WhatsappIcon className="h-5 w-5" />
+            {t.reviewsPage.sendReview}
+          </a>
+          <a
+            href={brand.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-outline"
+          >
+            <InstagramIcon className="h-5 w-5" />
+            {t.reviewsPage.seeInstagram}
+          </a>
+        </div>
+      </Section>
+
+      {reviews.length > 0 && (
       <Section tone="bg">
-        {reviews.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {reviews.map((review) => (
               <figure key={`${review.name}${review.city}`} className="card p-7">
@@ -51,46 +85,8 @@ export default function ReviewsPage() {
               </figure>
             ))}
           </div>
-        ) : (
-          <div className="card mx-auto max-w-2xl p-8 text-center sm:p-10">
-            <div className="flex justify-center gap-1 text-gold">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <StarIcon key={index} className="h-5 w-5" />
-              ))}
-            </div>
-            <h2 className="mt-6 text-3xl">{t.reviewsPage.emptyTitle}</h2>
-            <div className="gold-rule mx-auto mt-6 w-24" />
-            <p className="mt-6 text-sm leading-relaxed text-muted">
-              {t.reviewsPage.emptyBody1}
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-muted">
-              {t.reviewsPage.emptyBody2}
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <a
-                href={waLink(
-                  `Assalam o Alaikum ${brand.name} team, I would like to share my review of the herbal hair oil.`
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-whatsapp"
-              >
-                <WhatsappIcon className="h-5 w-5" />
-                {t.reviewsPage.sendReview}
-              </a>
-              <a
-                href={brand.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline"
-              >
-                <InstagramIcon className="h-5 w-5" />
-                {t.reviewsPage.seeInstagram}
-              </a>
-            </div>
-          </div>
-        )}
       </Section>
+      )}
 
       <Section tone="soft">
         <SectionHeading

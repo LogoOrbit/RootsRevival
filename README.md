@@ -14,7 +14,7 @@ Built with Next.js 15 (App Router), React 19, TypeScript and Tailwind CSS 4, rea
 | Our story | `/about` |
 | Ingredients | `/ingredients` |
 | How to use | `/usage` |
-| Customer reviews | `/reviews` |
+| Customer reviews (video testimonials in `public/reviews`) | `/reviews` |
 | FAQ | `/faq` |
 | Contact | `/contact` |
 | Payment methods | `/payment` |

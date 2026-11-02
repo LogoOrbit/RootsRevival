@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { brand, formatPrice, waLink } from "@/lib/brand";
 import { hasSaving, heroProduct, products, savingOf } from "@/lib/products";
+import VideoReviews from "@/components/VideoReviews";
 import { useT } from "@/components/Providers";
 import { artwork, ArtPanel, boxSides, PackShot } from "@/components/ProductArt";
 import ProductCard from "@/components/ProductCard";
@@ -442,8 +443,25 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Instagram */}
+      {/* Video reviews */}
       <Section tone="soft">
+        <SectionHeading
+          eyebrow={t.reviewsPage.videoEyebrow}
+          title={t.reviewsPage.videoTitle}
+          intro={t.reviewsPage.videoIntro}
+        />
+        <div className="mt-10">
+          <VideoReviews limit={5} />
+        </div>
+        <div className="mt-10 text-center">
+          <Link href="/reviews" className="btn btn-outline">
+            {t.reviewsPage.seeAllReviews}
+          </Link>
+        </div>
+      </Section>
+
+      {/* Instagram */}
+      <Section tone="bg">
         <div className="card grid items-center gap-8 overflow-hidden p-8 lg:grid-cols-[1fr_1.1fr] lg:p-10">
           <div className="text-center lg:text-start">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-band text-bandtext lg:mx-0">
